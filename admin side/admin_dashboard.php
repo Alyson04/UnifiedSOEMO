@@ -1,5 +1,4 @@
 <?php
-// admin_dashboard.php
 session_start();
 
 // Check if the user is an admin
@@ -10,93 +9,139 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
 
 require '../functions/db_conn.php';
 
-// Fetch pending applications
-$sql = "SELECT * FROM users WHERE is_approved = 'pending'";
+// Fetch total users
+$sql = "SELECT COUNT(*) AS total_users FROM users";
 $result = $conn->query($sql);
-$pendingApplications = $result->fetch_all(MYSQLI_ASSOC);
-
+$total_users = $result->fetch_assoc()['total_users'];
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #1e2a47;
+            color: #fff;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, #b3f0c2, #8ec5fc);
+            padding: 15px 30px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links li a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+        .search-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-profile input {
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+        .profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .dashboard {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background: #e0dfca;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            width: 150px;
+            color: black;
+        }
+        .summary {
+            background: #2c3e50;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+        }
+        .progress {
+            background: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 10px;
+            margin: 5px 0;
+        }
+        .progress div {
+            background: #00c3ff;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-<!-- Modal Structure -->
-    
-    <div class="container">
-        <div id="myModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <div id="modal-body">Loading...</div>
-            </div>
-        </div>
-        <div class="sidebar">
-            <h2>Admin Dashboard</h2>
-            <ul>
-                <!-- <li><a href="create_admin.php">Create Admin Account</a></li> -->
-                <li><a href="#" class="active">Manage Users</a></li>
-                <li><a href="">Organizations</a></li>
-                <li><a href="">Events</a></li>
-                <li><a href="">Settings</a></li>
-                <li><a href="../functions/logout.php">Logout</a></li>
+    <header>
+        <nav class="navbar">
+            <div class="logo">LOGO</div>
+            <ul class="nav-links">
+                <li><a href="#">HOME</a></li>
+                <li><a href="#">ORGANIZATION</a></li>
+                <li><a href="#">EVENTS</a></li>
+                <li><a href="#">ABOUT US</a></li>
             </ul>
-        </div>
-
-        <div class="main-content">
-            <div class="card">
-                    <div class="card-header">
-                        <h2>Pending Applications</h2>
-                        </div>
-                        <div class="card-body">
-                        <div class="action-buttons" style="margin-bottom: 15px; display: flex; gap: 10px;">
-                        <button onclick="location.href='create_admin.php'" title="Add User" style="border: none; background: none; cursor: pointer;">
-                            <i class="fas fa-user-plus" style="font-size: 20px; color:green;"></i>
-                        </button>
-                        <button onclick="editUser()" title="Edit User" style="border: none; background: none; cursor: pointer;">
-                            <i class="fas fa-edit" style="font-size: 20px; color: green;"></i>
-                        </button>
-                        <button onclick="deleteUser()" title="Delete User" style="border: none; background: none; cursor: pointer;">
-                            <i class="fas fa-trash-alt" style="font-size: 20px; color: red;"></i>
-                        </button>
-                        </div>
-                    
-                    
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Full Name</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($pendingApplications as $applicant): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($applicant['fullName']) ?></td>
-                                    <td>
-                                        <form action="process_application.php" method="POST" style="display: inline;">
-                                            <input type="hidden" name="user_id" value="<?= $applicant['ID'] ?>">
-                                            <button type="submit" name="action" value="accept">Accept</button>
-                                        </form>
-                                        <form action="process_application.php" method="POST" style="display: inline;">
-                                            <input type="hidden" name="user_id" value="<?= $applicant['ID'] ?>">
-                                            <button type="submit" name="action" value="decline">Decline</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+            <div class="search-profile">
+                <input type="text" placeholder="Search...">
+                <div class="profile">
+                    <img src="profile.jpg" alt="User">
+                    <span>Monti Roy</span>
                 </div>
             </div>
-        </div>
-    </div>
+        </nav>
+    </header>
     
-    </script>
+    <main>
+        <section class="dashboard">
+            <div class="card"> <img src="user-icon.png" alt=""> <p>Manage Users</p> </div>
+            <div class="card"> <img src="org-icon.png" alt=""> <p>Organizations</p> </div>
+            <div class="card"> <img src="event-icon.png" alt=""> <p>Events</p> </div>
+            <div class="card"> <img src="settings-icon.png" alt=""> <p>Settings</p> </div>
+        </section>
+        
+        <section class="summary">
+            <h2>Dashboard Summary</h2>
+            <div class="stat">
+                <span>Total Users: <?php echo $total_users; ?></span>
+                <div class="progress"><div style="width: <?php echo min($total_users, 100); ?>%;"></div></div>
+            </div>
+            <div class="stat">
+                <span>Active Organizations: 50</span>
+                <div class="progress"><div style="width: 50%;"></div></div>
+            </div>
+            <div class="stat">
+                <span>Upcoming Events: 15</span>
+                <div class="progress"><div style="width: 15%;"></div></div>
+            </div>
+            <div class="stat">
+                <span>Recent Activities: None</span>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

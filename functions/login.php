@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
 
             if ($user['role'] === 'admin') {
-                header("Location: ../admin side/admin_dashboard.php");
+                header("Location: ../admin side/manage_users.php");
             } elseif ($user['role'] === 'student') {
                 header("Location: ../student side/student_dashboard.php");
             }
