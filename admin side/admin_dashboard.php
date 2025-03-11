@@ -10,7 +10,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
 require '../functions/db_conn.php';
 
 // Fetch total users
-$sql = "SELECT COUNT(*) AS total_users FROM users";
+$sql = "SELECT COUNT(*) AS total_users FROM users WHERE role != 'admin'";
 $result = $conn->query($sql);
 $total_users = $result->fetch_assoc()['total_users'];
 $conn->close();
