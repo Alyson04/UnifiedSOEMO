@@ -69,6 +69,11 @@ $conn->close();
             gap: 20px;
             padding: 20px;
         }
+        .dashboard a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
         .card {
             background: #e0dfca;
             padding: 20px;
@@ -118,10 +123,10 @@ $conn->close();
     
     <main>
         <section class="dashboard">
-            <div class="card"> <img src="user-icon.png" alt=""> <p>Manage Users</p> </div>
-            <div class="card"> <img src="org-icon.png" alt=""> <p>Organizations</p> </div>
-            <div class="card"> <img src="event-icon.png" alt=""> <p>Events</p> </div>
-            <div class="card"> <img src="settings-icon.png" alt=""> <p>Settings</p> </div>
+            <div class="card"> <a href = "manage_users.php"> <p>Manage Users</p> </a> </div>
+            <div class="card"> <a href = "#"> <p>Organizations</p> </a> </div>
+            <div class="card"> <a href = "#"> <p>Events</p> </a> </div>
+            <div class="card"> <a href = "#"> <p>Settings</p> </a> </div>
         </section>
         
         <section class="summary">

@@ -54,7 +54,7 @@ $pendingApplications = $result->fetch_all(MYSQLI_ASSOC);
                         </div>
                         <div class="card-body">
                         <div class="action-buttons" style="margin-bottom: 15px; display: flex; gap: 10px;">
-                        <button onclick="location.href='create_admin.php'" title="Add User" style="border: none; background: none; cursor: pointer;">
+                        <button onclick="location.href='create_admin.php'" title="Create Admin" style="border: none; background: none; cursor: pointer;">
                             <i class="fas fa-user-plus" style="font-size: 20px; color:green;"></i>
                         </button>
                         <button onclick="editUser()" title="Edit User" style="border: none; background: none; cursor: pointer;">
