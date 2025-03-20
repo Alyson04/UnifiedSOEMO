@@ -1,8 +1,13 @@
 <nav>
     <ul>
-        <li><a href="../public/index.php">Home</a></li>
+        
         <?php if (isset($_SESSION['user_id'])): ?>
-            <li><a href="../students/dashboard.php">Dashboard</a></li>
+            <nav class="nav-links">
+                <a href="../students/dashboard.php">Home</a>
+                <a href="../students/organizations.php">Organizations</a>
+                <a href="../students/events.php">Events</a>
+                <a href="../students/about_us.php">About Us</a>
+        </nav>
             <li><a href="../api/logout.php">Logout</a></li>
         <?php else: ?>
             <li><a href="../public/login.php">Login</a></li>
