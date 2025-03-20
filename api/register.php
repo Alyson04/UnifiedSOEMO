@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['fullName'] = $fullName;
         $_SESSION['role'] = $role;
         
+        header("Location: ../public/login.php?success=Registration success");
         exit();
     } else {
         header("Location: ../public/register.php?error=Registration failed");
