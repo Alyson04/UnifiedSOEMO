@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['fullName'] = $fullName;
         $_SESSION['role'] = $role;
         
-        header("Location: ../students/complete_profile.php");
         exit();
     } else {
         header("Location: ../public/register.php?error=Registration failed");
