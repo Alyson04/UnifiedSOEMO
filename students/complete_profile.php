@@ -1,16 +1,8 @@
 <?php 
 require '../api/auth.php'; 
-checkUserRole('students'); // Only allow students
 ?>
 <?php $title = "Complete Information"; include '../includes/header.php'; ?>
 <?php include '../includes/navbar.php'; ?>
-
-<?php
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../public/login.php");
-    exit();
-}
-?>
 
 <div class="register-container">
     <h2>Complete Your Profile</h2>

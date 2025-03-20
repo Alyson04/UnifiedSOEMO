@@ -1,6 +1,5 @@
 <?php 
 require '../api/auth.php';
-checkUserRole('students'); // Only allow students
 ?>
 
 <?php $title = "Student Dashboard"; include '../includes/header.php'; ?>
