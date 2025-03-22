@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Unified SOEMO</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="manage_user.css">
+
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="logo.png" alt="Unified SOEMO">
+        </div>
+      
+        <div class="search-profile">
+            <input type="text" placeholder="Search">
+            <img src="bell.png" alt="Notifications">
+            <div class="profile">
+                <img src="profile.png" alt="Profile">
+                <div class="profile-text">
+                    <span>Moni Roy</span>
+                    <p>Admin</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="dashboard.html"><img src="dashboard-icon.png" alt=""> Dashboard</a></li>
+            <li><a href="manage_user.html"><img src="user-icon.png" alt=""> Manage Users</a></li>
+            <li><a href="manage_org.html"><img src="org-icon.png" alt=""> Organizations</a></li>
+            <li><a href="manage_events.html"><img src="event-icon.png" alt=""> Events</a></li>
+            <li><a href="settings.html"><img src="settings-icon.png" alt=""> Settings</a></li>
+        </ul>
+    </div>
+    
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2 class="page-title">Manage Users</h2>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search Users...">
+            <button>🔍</button>
+        </div>
+
+        <!-- Users Table -->
+        <div class="user-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>UID-01</td>
+                        <td>Jerome Abarca</td>
+                        <td>abarca@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                    <tr>
+                        <td>UID-02</td>
+                        <td>Clifford Balana</td>
+                        <td>balana@gmail.com</td>
+                        <td class="inactive">Inactive</td>
+                    </tr>
+                    <tr>
+                        <td>UID-03</td>
+                        <td>Janna Caballero</td>
+                        <td>caballero@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                    <tr>
+                        <td>UID-04</td>
+                        <td>Ashanti Caculba</td>
+                        <td>caculba@gmail.com</td>
+                        <td class="inactive">Inactive</td>
+                    </tr>
+                    <tr>
+                        <td>UID-05</td>
+                        <td>Alyson Calimag</td>
+                        <td>calimag@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                    <tr>
+                        <td>UID-06</td>
+                        <td>Jusphine Lacano</td>
+                        <td>lacano@gmail.com</td>
+                        <td class="inactive">Inactive</td>
+                    </tr>
+                    <tr>
+                        <td>UID-07</td>
+                        <td>Rica Mae Malgapo</td>
+                        <td>malgapo@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
