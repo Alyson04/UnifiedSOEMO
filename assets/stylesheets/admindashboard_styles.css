@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #1e2a47;
+    color: #fff;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #b3f0c2, #8ec5fc);
+    padding: 15px 30px;
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+.nav-links li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+.search-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.search-profile input {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+.profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+.dashboard a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+.card {
+    background: #e0dfca;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    width: 150px;
+    color: black;
+}
+.summary {
+    background: #2c3e50;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
+.progress {
+    background: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 10px;
+    margin: 5px 0;
+}
+.progress div {
+    background: #00c3ff;
+    height: 100%;
+}
