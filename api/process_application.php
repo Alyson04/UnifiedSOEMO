@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $notif_stmt->execute();
 
         // Redirect back to admin dashboard
-        header("Location: admin_dashboard.php?status=success&action=$action");
+        header("Location: ../admin/manage_users.php?status=success&action=$action");
     } else {
         echo "Error: " . $stmt->error;
     }

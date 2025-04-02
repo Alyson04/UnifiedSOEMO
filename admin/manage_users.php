@@ -16,12 +16,13 @@ include '../includes/navbar.php';
 <h1>Admin Dashboard</h1>
 <main>
 <section class="dashboard">
-    <div class="card"> <a href = "manage_users.php"> <p>Manage Users</p> </a> </div>
-    <div class="card"> <a href = "manage_organizations.php"> <p>Organizations</p> </a> </div>
-    <div class="card"> <a href = "manage_events.php"> <p>Events</p> </a> </div>
-    <div class="card"> <a href = "settings.php"> <p>Settings</p> </a> </div>
+    <div class="card"> <a href="manage_users.php"> <p>Manage Users</p> </a> </div>
+    <div class="card"> <a href="manage_organizations.php"> <p>Organizations</p> </a> </div>
+    <div class="card"> <a href="manage_events.php"> <p>Events</p> </a> </div>
+    <div class="card"> <a href="settings.php"> <p>Settings</p> </a> </div>
 </section>
 </main>
+
 <h2>Manage Users</h2>
 <table>
     <thead>
@@ -40,17 +41,38 @@ include '../includes/navbar.php';
                 <td><?php echo htmlspecialchars($user['id']); ?></td>
                 <td><?php echo htmlspecialchars($user['fullName']); ?></td>
                 <td><?php echo htmlspecialchars($user['email']); ?></td>
-                <td><?php echo htmlspecialchars(ucfirst($user['is_approved'])); ?></td>
+                <td>
+                    <?php 
+                        if ($user['is_approved'] == "approved") {
+                            echo "Approved";
+                        } elseif ($user['is_approved'] == "declined") {
+                            echo "Declined";
+                        } else {
+                            echo "Pending";
+                        }
+                    ?>
+                </td>
                 <td><?php echo htmlspecialchars($user['created_at']); ?></td>
                 <td>
-                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                        <button type="submit" name="action" value="accept">Accept</button>
-                    </form>
-                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                        <button type="submit" name="action" value="decline">Decline</button>
-                    </form>
+                    <?php if ($user['is_approved'] == "approved" || $user['is_approved'] == "declined"): ?>
+                        <form action="../api/process_application.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                            <button type="submit" name="action" value="accept" disabled>Accept</button>
+                        </form>
+                        <form action="../api/process_application.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                            <button type="submit" name="action" value="decline" disabled>Decline</button>
+                        </form>
+                    <?php else: ?>
+                        <form action="../api/process_application.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                            <button type="submit" name="action" value="accept">Accept</button>
+                        </form>
+                        <form action="../api/process_application.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                            <button type="submit" name="action" value="decline">Decline</button>
+                        </form>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endwhile; ?>
