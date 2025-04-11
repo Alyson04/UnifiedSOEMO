@@ -18,7 +18,7 @@ $conn->close();
 
 <?php $title = "Manage Events"; $style = "admindashboard_styles.css"; include '../includes/header.php'; include '../includes/navbar.php'; ?>
 
-<h1>Admin Dashboard</h1>
+<a href="dashboard.php"><h1>Admin Dashboard</h1></a>
 <main>
     <section class="dashboard">
         <div class="card"> <a href="manage_users.php"> <p>Manage Users</p> </a> </div>
