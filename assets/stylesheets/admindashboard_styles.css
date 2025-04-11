@@ -1,75 +1,329 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: #1e2a47;
-    color: #fff;
+    background: linear-gradient(to bottom right, #CDFFD8, #94B9FF);
+    color: #1c1c1c;
 }
+
+/* Navbar */
 .navbar {
+    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
+    color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(to right, #b3f0c2, #8ec5fc);
-    padding: 15px 30px;
+    padding: 1px 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.logo img {
+    height: 50px;
+}
+
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 60px; /* Increased spacing between menu items */
+    padding: 0;
+    margin: 0;
+    gap: 90px;
 }
-.nav-links li a {
+
+.nav-links li {
+    display: inline;
+}
+
+.nav-links a {
+    color: #2A4365;
+    font-size: 1.1em;
+    font-weight: 800;
     text-decoration: none;
-    color: black;
-    font-weight: bold;
 }
+
+.nav-links a:hover {
+    text-decoration: none; 
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+    transition: text-shadow 0.3s ease-in-out;
+}
+.nav-links a.active {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+    font-weight: 800;
+}
+
 .search-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-profile input {
+    padding: 8px 35px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background-color: white;
+    font-size: .8em;
+    font-style: italic;
+}
+
+.search-profile img {
+    width: 24px;
+    height: 24px;
+}
+
+.profile {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.search-profile input {
-    padding: 5px;
-    border-radius: 5px;
-    border: none;
-}
+
 .profile img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    object-fit: cover;
 }
-.dashboard {
+
+.profile-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-text span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.profile-text p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+/* Main Container */
+.main-container {
+    text-align: center;
+    padding: 40px;
+}
+
+/* Grid Container */
+.grid-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    padding: 20px;
+    gap: 30px;
+    margin-top: 20px;
 }
-.dashboard a {
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-}
-.card {
-    background: #e0dfca;
-    padding: 20px;
-    text-align: center;
-    border-radius: 10px;
+
+/* Smaller Grid Items */
+.grid-item {
+    background: #eadfbe;
+    padding: 30px;
+    border: 5px solid black;
+    border-radius: 19px;
     width: 150px;
-    color: black;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    position: relative;
 }
-.summary {
-    background: #2c3e50;
+
+/* Adjusted Icon Size */
+.grid-item img {
+    width: 60px;
+    height: 60px;
+    margin-top: 15px;
+}
+
+/* Moved Bottom Section Down */
+.grid-item p {
+    width: 100%;
+    text-align: center;
+    background: black;
+    color: white;
+    font-weight: bold;
+    padding: 12px 0;
+    margin: 0;
+    position: absolute;
+    bottom: -8px; /* Moves text section lower */
+    border-radius: 0 0 18px 18px;
+    font-size: 14px;
+}
+
+/* Hover Effect */
+.grid-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Dashboard Summary */
+.dashboard-summary {
+    background: #1c3552;
     padding: 20px;
-    margin: 20px;
+    margin: 50px auto;
+    width: 96.5%;
+    margin-bottom: 22px;
+    border-radius:0px;
+    color: white;
+    text-align: left;
+}
+
+.dashboard-summary h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.dashboard-summary h2 span {
+    color: #a0c4ff; 
+}
+
+.summary-item {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+.summary-item i {
+    font-style: italic;
+    color: #a0c4ff;
+}
+
+.progress-bar {
+    height: 20px;
+    background: #a0c4ff;
+    border-radius: 0px;
+    margin-top: 5px;
+    transition: width 0.5s ease-in-out;
+}
+/* Main Content */
+
+/* Dashboard Summary Section */
+.summary {
+    background: #1c3552;
+    padding: 20px;
+    margin: 50px auto;
+    width: 96.5%;
+    color: white;
+    text-align: left;
     border-radius: 10px;
 }
+
+.summary h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
 .progress {
-    background: #ddd;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 5px;
     overflow: hidden;
-    height: 10px;
-    margin: 5px 0;
 }
+
 .progress div {
-    background: #00c3ff;
     height: 100%;
+    background: #a0c4ff;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Manage Users Link */
+.grid-link {
+    text-decoration: none; /* Remove default link underline */
+    color: inherit; /* Keep text color unchanged */
+}
+
+.grid-link .grid-item {
+    transition: transform 0.3s ease-in-out;
+}
+
+.grid-link .grid-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+    .navbar {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .nav-links {
+        gap: 30px;
+    }
+
+    .search-profile {
+        margin-top: 10px;
+    }
+
+    .grid-container {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    /* Adjusted Grid Item Size for Tablets */
+    .grid-item {
+        width: 120px;
+        height: 160px;
+    }
+
+    .grid-item img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .nav-links {
+        gap: 20px;
+    }
+
+    .grid-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grid-item {
+        width: 80%;
+        max-width: 150px;
+        height: 170px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-profile {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .grid-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grid-item {
+        width: 90%;
+        max-width: 130px;
+        height: 150px;
+    }
+
+    .dashboard-summary {
+        width: 95%;
+    }
 }
