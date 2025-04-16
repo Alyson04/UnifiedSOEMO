@@ -1,31 +1,42 @@
-<?php $title = "Register"; include '../includes/header.php'; ?>
-<?php include '../includes/navbar.php'; ?>
+<?php $title = "Register"; $style = "register_styles.css"; include '../includes/header.php'; ?>
 
-<div class="register-container">
-    <h2>Register</h2>
 
-    <!-- Display error messages -->
-    <?php if (isset($_GET['error'])): ?>
-        <p class="error"><?php echo htmlspecialchars($_GET['error']); ?></p>
-    <?php endif; ?>
+<!-- Left Side - Signup Form -->
+<div class="left-container">
+    <div class="signup-form">
+        <h1 class="title">SIGN UP</h1>
 
-    <form action="../api/register.php" method="POST">
-        <label>Full Name:</label>
-        <input type="text" name="fullName" placeholder="Enter your full name" required>
+        <!-- Display error messages -->
+        <?php if (isset($_GET['error'])): ?>
+            <p class="error"><?php echo htmlspecialchars($_GET['error']); ?></p>
+        <?php endif; ?>
 
-        <label>Email:</label>
-        <input type="email" name="email" placeholder="Enter your email" required>
+        <p class="subtitle">Already have an account? <a href="login.php">Log in</a></p>
 
-        <label>Password:</label>
-        <input type="password" name="password" placeholder="Enter your password" required>
+        <form action="../api/register.php" method="POST">
+            <label for="fullname">Full Name:</label>
+            <input type="text" id="fullname" name="fullName" class="input-field" placeholder="Enter your full name" required>
 
-        <button type="submit">Register</button>
-    </form>
+            <label for="email">School Email:</label>
+            <input type="email" id="email" name="email" class="input-field" placeholder="you@example.com" required>
 
-    <hr>
-    <button class="google-btn" onclick="window.location.href='../api/google_login.php'">Register with Google</button>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" class="input-field" placeholder="Enter 6 characters or more" required>
 
-    <p>Already have an account? <a href="login.php">Login</a></p>
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+
+        <hr>
+        <button class="google-btn" onclick="window.location.href='../api/google_login.php'">Register with Google</button>
+
+        <p class="terms">
+            By using this service, you understand and agree to the PUP Online Services 
+            <a href="terms.html">Terms of Use</a> and <a href="privacy.html">Privacy Statement</a>.
+        </p>
+    </div>
 </div>
+
+<!-- Right Side - Background Image -->
+<div class="right-container"></div>
 
 <?php include '../includes/footer.php'; ?>

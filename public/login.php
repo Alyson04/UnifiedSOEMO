@@ -8,7 +8,7 @@
     <div class="login-container">
         <div class="login-form">
             <h2 class="title">LOG IN</h2>
-            <p class="signup">Doesn’t have an account? <a href="#">Sign up</a></p>
+            <p class="signup">Doesn’t have an account? <a href="register.php">Sign up</a></p>
             
             <form action="../api/login.php" method="POST">
                 <label>Email Address:</label>
