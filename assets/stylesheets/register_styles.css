@@ -16,7 +16,7 @@ body {
     align-items: center;
     height: 100vh;
     background: #FFEDB7; 
-    background-image: url('background.jpg'); 
+    background-image: url('../pictures/background_login.jpg'); 
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 97%;
@@ -117,8 +117,8 @@ label {
 }
 
 /* Right Section - Background Image */
-.right-container {
+/* .right-container {
     width: 60%;
     background: url('../pictures/background_login.jpg') no-repeat center center;
     background-size: cover;
-}
+} */

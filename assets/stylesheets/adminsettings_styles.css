@@ -1,13 +1,88 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #CDFFD8, #94B9FF);
+    color: #1c1c1c;
+}
+
+.navbar {
+    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-profile input {
+    padding: 8px 35px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background-color: white;
+    font-size: .8em;
+    font-style: italic;
+}
+
+.search-profile img {
+    width: 24px;
+    height: 24px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-text span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.profile-text p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.logo img {
+    height: 50px;
+}
+
 /* Sidebar Styling */
 .sidebar {
-    width: 250px;
+    width: 200px;
     background: #1c1c1c;
     border-radius: 12px;
     margin-left: 20px;
     margin-top: 20px;
-    padding: 20px;
+    padding: 15px;
     color: #ffffff;
-    height: 60vh;
+    height: 55vh;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -70,7 +145,7 @@
 
 /* Main Content Styling */
 .main-content {
-    margin-left: 280px; /* Offset to make space for sidebar */
+    margin-left: 270px; /* Offset to make space for sidebar */
     padding: 40px;
     background: #1c1c1c;
     color: #1c1c1c;  
@@ -86,7 +161,6 @@
     text-align: center;
     font-size: 22px;
     border-radius: 8px;
-    margin-bottom: 20px;
 }
 
 /* Edit/Cancel Button Styling */

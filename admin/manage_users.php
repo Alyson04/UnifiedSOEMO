@@ -3,9 +3,23 @@ require '../config/db_conn.php';
 require '../api/auth.php';
 checkUserRole('admin'); // Only allow admins
 
+$admin_id = $_SESSION['user_id'] ?? null;
+
 $sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role != 'admin'";
 $result = $conn->query($sql);
-
+// Fetch admin's full name from database
+if ($admin_id) {
+    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_admin);
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result_admin = $stmt->get_result();
+    if ($result_admin->num_rows > 0) {
+        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
+$conn->close();
 $title = "Manage Users";
 $style = "manageuser_styles.css";
 include '../includes/header.php';
@@ -14,15 +28,9 @@ include '../includes/navbar.php';
 
 <div class="main-layout">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <ul>
-            <li><a href="dashboard.php"><img src="dashboard-icon.png" alt=""> Dashboard</a></li>
-            <li><a href="manage_users.php" class="active"><img src="user-icon.png" alt=""> Manage Users</a></li>
-            <li><a href="manage_organizations.php"><img src="org-icon.png" alt=""> Organizations</a></li>
-            <li><a href="manage_events.php"><img src="event-icon.png" alt=""> Events</a></li>
-            <li><a href="settings.php"><img src="settings-icon.png" alt=""> Settings</a></li>
-        </ul>
-    </div>
+    <?php
+    include '../includes/sidebar.php';
+    ?>
 
     <!-- Main Content -->
     <div class="main-content">

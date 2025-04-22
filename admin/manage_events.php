@@ -4,6 +4,8 @@ checkUserRole('admin'); // Ensure only admins can access this page
 
 require '../config/db_conn.php';
 
+$admin_id = $_SESSION['user_id'] ?? null;
+
 // Fetch all events
 $sql = "SELECT id, title, event_date, organization_id, created_at FROM events ORDER BY created_at DESC";
 $result = $conn->query($sql);
@@ -12,11 +14,20 @@ $events = [];
 while ($row = $result->fetch_assoc()) {
     $events[] = $row;
 }
-
+// Fetch admin's full name from database
+if ($admin_id) {
+    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_admin);
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result_admin = $stmt->get_result();
+    if ($result_admin->num_rows > 0) {
+        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
 $conn->close();
-?>
 
-<?php 
 $title = "Manage Events"; 
 $style = "manageevents_Styles.css"; // Your updated CSS for this page
 include '../includes/header.php'; 
@@ -25,15 +36,9 @@ include '../includes/navbar.php';
 
 <div class="main-layout">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <ul>
-            <li><a href="dashboard.php"><img src="dashboard-icon.png" alt=""> Dashboard</a></li>
-            <li><a href="manage_users.php"><img src="user-icon.png" alt=""> Manage Users</a></li>
-            <li><a href="manage_organizations.php"><img src="org-icon.png" alt=""> Organizations</a></li>
-            <li><a href="manage_events.php" class="active"><img src="event-icon.png" alt=""> Events</a></li>
-            <li><a href="settings.php"><img src="settings-icon.png" alt=""> Settings</a></li>
-        </ul>
-    </div>
+    <?php
+    include '../includes/sidebar.php';
+    ?>
 
     <!-- Main Content -->
     <div class="main-content">

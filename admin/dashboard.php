@@ -27,19 +27,29 @@ $recent_events = [];
 while ($row = $result_recent_events->fetch_assoc()) {
     $recent_events[] = $row;
 }
+// Get logged-in user's ID from session
+$admin_id = $_SESSION['user_id'] ?? null;
+$admin_name = '';
+
+// Fetch admin's full name from database
+if ($admin_id) {
+    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_admin);
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result_admin = $stmt->get_result();
+    if ($result_admin->num_rows > 0) {
+        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
 
 $conn->close();
+    
+$title = "Unified SOEMO Dashboard";
+$style = "admindashboard_styles.css";
+include '../includes/header.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unified SOEMO Dashboard</title>
-    <link rel="stylesheet" href="../assets/stylesheets/admindashboard_styles.css">
-</head>
-<body>
 
     <!-- Navigation Bar -->
     <nav class="navbar">
@@ -53,7 +63,7 @@ $conn->close();
             <div class="profile">
                 <img src="../assets/pictures/profile.png" alt="Admin Profile">
                 <div class="profile-text">
-                    <span>Moni Roy</span>
+                    <span><?php echo htmlspecialchars($admin_name ?: 'Admin'); ?></span>
                     <p>Admin</p>
                 </div>
             </div>
@@ -128,5 +138,4 @@ $conn->close();
         </div>
     </section>
 
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>
