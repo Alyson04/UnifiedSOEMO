@@ -109,9 +109,21 @@ include '../includes/header.php';
             <span>Recent Events:</span>
             <ul>
                 <?php 
+                $has_past_events = false;
+
                 if (!empty($recent_events)) {
                     foreach ($recent_events as $event) {
-                        echo "<li>" . htmlspecialchars($event['title']) . " - " . date("M d, Y", strtotime($event['event_date'])) . "</li>";
+                        $event_date = strtotime($event['event_date']);
+                        $today = strtotime(date("Y-m-d"));
+
+                        if ($event_date <= $today) {
+                            echo "<li>" . htmlspecialchars($event['title']) . " - " . date("M d, Y", $event_date) . "</li>";
+                            $has_past_events = true;
+                        }
+                    }
+
+                    if (!$has_past_events) {
+                        echo "<li>No recent events</li>";
                     }
                 } else {
                     echo "<li>No recent events</li>";
@@ -119,6 +131,7 @@ include '../includes/header.php';
                 ?>
             </ul>
         </div>
+
     </section>
 
 <?php include '../includes/footer.php'; ?>
