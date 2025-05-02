@@ -149,7 +149,7 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     text-align: center;
     transition: transform 0.3s ease-in-out;
-    height: 420px;
+    height: 450px;
     width: 248px;
     display: flex;
     flex-direction: column;
@@ -171,7 +171,7 @@ body {
     font-weight: 900;
     color: #2A4365;
     text-align: center;
-    max-height: 2.8em;
+    max-height: 4.8em;
     overflow: hidden;
     line-height: 1.4em;
     text-overflow: ellipsis;
@@ -184,6 +184,7 @@ body {
     text-align: center;
     font-style: italic;
     font-weight: 500;
+    max-height: 6.8em;
 }
 .join-btn {
     background: #2A4365;
