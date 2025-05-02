@@ -199,6 +199,13 @@ body {
     background: #1E3350;
 }
 
+.join-btn:hover,
+.learn-more-btn:hover {
+  background-color: #1d2f4a;
+  transform: scale(1.05);
+}
+
+
 @media (max-width: 1024px) {
     .student-org-container {
         grid-template-columns: repeat(2, 1fr);

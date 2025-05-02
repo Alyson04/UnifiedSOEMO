@@ -108,7 +108,7 @@ body {
     font-size: 0.85em;
     padding: 8px;
   }
-
+  
 .back-btn {
   position: relative;
   bottom: 20px;
@@ -126,4 +126,40 @@ body {
 
 .back-btn:hover {
   background-color: #1d2f4a;
+}
+
+.join-btn:hover, 
+.learn-more-btn:hover {
+  background-color: #1d2f4a;
+  transform: scale(1.05);
+}
+
+.popup {
+  position: fixed;
+  bottom: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(to right, #94B9FF 20%, #CDFFD8 60%);
+  color: black;
+  padding: 20px 30px;
+  border-radius: 10px;
+  display: none;
+  font-weight: bold;
+  font-style: italic;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .org-page {
+    flex-direction: column;
+  }
+
+  .org-left, .org-right {
+    width: 100%;
+  }
+
+  .back-btn {
+    bottom: 10px;
+    left: 10px;
+  }
 }

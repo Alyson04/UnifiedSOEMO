@@ -39,7 +39,8 @@
     </header>
   <div class="org-page">
     <div class="org-left">
-      <img src="IMG/org1.jpg" alt="Org 1" />
+      <div class="popup" id="popup">You have successfully joined!</div>
+      <img src="IMG/org1.jpg" alt="Org 1">
       <h1>Consortium of Office Management and Information Technologists</h1>
       <p>
         COMMIT is an academic organization under PUP ITECH's (OMIT) Department and is 
@@ -172,4 +173,11 @@
   </div>
   <a href="organization.html" class="back-btn">← Back</a>
 </body>
+<script>
+document.querySelector(".join-btn").addEventListener("click", () => {
+  const popup = document.getElementById("popup");
+  popup.style.display = "block";
+  setTimeout(() => popup.style.display = "none", 3000);
+});
+</script>
 </html>
