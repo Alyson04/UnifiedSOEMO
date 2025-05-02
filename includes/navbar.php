@@ -7,11 +7,14 @@ $profile_img = '../assets/pictures/profile.png';
 // Set based on session
 if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin') {
-        $display_name = ucfirst(strtolower($admin_name ?? 'Admin')); // From DB
+        $display_name = ucwords(strtolower($admin_name ?? 'Admin')); // From DB
         $role_label = 'Admin';
-    } else {
-        $display_name = ucfirst(strtolower($student_name ?? 'Student')); // From DB
+    } else if($_SESSION['role'] === 'student') {
+        $display_name = ucwords(strtolower($student_name ?? 'Student')); // From DB
         $role_label = 'Student';
+    } else {
+        $display_name = ucwords(strtolower($admin_name ?? 'Org Admin')); // From DB
+        $role_label = 'Org Admin';
     }
 }
 ?>
