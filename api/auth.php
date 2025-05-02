@@ -11,8 +11,10 @@ function checkUserRole($required_role) {
     if ($_SESSION['role'] !== $required_role) {
         if ($_SESSION['role'] === 'admin') {
             header("Location: ../admin/dashboard.php");
-        } else {
+        } else if ($_SESSION['role'] === 'student') {
             header("Location: ../students/dashboard.php");
+        } else {
+            header("Location: ../admin_org/dashboard.php");
         }
         exit();
     }

@@ -9,11 +9,6 @@ $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role != 'admin'";
 $result = $conn->query($sql);
 $total_users = $result->fetch_assoc()['total_users'];
 
-// Get total organizations
-$sql_orgs = "SELECT COUNT(*) AS total_organizations FROM organizations";
-$result_orgs = $conn->query($sql_orgs);
-$total_organizations = $result_orgs->fetch_assoc()['total_organizations'];
-
 // Get upcoming events
 $sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE()";
 $result_events = $conn->query($sql_events);
@@ -81,14 +76,6 @@ include '../includes/header.php';
                 </div>
             </a>
 
-            <!-- Organizations -->
-            <a href="manage_organizations.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/org-icon.png" alt="Organizations"> 
-                    <p>Organizations</p> 
-                </div>
-            </a>
-
             <!-- Events -->
             <a href="manage_events.php" class="grid-link">
                 <div class="grid-item"> 
@@ -113,10 +100,6 @@ include '../includes/header.php';
         <div class="stat">
             <span>Total Users: <?php echo $total_users; ?></span>
             <div class="progress"><div style="width: <?php echo min($total_users, 100); ?>%;"></div></div>
-        </div>
-        <div class="stat">
-            <span>Active Organizations: <?php echo $total_organizations; ?></span>
-            <div class="progress"><div style="width: <?php echo min($total_organizations, 100); ?>%;"></div></div>
         </div>
         <div class="stat">
             <span>Upcoming Events: <?php echo $total_events; ?></span>
