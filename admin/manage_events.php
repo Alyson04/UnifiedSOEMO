@@ -7,7 +7,7 @@ require '../config/db_conn.php';
 $admin_id = $_SESSION['user_id'] ?? null;
 
 // Fetch all events
-$sql = "SELECT id, title, event_date, organization_id, created_at FROM events ORDER BY created_at DESC";
+$sql = "SELECT id, title, event_date, org_id, created_at FROM events ORDER BY created_at DESC";
 $result = $conn->query($sql);
 
 $events = [];
@@ -70,7 +70,7 @@ include '../includes/navbar.php';
                                 <td><?= htmlspecialchars($event['id']) ?></td>
                                 <td><?= htmlspecialchars($event['title']) ?></td>
                                 <td><?= date("M d, Y", strtotime($event['event_date'])) ?></td>
-                                <td><?= htmlspecialchars($event['organization_id']) ?></td>
+                                <td><?= htmlspecialchars($event['org_id']) ?></td>
                                 <td><?= date("M d, Y", strtotime($event['created_at'])) ?></td>
                                 <td><button class="edit-btn">Edit/Cancel</button></td>
                             </tr>
