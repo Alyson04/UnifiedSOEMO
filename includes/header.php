@@ -14,6 +14,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <?php if ($currentPage !== 'login.php' && $currentPage !== 'register.php'): ?>
     <link rel="stylesheet" href="../assets/stylesheets/footer_styles.css">
     <?php endif; ?>
+
+    <?php if ($currentPage == 'post.php'): ?>
+    <link rel="stylesheet" href="../assets/stylesheets/modals_styles.css">
+    <?php endif; ?>
     
 </head>
 <body>
