@@ -17,4 +17,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     
 </head>
 <body>
-    <div class="page-container">
+    <?php if ($currentPage !== 'login.php' && $currentPage !== 'register.php'): ?>
+        <div class="page-container">
+    <?php endif; ?>

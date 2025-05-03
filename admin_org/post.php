@@ -1,4 +1,5 @@
-<?php require '../api/auth.php';
+<?php
+require '../api/auth.php';
 checkUserRole('org_admin'); // Only allow admins
 
 require '../config/db_conn.php';
@@ -28,13 +29,14 @@ include '../includes/navbar.php';
 
 <?php include '../includes/footer.php'; ?>
 
-<!-- 
+
 <script>
 document.getElementById('postForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const formData = new FormData(this);
+    const form = this;
+    const formData = new FormData(form);
     
-    fetch('submit_post.php', {
+    fetch('../api/submit_post.php', {
         method: 'POST',
         body: formData
     })
@@ -42,15 +44,19 @@ document.getElementById('postForm').addEventListener('submit', function(e) {
     .then(data => {
         if (data.success) {
             loadPosts(); // reload posts
-            this.reset();
+            form.reset(); // use form instead of 'this'
         } else {
             alert(data.message || "Something went wrong.");
         }
+    })
+    .catch(err => {
+        console.error('Fetch error:', err);
+        alert('An error occurred.');
     });
 });
 
 function loadPosts() {
-    fetch('get_posts.php')
+    fetch('../api/get_post.php')
     .then(res => res.text())
     .then(html => {
         document.getElementById('postsContainer').innerHTML = html;
@@ -58,4 +64,5 @@ function loadPosts() {
 }
 
 document.addEventListener('DOMContentLoaded', loadPosts);
-</script> -->
+</script>
+

@@ -1,10 +1,5 @@
 <?php $title = "Login"; $style = "login_styles.css"; include '../includes/header.php'; ?>
 
-<!-- <form action="../api/login.php" method="POST">
-    <input type="email" name="email" required>
-    <input type="password" name="password" required>
-    <button type="submit">Login</button>
-</form> -->
     <div class="login-container">
         <div class="login-form">
             <h2 class="title">LOG IN</h2>

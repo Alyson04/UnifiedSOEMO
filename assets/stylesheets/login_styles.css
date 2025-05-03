@@ -1,7 +1,10 @@
-body {
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
+}
+body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -11,7 +14,7 @@ body {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 98%;
-    background-blend-mode: normal; 
+    background-blend-mode: normal;
 }
 
 .login-wrapper {
@@ -122,4 +125,10 @@ body {
 
 .terms a:hover {
     text-decoration: underline;
+}
+footer {
+    color: white;
+    text-align: center;
+    padding: 2px 5px;
+    margin-top: auto; /* Pushes footer to the bottom */
 }

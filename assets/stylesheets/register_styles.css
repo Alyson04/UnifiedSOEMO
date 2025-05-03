@@ -116,9 +116,9 @@ label {
     text-decoration: underline;
 }
 
-/* Right Section - Background Image */
-/* .right-container {
-    width: 60%;
-    background: url('../pictures/background_login.jpg') no-repeat center center;
-    background-size: cover;
-} */
+footer {
+    color: white;
+    text-align: center;
+    padding: 2px 5px;
+    margin-top: auto; /* Pushes footer to the bottom */
+}

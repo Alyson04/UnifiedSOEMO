@@ -9,12 +9,12 @@ if ($method === 'POST') {
     checkUserRole('admin'); // Only admins can create events
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!empty($data['title']) && !empty($data['event_date']) && !empty($data['organization_id'])) {
+    if (!empty($data['title']) && !empty($data['event_date']) && !empty($data['org_id'])) {
         $title = $conn->real_escape_string($data['title']);
         $event_date = $conn->real_escape_string($data['event_date']);
-        $organization_id = intval($data['organization_id']);
+        $org_id = intval($data['org_id']);
 
-        $sql = "INSERT INTO events (title, event_date, organization_id) VALUES ('$title', '$event_date', '$organization_id')";
+        $sql = "INSERT INTO events (title, event_date, org_id) VALUES ('$title', '$event_date', '$org_id')";
         if ($conn->query($sql)) {
             echo json_encode(["message" => "Event created successfully"]);
         } else {
@@ -24,9 +24,9 @@ if ($method === 'POST') {
         echo json_encode(["error" => "Missing required fields"]);
     }
 } elseif ($method === 'GET') {
-    if (isset($_GET['organization_id'])) {
-        $organization_id = intval($_GET['organization_id']);
-        $result = $conn->query("SELECT * FROM events WHERE organization_id = $organization_id");
+    if (isset($_GET['org_id'])) {
+        $org_id = intval($_GET['org_id']);
+        $result = $conn->query("SELECT * FROM events WHERE org_id = $org_id");
     } else {
         $result = $conn->query("SELECT * FROM events");
     }
