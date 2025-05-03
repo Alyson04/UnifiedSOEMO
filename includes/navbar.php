@@ -24,22 +24,27 @@ if (isset($_SESSION['user_id'])) {
     <div class="logo"> 
         <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo"> 
     </div>
-
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
             <ul class="nav-list">
                 <li><a href="dashboard.php">HOME</a></li>
                 <li><a href="organizations.php">ORGANIZATIONS</a></li>
                 <li><a href="events.php">EVENTS</a></li>
                 <li><a href="about_us.php">ABOUT US</a></li>
             </ul>
-
+        <?php endif; ?>
+        
     <div class="search-profile">
         <input type="text" placeholder="Search">
         <img src="../assets/pictures/bell.png" alt="Bell Icon"> <!-- Notification Icon -->
-        <div class="profile">
+        <div class="profile" onclick="toggleProfileDropdown()">
             <img src="<?= htmlspecialchars($profile_img); ?>" alt="Profile">
             <div class="profile-text">
                 <span><?= htmlspecialchars($display_name); ?></span>
                 <p><?= $role_label; ?></p>
+            </div>
+            <div class="dropdown-tray" id="profileDropdown">
+                <!-- <a href="settings.php">Edit Profile</a> -->
+                <a href="../api/logout.php">Logout</a>
             </div>
         </div>
     </div>

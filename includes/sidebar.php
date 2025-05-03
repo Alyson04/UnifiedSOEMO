@@ -13,7 +13,11 @@ $user_role = $_SESSION['role'] ?? null;
         <?php endif; ?>
         
         <li><a href="manage_events.php" class="<?= $current_page === 'manage_events.php' ? 'active' : '' ?>"><img src="event-icon.png" alt=""> Events</a></li>
+        
+        <?php if ($user_role === 'org_admin'): ?>
         <li><a href="post.php" class="<?= $current_page === 'post.php' ? 'active' : '' ?>"><img src="settings-icon.png" alt=""> Post</a></li>
+        <?php endif; ?>
+        
         <li><a href="settings.php" class="<?= $current_page === 'settings.php' ? 'active' : '' ?>"><img src="settings-icon.png" alt=""> Settings</a></li>
     </ul>
 </div>

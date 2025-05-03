@@ -80,3 +80,31 @@
     font-weight: 350;
     font-size: x-small;
 }
+.profile {
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-tray {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    display: none;
+    flex-direction: column;
+    width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.dropdown-tray a {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+.dropdown-tray a:hover {
+    background-color: #f0f0f0;
+}
