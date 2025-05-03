@@ -1,0 +1,131 @@
+/* General Styles */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #CDFFD8, #94B9FF);
+    color: #1c1c1c;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-profile input {
+    padding: 8px 35px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background-color: white;
+    font-size: .8em;
+    font-style: italic;
+}
+
+.search-profile img {
+    width: 24px;
+    height: 24px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-text span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.profile-text p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.logo img {
+    height: 50px;
+}
+
+/* Main Content Styling */
+.main-content {
+    flex: 1; /* fills remaining height */
+    padding: 40px;
+    background: white; /* or any contrasting color */
+    color: #1c1c1c;
+    margin-top: 70px; /* for navbar */
+    min-height: calc(100vh - 70px); /* full viewport height minus navbar */
+    border-radius: 12px;
+}
+
+
+
+/* Edit/Cancel Button Styling */
+button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    background-color: #053e87;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #002d73;
+}
+
+/* Form Styling */
+form {
+    background: #EAE2B7;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+form input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 16px;
+    color: #333;
+}
