@@ -44,27 +44,8 @@ $conn->close();
 $title = "Organizations Dashboard";
 $style = "admindashboard_styles.css";
 include '../includes/header.php';
-?>
-
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="logo"> 
-            <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo"> 
-        </div>
-    
-        <div class="search-profile">
-            <input type="text" placeholder="Search">
-            <img src="../assets/pictures/bell.png" alt="Bell Icon"> <!-- Notification Icon -->
-            <div class="profile">
-                <img src="../assets/pictures/profile.png" alt="Admin Profile">
-                <div class="profile-text">
-                    <span><?php echo htmlspecialchars($admin_name ?: 'Admin'); ?></span>
-                    <p>Admin</p>
-                </div>
-            </div>
-        </div>
-    </nav>
-    
+include '../includes/navbar.php';
+?>  
     <!-- Main Section -->
     <section class="main-container">
         <div class="grid-container">
