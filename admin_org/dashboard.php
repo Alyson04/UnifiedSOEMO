@@ -91,6 +91,14 @@ include '../includes/header.php';
                     <p>Settings</p> 
                 </div>
             </a>
+
+            <!-- Post -->
+            <a href="post.php" class="grid-link">
+                <div class="grid-item"> 
+                    <img src="../assets/pictures/settings-icon.png" alt="Settings"> 
+                    <p>Post</p> 
+                </div>
+            </a>
         </div>
     </section>
 

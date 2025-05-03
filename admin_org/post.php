@@ -23,12 +23,12 @@ include '../includes/navbar.php';
   <button type="submit">Post</button>
 </form>
 
-<?php
-include '../includes/modals.php';
-?>
+<?php include '../includes/modals.php'; include '../includes/sidebar.php';?>
 
-<div id="postsContainer">
-  <!-- Posts will be loaded here -->
+<div id="postsWrapper">
+  <div id="postsContainer">
+    <!-- Posts will be loaded here -->
+  </div>
 </div>
 
 <?php include '../includes/footer.php'; ?>
