@@ -21,32 +21,6 @@
     object-fit: contain;
 }
 
-.nav-links ul {
-    display: flex;
-    gap: 30px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav-links a {
-    color: #2A4365;
-    font-size: 1.1em;
-    font-weight: 800;
-    text-decoration: none;
-    padding: 10px 15px;
-    transition: text-shadow 0.3s ease-in-out;
-}
-
-.nav-links a:hover {
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.nav-links a.active {
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    font-weight: 800;
-}
-
 .search-profile {
     display: flex;
     align-items: center;

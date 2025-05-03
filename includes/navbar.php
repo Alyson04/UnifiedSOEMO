@@ -25,6 +25,13 @@ if (isset($_SESSION['user_id'])) {
         <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo"> 
     </div>
 
+            <ul class="nav-list">
+                <li><a href="dashboard.php">HOME</a></li>
+                <li><a href="organizations.php">ORGANIZATIONS</a></li>
+                <li><a href="events.php">EVENTS</a></li>
+                <li><a href="about_us.php">ABOUT US</a></li>
+            </ul>
+
     <div class="search-profile">
         <input type="text" placeholder="Search">
         <img src="../assets/pictures/bell.png" alt="Bell Icon"> <!-- Notification Icon -->

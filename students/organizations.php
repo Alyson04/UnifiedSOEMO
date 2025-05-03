@@ -1,31 +1,29 @@
-
 <?php 
 require '../api/auth.php';
+$student_id = $_SESSION['user_id'] ?? null;
+$student_name = '';
+require '../config/db_conn.php';
+// Fetch admin's full name from database
+if ($student_id) {
+    $sql_student = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_student);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result_student = $stmt->get_result();
+    if ($result_student->num_rows > 0) {
+        $student_name = ucwords(strtolower($result_student->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
+
+$conn->close();
+
+$title = "Organizations";
+$style = "organization_styles.css"; 
+include '../includes/header.php'; 
+include '../includes/navbar.php'; 
 ?>
 
-<?php $title = "Organizations"; $style = "organizations_styles.css"; include '../includes/header.php'; ?>
-
-
-<header class="header">
-        <div class="logo">
-            <img src="../assets/pictures/logo.png" alt="PUP Logo">
-        </div>
-        <?php include '../includes/navbar.php'; ?>
-        <div class="search-profile">
-            <div class="search-container">
-                <input type="text" class="search" placeholder="Search">
-                <img src="IMG/search-icon.png" class="search-icon" alt="Search">
-            </div>
-            <span class="notification"><i class="fa-solid fa-bell"></i></span>
-            <div class="profile">
-                <img src="../assets/pictures/moni roy.png" alt="Profile">
-                <div class="profile-info">
-                    <span class="profile-name">Moni Roy</span>
-                    <span class="profile-role">Student</span>
-                </div>
-            </div>
-        </div>
-</header>
 <section class="background">
         <div class="search-container">
             <input type="text" class="search-bar" placeholder="Search Organizations...">
