@@ -19,81 +19,57 @@ if ($student_id) {
 $conn->close();
 
 $title = "Organizations";
-$style = "organization_styles.css"; 
+$style = "organizations_styles.css"; 
 include '../includes/header.php'; 
 include '../includes/navbar.php'; 
 ?>
 
 <section class="background">
-        <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Search Organizations...">
-        </div>
-    </section>  
-    <section class="student-org">
-        <h2 class="section-title">STUDENT ORGANIZATION</h2>
-        <div class="student-org-wrapper">
-            <div class="student-org-container">
-                <div class="student-org-container">
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org1.jpg" alt="Org 1">
-                        <h4>PUP SENTRAL NA KONSEHO NG MAG-AARAL</h4>
-                        <p>The PUP SKM serves as the prime representative of the student body of 
-                            the PUP Main Campus. #ServeThePeople
-                        </p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org2.jpg" alt="Org 2">
-                        <h4>PUP INSTITUTE OF TECHNOLOGY STUDENT COUNCIL</h4>
-                        <p>May the voices in your head be soothed, and the rest of your journey be 
-                            filled with tranquillity. Empowering Innovators, Shaping Tomorrow’s Technology.
-                        </p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org3.jpg" alt="Org 3">
-                        <h4>PUP PROGRAMMERS' GUILD</h4>
-                        <p>A community-based student organization with the advocacy, 
-                            "Coding is for everyone."
-                        </p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org4.jpg" alt="Org 4">
-                        <h4>PUP SANDIWA</h4>
-                        <p>Samahang Nagtataguyod ng Iisang Diwa't Adhika</p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org5.jpg" alt="Org 5">
-                        <h4>HATAW PUP</h4>
-                        <p>Hataw PUP is an accredited university-wide, advocacy student organization 
-                            at PUP–Manila.
-                        </p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org6.jpg" alt="Org 6">
-                        <h4>PUP SINTANG PUSA</h4>
-                        <p>For the cats of PUP, we serve! </p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org7.jpg" alt="Org 7">
-                        <h4>YOUTH FOR ANIMALS PUP</h4>
-                        <p>Your Voice Matters: For Animals, For Our Future</p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
-                    <div class="student-org-card">
-                        <img src="../assets/pictures/org8.jpg" alt="Org 8">
-                        <h4>PUP POLYSOUND BAND</h4>
-                        <p>PUP Polysound Band is the resident house band of Polytechnic University of 
-                            the Philippines, under the University Center for Culture and the Arts.
-                        </p>
-                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
-                    </div>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search Organizations...">
+    </div>
+</section>
+
+<?php
+require '../config/db_conn.php';
+$sql = "SELECT * FROM organizations ORDER BY created_at ASC";
+$result = mysqli_query($conn, $sql);
+?>
+
+<section class="student-org">
+    <h2 class="section-title">STUDENT ORGANIZATION</h2>
+    <div class="student-org-wrapper">
+        <div class="student-org-container">
+
+        <?php
+        // Fetch all student organizations
+        $sql = "SELECT * FROM organizations ORDER BY created_at ASC";
+        $result = $conn->query($sql);
+
+        if ($result && $result->num_rows > 0):
+            while ($row = $result->fetch_assoc()):
+                $name = htmlspecialchars($row['name']);
+                $description = htmlspecialchars($row['description']);
+                $imagePath = htmlspecialchars($row['image_path'] ?? '../assets/pictures/default.jpg'); // Fallback if no image
+        ?>
+            <div class="student-org-card">
+                <img src="<?= $imagePath ?>" alt="<?= $name ?>">
+                <h4><?= $name ?></h4>
+                <p><?= $description ?></p>
+                <a href="org_page.php?id=<?= $row['id'] ?>" class="join-btn">LEARN MORE</a>
             </div>
+        <?php
+            endwhile;
+        else:
+            echo "<p style='color: white;'>No organizations found.</p>";
+        endif;
+
+        $conn->close();
+        ?>
+
         </div>
-    </section>
+    </div>
+</section>
+
 
 <?php include '../includes/footer.php'; ?>
