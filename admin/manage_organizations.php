@@ -7,7 +7,7 @@ require '../config/db_conn.php';
 $admin_id = $_SESSION['user_id'] ?? null;
 
 // Fetch all organizations
-$sql = "SELECT id, name, description, created_at FROM organizations ORDER BY created_at DESC";
+$sql = "SELECT name, description, created_at FROM organizations ORDER BY created_at ASC";
 $result = $conn->query($sql);
 
 $organizations = [];
@@ -55,7 +55,6 @@ include '../includes/navbar.php';
             <table>
                 <thead>
                     <tr>
-                        <th>Org ID</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Date Created</th>
@@ -66,7 +65,6 @@ include '../includes/navbar.php';
                     <?php if (!empty($organizations)) : ?>
                         <?php foreach ($organizations as $org) : ?>
                             <tr>
-                                <td><?= htmlspecialchars($org['id']) ?></td>
                                 <td><?= htmlspecialchars($org['name']) ?></td>
                                 <td><?= htmlspecialchars($org['description']) ?></td>
                                 <td><?= date("M d, Y", strtotime($org['created_at'])) ?></td>

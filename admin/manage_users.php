@@ -5,7 +5,7 @@ checkUserRole('admin'); // Only allow admins
 
 $admin_id = $_SESSION['user_id'] ?? null;
 
-$sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role != 'admin'";
+$sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role = 'student' ORDER BY created_at ASC";
 $result = $conn->query($sql);
 // Fetch admin's full name from database
 if ($admin_id) {
@@ -39,7 +39,6 @@ include '../includes/navbar.php';
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
                     <th>Status</th>
@@ -50,7 +49,6 @@ include '../includes/navbar.php';
             <tbody>
                 <?php while ($user = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['id']); ?></td>
                         <td><?= htmlspecialchars($user['fullName']); ?></td>
                         <td><?= htmlspecialchars($user['email']); ?></td>
                         <td>
