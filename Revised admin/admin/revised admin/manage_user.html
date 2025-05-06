@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Unified SOEMO</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="manage_user.css">
+
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+       <aside class="sidebar">
+         <div class="logo-container">
+           <img src="logo.png" alt="Logo" class="logo"/>
+         </div>
+         <nav class="nav-menu">
+           <a href="dashboard.html" class="nav-item">
+             <img src="dashboard-icon.png" alt="Dashboard Icon" />
+             Dashboard
+           </a>
+           <a href="manage_user.html" class="nav-item active">
+             <img src="user-icon.png" alt="Users Icon" />
+             Manage Users
+           </a>
+           <a href="manage_org.html" class="nav-item">
+             <img src="org-icon.png" alt="Organizations Icon" />
+             Organizations
+           </a>
+           <a href="manage_events.html" class="nav-item">
+             <img src="event-icon.png" alt="Events Icon" />
+             Events
+           </a>
+           <a href="settings.html" class="nav-item">
+             <img src="settings-icon.png" alt="Settings Icon" />
+             Settings
+           </a>
+         </nav>
+       </aside>
+       
+         <!-- Main Panel -->
+       <main class="main-content">
+         <header class="top-bar">
+           <section class="dashboard-header">
+             <h1>UNIFIED SOEMO</h1>
+             <p>DISCOVER, JOIN, ENGAGE</p>
+           </section>  
+           <div class="top-right">
+             <img src="bell.png" alt="Notifications" class="bell"/>
+             <div class="profile">
+               <img src="profile.png" alt="Admin" />
+               <div class="profile-info">
+                 <strong>Moni Roy</strong>
+                 <span>Admin</span>
+               </div>
+             </div>
+           </div>
+         </header>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2 class="page-title">MANAGE USERS</h2>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search Events...">
+            <button>
+                <img src="search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
+            </button>
+            </div>
+
+        <!-- Users Table -->
+        <div class="user-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>UID-01</td>
+                        <td>Jerome Abarca</td>
+                        <td>abarca@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                    <tr>
+                        <td>UID-02</td>
+                        <td>Clifford Balana</td>
+                        <td>balana@gmail.com</td>
+                        <td class="inactive">Inactive</td>
+                    </tr>
+                    <tr>
+                        <td>UID-03</td>
+                        <td>Janna Caballero</td>
+                        <td>caballero@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                    <tr>
+                        <td>UID-04</td>
+                        <td>Ashanti Caculba</td>
+                        <td>caculba@gmail.com</td>
+                        <td class="inactive">Inactive</td>
+                    </tr>
+                    <tr>
+                        <td>UID-05</td>
+                        <td>Alyson Calimag</td>
+                        <td>calimag@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                    <tr>
+                        <td>UID-06</td>
+                        <td>Jusphine Lacano</td>
+                        <td>lacano@gmail.com</td>
+                        <td class="inactive">Inactive</td>
+                    </tr>
+                    <tr>
+                        <td>UID-07</td>
+                        <td>Rica Mae Malgapo</td>
+                        <td>malgapo@gmail.com</td>
+                        <td class="active">Active</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
