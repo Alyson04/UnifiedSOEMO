@@ -1,0 +1,257 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(to bottom right, #CDFFD8, #94B9FF);
+    color: #1c1c1c;
+  }
+  
+  .page-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    background-color: #243049;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo-container {
+    margin-bottom: 40px;
+  }
+  
+  .logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+  
+  .nav-item img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    margin-right: 12px;
+  }
+  
+  
+  .nav-menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .nav-item {
+    color: #fff;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    background-color: transparent;
+  }
+  
+  .nav-item img {
+    width: 22px;
+    height: 22px;
+    margin-right: 12px;
+    filter: brightness(1.2);
+  }
+  
+  .nav-item:hover {
+    background-color: #3e5870;
+    transform: translateX(4px);
+  }
+  
+  .nav-item.active {
+    background-color: #516a88;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    padding: 25px 40px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .dashboard-header {
+    display: flex;
+    flex-direction: column;
+   align-items: flex-start;     
+  }
+  
+  .dashboard-header h1 {
+    align-items: flex-start;  
+    font-size: 32px;
+    font-weight: 800;
+    color: #1c1c1c;
+    margin-bottom: 5px;
+
+  }
+  
+  .dashboard-header p {
+    font-size: 14px;
+    color: #555;
+    letter-spacing: 1px;
+  }
+  
+  
+  .top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+  
+  
+  .top-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  
+  .bell {
+    width: 22px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .bell:hover {
+    transform: scale(1.1);
+  }
+  
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .profile img {
+    width: 46px;
+    border-radius: 50%;
+    border: 2px solid #94B9FF;
+  }
+  
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+  }
+  
+  .profile-info strong {
+    font-size: 14px;
+    color: #222;
+  }
+  
+  .profile-info span {
+    color: #666;
+  }
+/* Main Content Styling */
+.content {
+    margin-left: 20px; /* Offset to make space for sidebar */
+    padding: 40px;
+    background-color: #243049;
+    color: rgb(26, 16, 16);
+    border-radius: 12px;
+    margin-top: 20px;   /* Offset for Navbar */
+}
+
+/* Page Title */
+.page-title {
+    background: #eadfbe;
+    color: #243049;    
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    border-radius: 8px;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.search-bar input {
+    width: 300px;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background: #eadfbe;
+    box-shadow: 0px 2px 5px rgba(239, 233, 233, 0.1);
+}
+
+.search-bar button {
+    background: #eadfbE;
+    border: none;
+    padding: 10px 15px;
+    margin-left: 10px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+}
+
+/* Events Table */
+.event-table {
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #eadfbe;
+    color: #243049;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 2px solid black;
+}
+
+td {
+    background: #eadfbe;
+    font-weight: bold;
+}
+
+tr:nth-child(even) td {
+    background: #f8f1d6;
+}
+
+/* Edit/Cancel Button */
+.edit-btn {
+    background: #053e87;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background: #002d73;
+}

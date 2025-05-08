@@ -8,21 +8,21 @@ $user_role = $_SESSION['role'] ?? null;
     <img src="../fromOtherBranches/Revised admin/pics/logo.png" alt="Logo" class="logo"/>
   </div>
   <nav class="nav-menu">
-    <a href="dashboard.php" class="nav-item <?= $current_page === 'dashboard.php' || $current_page != 'dashboard.php' ? 'active' : '' ?>">
+    <a href="dashboard.php" class="nav-item <?= $current_page === 'dashboard.php' || $current_page === 'Active_org.php' || $current_page === 'past.php' || $current_page === 'upcoming.php'  ? 'active' : '' ?>">
       <img src="../fromOtherBranches/Revised admin/pics/dashboard-icon.png" alt="Dashboard Icon" />
       Dashboard
     </a>
-    <a href="manage_users.php" class="nav-item <?= $current_page === 'manage_users.php' ? 'active' : '' ?>">
+    <a href="new-manage_users.php" class="nav-item <?= $current_page === 'new-manage_users.php' ? 'active' : '' ?>">
       <img src="../fromOtherBranches/Revised admin/pics/user-icon.png" alt="Users Icon" />
       Manage Users
     </a>
     <?php if ($user_role === 'admin'): ?>
-    <a href="manage_organizations.php" class="nav-item <?= $current_page === 'manage_organizations.php' ? 'active' : '' ?>">
+    <a href="new-manage_organizations.php" class="nav-item <?= $current_page === 'new-manage_organizations.php' ? 'active' : '' ?>">
       <img src="../fromOtherBranches/Revised admin/pics/org-icon.png" alt="Organizations Icon" />
       Organizations
     </a>
     <?php endif; ?>
-    <a href="manage_events.php" class="nav-item <?= $current_page === 'manage_events.php' ? 'active' : '' ?>">
+    <a href="new-manage_events.php" class="nav-item <?= $current_page === 'new-manage_events.php' ? 'active' : '' ?>">
       <img src="../fromOtherBranches/Revised admin/pics/event-icon.png" alt="Events Icon" />
       Events
     </a>
@@ -32,7 +32,7 @@ $user_role = $_SESSION['role'] ?? null;
       Posts
     </a>
     <?php endif; ?>
-    <a href="settings.php" class="nav-item <?= $current_page === 'settings.php' ? 'active' : '' ?>">
+    <a href="new_settings.php" class="nav-item <?= $current_page === 'new_settings.php' ? 'active' : '' ?>">
       <img src="../fromOtherBranches/Revised admin/pics/settings-icon.png" alt="Settings Icon" />
       Settings
     </a>
