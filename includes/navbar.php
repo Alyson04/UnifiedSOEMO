@@ -19,26 +19,27 @@ if (isset($_SESSION['user_id'])) {
 }
 ?>
 
-<!-- Navigation Bar -->
-<nav class="navbar">
+<!-- Unified Header -->
+<header class="top-bar <?php if ($_SESSION['role'] === 'admin') echo 'admin-navbar'; ?>">
     
-        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
-            <div class="logo"> 
-                <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo"> 
-            </div>
-            <ul class="nav-list">
-                <li><a href="dashboard.php">HOME</a></li>
-                <li><a href="organizations.php">ORGANIZATIONS</a></li>
-                <li><a href="events.php">EVENTS</a></li>
-                <li><a href="about_us.php">ABOUT US</a></li>
-            </ul>
-        <?php endif; ?>
 
-        <header class="top-bar">
-    <section class="dashboard-header">
-        <h1>UNIFIED SOEMO</h1>
-        <p>DISCOVER, JOIN, ENGAGE</p>
-    </section>  
+    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
+        <div class="logo">
+            <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo">
+        </div>
+        <ul class="nav-list">
+            <li><a href="dashboard.php">HOME</a></li>
+            <li><a href="organizations.php">ORGANIZATIONS</a></li>
+            <li><a href="events.php">EVENTS</a></li>
+            <li><a href="about_us.php">ABOUT US</a></li>
+        </ul>
+    <?php else: ?>
+        <section class="dashboard-header">
+            <h1>UNIFIED SOEMO</h1>
+            <p>DISCOVER, JOIN, ENGAGE</p>
+        </section>
+    <?php endif; ?>
+
     <div class="top-right">
         <img src="../fromOtherBranches/Revised admin/pics/bell.png" alt="Notifications" class="bell"/>
         <div class="profile" onclick="toggleProfileDropdown()">
@@ -57,4 +58,4 @@ if (isset($_SESSION['user_id'])) {
     </div>
 </header>
 
-</nav>
+

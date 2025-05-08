@@ -8,7 +8,7 @@ $user_role = $_SESSION['role'] ?? null;
     <img src="../fromOtherBranches/Revised admin/pics/logo.png" alt="Logo" class="logo"/>
   </div>
   <nav class="nav-menu">
-    <a href="dashboard.php" class="nav-item <?= $current_page === 'dashboard.php' ? 'active' : '' ?>">
+    <a href="dashboard.php" class="nav-item <?= $current_page === 'dashboard.php' || $current_page != 'dashboard.php' ? 'active' : '' ?>">
       <img src="../fromOtherBranches/Revised admin/pics/dashboard-icon.png" alt="Dashboard Icon" />
       Dashboard
     </a>

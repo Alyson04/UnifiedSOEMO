@@ -51,7 +51,7 @@ if ($admin_id) {
 $conn->close();
     
 $title = "Unified SOEMO Dashboard";
-$style = "admindashboard.css";
+$style = "upcoming.css";
 include '../includes/header.php';
 ?>
 
@@ -68,83 +68,42 @@ include '../includes/navbar.php';
 
     <!-- Stats -->
     <section class="stats">
-      <a href="dashboard.php" class="card stat-card active">
+      <a href="dashboard.php" class="card stat-card ">
       <h2><?= $total_users ?></h2><p>Total Users</p>
       </a>
-      <a href="Active_org.php" class="card stat-card">
+      <a href="Active_org.php" class="card stat-card ">
       <h2><?= $total_organizations ?></h2><p>Active Organizations</p>
       </a>
-      <a href="upcoming.php" class="card stat-card">
+      <a href="upcoming.php" class="card stat-card active">
       <h2><?= $total_events ?></h2><p>Upcoming Events</p>
       </a>
-      <a href="past.php" class="card stat-card">
+      <a href="past.php" class="card stat-card ">
       <h2><?= $past_events ?></h2><p>Past Events</p>
       </a>
     </section>
-    
-
-    <section class="charts">
-      <div class="chart-box">
-        <h3>User Growth (Jan–Jun)</h3>
-        <div class="line-chart">
-          <div class="grid-lines"></div>
-          <svg viewBox="0 0 100 50" preserveAspectRatio="none">
-            <polyline
-              fill="none"
-              stroke="#23406C"
-              stroke-width="2"
-              points="0,10 20,15 40,25 60,30 80,40 100,45"
-            />
-          </svg>
-          <div class="x-axis-labels">
-            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-          </div>
-        </div>
-      </div>
-    
-      <div class="chart-box">
-        <h3>User Growth (Jul–Dec)</h3>
-        <div class="line-chart">
-          <div class="grid-lines"></div>
-          <svg viewBox="0 0 100 50" preserveAspectRatio="none">
-            <polyline
-              fill="none"
-              stroke="#23406C"
-              stroke-width="2"
-              points="0,15 20,18 40,35 60,30 80,20 100,40"
-            />
-          </svg>
-          <div class="x-axis-labels">
-            <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
-          </div>
-        </div>
-      </div>
-    </section>    
-
-    <!-- Recent Signups -->
-    <section class="recent-signups">
-      <h3>Recent Signups</h3>
-      <table>
-        <thead>
-          <tr><th>Name</th><th>Email</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Jusphine Lacano</td>
-            <td>jusphinemlacano@iskolarnagbayan.pup.edu.ph</td>
-          </tr>
-          <tr>
-            <td>Janna Mae Caballero</td>
-            <td>jannamaeccaballero@iskolarnagbayan.pup.edu.ph</td>
-          </tr>
-          <tr>
-            <td>Rica Mae Malgapo</td>
-            <td>ricamaemalgapo@iskolarnagbayan.pup.edu.ph</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-    
+   
+<section class="events-upcoming">
+    <div class="list-events">
+      <h3>Upcoming Events</h3>
+      <div>June 9</div>
+      <div>June 16</div>
+      <div>June 23</div>
+      <div>June 30</div>
+      <div>July 10</div>
+      <div>July 14</div>
+    </div>
+  
+    <div class="list-events">
+        <h3>Events Name</h3>
+        <div>Events Name</div>
+        <div>Events Name</div>
+        <div>Events Name</div>
+        <div>Events Name</div>
+        <div>Events Name</div>
+        <div>Events Name</div>
+    </div>
+  </section>
+      
   </main>
 
-<?php include '../includes/footer.php'; ?>
+  <?php include '../includes/footer.php'; ?>
