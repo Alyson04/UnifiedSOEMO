@@ -50,7 +50,7 @@ include '../includes/navbar.php';
 
         <button id="edit-btn">Edit</button>
 
-        <form action="update_admin_settings.php" method="POST">
+        <form action="../api/settings.php" method="POST">
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" value="<?= htmlspecialchars($admin['email']); ?>" disabled required>
 

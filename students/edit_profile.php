@@ -35,7 +35,7 @@ include '../includes/navbar.php';
 
         <button id="edit-btn">Edit</button>
 
-        <form action="update_admin_settings.php" method="POST">
+        <form action="../api/update_profile.php" method="POST">
             <label for="fullName">Full Name:</label>
             <input type="text" name="fullName" id="fullName" value="<?= htmlspecialchars($student_name); ?>" disabled required>    
 
