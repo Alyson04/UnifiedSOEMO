@@ -21,10 +21,11 @@ if (isset($_SESSION['user_id'])) {
 
 <!-- Navigation Bar -->
 <nav class="navbar">
-    <div class="logo"> 
-        <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo"> 
-    </div>
+    
         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
+            <div class="logo"> 
+                <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo"> 
+            </div>
             <ul class="nav-list">
                 <li><a href="dashboard.php">HOME</a></li>
                 <li><a href="organizations.php">ORGANIZATIONS</a></li>
@@ -32,22 +33,28 @@ if (isset($_SESSION['user_id'])) {
                 <li><a href="about_us.php">ABOUT US</a></li>
             </ul>
         <?php endif; ?>
-        
-    <div class="search-profile">
-        <input type="text" placeholder="Search">
-        <img src="../assets/pictures/bell.png" alt="Bell Icon"> <!-- Notification Icon -->
+
+        <header class="top-bar">
+    <section class="dashboard-header">
+        <h1>UNIFIED SOEMO</h1>
+        <p>DISCOVER, JOIN, ENGAGE</p>
+    </section>  
+    <div class="top-right">
+        <img src="../fromOtherBranches/Revised admin/pics/bell.png" alt="Notifications" class="bell"/>
         <div class="profile" onclick="toggleProfileDropdown()">
-            <img src="<?= htmlspecialchars($profile_img); ?>" alt="Profile">
-            <div class="profile-text">
-                <span><?= htmlspecialchars($display_name); ?></span>
-                <p><?= $role_label; ?></p>
+            <img src="../fromOtherBranches/Revised admin/pics/profile.png" alt="Admin" />
+            <div class="profile-info">
+                <strong><?= htmlspecialchars($display_name); ?></strong>
+                <span><?= $role_label; ?></span>
             </div>
-            <div class="dropdown-tray" id="profileDropdown">
+            <div class="dropdown-tray" id="profileDropdown" style="display: none;">
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
-                <a href="../students/edit_profile.php">Edit Profile</a>
+                    <a href="../students/edit_profile.php">Edit Profile</a>
                 <?php endif; ?>
                 <a href="../api/logout.php">Logout</a>
             </div>
         </div>
     </div>
+</header>
+
 </nav>

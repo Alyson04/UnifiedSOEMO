@@ -1,3 +1,4 @@
+</div>
 <footer>
     <p>&copy; <?php echo date("Y"); ?> Unified SOEMO. All rights reserved.</p>
 </footer>
@@ -6,16 +7,16 @@
 <?php endif; ?>
 <script>
 function toggleProfileDropdown() {
-    const tray = document.getElementById('profileDropdown');
-    tray.style.display = (tray.style.display === 'flex') ? 'none' : 'flex';
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
-// Optional: close dropdown if clicked outside
-document.addEventListener('click', function(e) {
+// Optional: close dropdown when clicking outside
+document.addEventListener('click', function(event) {
     const profile = document.querySelector('.profile');
-    const tray = document.getElementById('profileDropdown');
-    if (!profile.contains(e.target)) {
-        tray.style.display = 'none';
+    const dropdown = document.getElementById('profileDropdown');
+    if (!profile.contains(event.target)) {
+        dropdown.style.display = 'none';
     }
 });
 </script>

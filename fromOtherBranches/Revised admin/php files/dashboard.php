@@ -1,65 +1,50 @@
+<?php 
+require '../../../api/auth.php';
+checkUserRole('admin'); // Only allow admins
+
+require '../../../config/db_conn.php';
+// Get logged-in user's ID from session
+$admin_id = $_SESSION['user_id'] ?? null;
+$admin_name = '';
+
+// Fetch admin's full name from database
+if ($admin_id) {
+    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_admin);
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result_admin = $stmt->get_result();
+    if ($result_admin->num_rows > 0) {
+        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
+
+$conn->close();
+$currentPage = basename($_SERVER['PHP_SELF']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Unified SOEMO Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
 </head>
 <body>
 
 <div class="container">
 
- <!-- Sidebar -->
-<aside class="sidebar">
-  <div class="logo-container">
-    <img src="logo.png" alt="Logo" class="logo"/>
-  </div>
-  <nav class="nav-menu">
-    <a href="dashboard.html" class="nav-item active">
-      <img src="dashboard-icon.png" alt="Dashboard Icon" />
-      Dashboard
-    </a>
-    <a href="manage_user.html" class="nav-item">
-      <img src="user-icon.png" alt="Users Icon" />
-      Manage Users
-    </a>
-    <a href="manage_org.html" class="nav-item">
-      <img src="org-icon.png" alt="Organizations Icon" />
-      Organizations
-    </a>
-    <a href="manage_events.html" class="nav-item">
-      <img src="event-icon.png" alt="Events Icon" />
-      Events
-    </a>
-    <a href="settings.html" class="nav-item">
-      <img src="settings-icon.png" alt="Settings Icon" />
-      Settings
-    </a>
-  </nav>
-</aside>
+<?php
+include '../../../includes/sidebar.php';
+?>
 
   <!-- Main Panel -->
 <main class="main-content">
-  <header class="top-bar">
-    <section class="dashboard-header">
-      <h1>UNIFIED SOEMO</h1>
-      <p>DISCOVER, JOIN, ENGAGE</p>
-    </section>  
-    <div class="top-right">
-      <img src="bell.png" alt="Notifications" class="bell"/>
-      <div class="profile">
-        <img src="profile.png" alt="Admin" />
-        <div class="profile-info">
-          <strong>Moni Roy</strong>
-          <span>Admin</span>
-        </div>
-      </div>
-    </div>
-  </header>
- 
-  
-  
+<?php
+include '../../../includes/navbar.php';
+?>
+
     <!-- Stats -->
     <section class="stats">
       <a href="dashboard.html" class="card stat-card active">
@@ -142,5 +127,6 @@
   </main>
 
 </div>
-</body>
-</html>
+<?php
+include '../../../includes/footer.php';
+?>

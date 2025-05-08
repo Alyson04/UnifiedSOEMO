@@ -47,77 +47,100 @@ if ($admin_id) {
 $conn->close();
     
 $title = "Unified SOEMO Dashboard";
-$style = "admindashboard_styles.css";
+$style = "admindashboard.css";
 include '../includes/header.php';
+?>
+
+
+<?php
+include '../includes/sidebar.php';
+?>
+
+  <!-- Main Panel -->
+<main class="main-content">
+<?php
 include '../includes/navbar.php';
 ?>
+
+    <!-- Stats -->
+    <section class="stats">
+      <a href="dashboard.html" class="card stat-card active">
+        <h2>1,000</h2><p>Total Users</p>
+      </a>
+      <a href="Active_org.html" class="card stat-card">
+        <h2>88</h2><p>Active Organizations</p>
+      </a>
+      <a href="upcoming.hmtl" class="card stat-card">
+        <h2>6</h2><p>Upcoming Events</p>
+      </a>
+      <a href="past.html" class="card stat-card">
+        <h2>8</h2><p>Past Events</p>
+      </a>
+    </section>
     
-    <!-- Main Section -->
-    <section class="main-container">
-        <div class="grid-container">
-            <!-- Manage Users -->
-            <a href="manage_users.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/user-icon.png" alt="Manage Users"> 
-                    <p>Manage Users</p> 
-                </div>
-            </a>
 
-            <!-- Organizations -->
-            <a href="manage_organizations.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/org-icon.png" alt="Organizations"> 
-                    <p>Organizations</p> 
-                </div>
-            </a>
-
-            <!-- Events -->
-            <a href="manage_events.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/event-icon.png" alt="Events"> 
-                    <p>Events</p> 
-                </div>
-            </a>
-
-            <!-- Settings -->
-            <a href="settings.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/settings-icon.png" alt="Settings"> 
-                    <p>Settings</p> 
-                </div>
-            </a>
+    <section class="charts">
+      <div class="chart-box">
+        <h3>User Growth (Jan–Jun)</h3>
+        <div class="line-chart">
+          <div class="grid-lines"></div>
+          <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="#23406C"
+              stroke-width="2"
+              points="0,10 20,15 40,25 60,30 80,40 100,45"
+            />
+          </svg>
+          <div class="x-axis-labels">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+          </div>
         </div>
+      </div>
+    
+      <div class="chart-box">
+        <h3>User Growth (Jul–Dec)</h3>
+        <div class="line-chart">
+          <div class="grid-lines"></div>
+          <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="#23406C"
+              stroke-width="2"
+              points="0,15 20,18 40,35 60,30 80,20 100,40"
+            />
+          </svg>
+          <div class="x-axis-labels">
+            <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+          </div>
+        </div>
+      </div>
+    </section>    
+
+    <!-- Recent Signups -->
+    <section class="recent-signups">
+      <h3>Recent Signups</h3>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Email</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Jusphine Lacano</td>
+            <td>jusphinemlacano@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+          <tr>
+            <td>Janna Mae Caballero</td>
+            <td>jannamaeccaballero@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+          <tr>
+            <td>Rica Mae Malgapo</td>
+            <td>ricamaemalgapo@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
-
-    <!-- Dashboard Summary -->
-    <section class="summary">
-        <h2>Dashboard Summary</h2>
-        <div class="stat">
-            <span>Total Users: <?php echo $total_users; ?></span>
-            <div class="progress"><div style="width: <?php echo min($total_users, 100); ?>%;"></div></div>
-        </div>
-        <div class="stat">
-            <span>Active Organizations: <?php echo $total_organizations; ?></span>
-            <div class="progress"><div style="width: <?php echo min($total_organizations, 100); ?>%;"></div></div>
-        </div>
-        <div class="stat">
-            <span>Upcoming Events: <?php echo $total_events; ?></span>
-            <div class="progress"><div style="width: <?php echo min($total_events, 100); ?>%;"></div></div>
-        </div>
-        <div class="stat">
-            <span>Recent Events:</span>
-            <ul>
-                <?php 
-                if (!empty($recent_events)) {
-                    foreach ($recent_events as $event) {
-                        echo "<li>" . htmlspecialchars($event['title']) . " - " . date("M d, Y", strtotime($event['event_date'])) . "</li>";
-                    }
-                } else {
-                    echo "<li>No recent events</li>";
-                }
-                ?>
-            </ul>
-        </div>
-    </section>
+    
+  </main>
 
 <?php include '../includes/footer.php'; ?>
