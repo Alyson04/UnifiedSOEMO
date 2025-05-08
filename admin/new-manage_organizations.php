@@ -43,7 +43,7 @@ include '../includes/navbar.php';
         <div class="search-bar">
             <input type="text" placeholder="Search Events...">
             <button>
-                <img src="search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
+                <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
             </button>
             </div>
 

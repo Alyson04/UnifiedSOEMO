@@ -50,7 +50,7 @@ include '../includes/navbar.php';
     <section class="main-container">
         <div class="grid-container">
             <!-- Manage Users -->
-            <a href="manage_users.php" class="grid-link">
+            <a href="new-manage_users.php" class="grid-link">
                 <div class="grid-item"> 
                     <img src="../assets/pictures/user-icon.png" alt="Manage Users"> 
                     <p>Manage Users</p> 
@@ -58,7 +58,7 @@ include '../includes/navbar.php';
             </a>
 
             <!-- Events -->
-            <a href="manage_events.php" class="grid-link">
+            <a href="new-manage_events.php" class="grid-link">
                 <div class="grid-item"> 
                     <img src="../assets/pictures/event-icon.png" alt="Events"> 
                     <p>Events</p> 
@@ -66,7 +66,7 @@ include '../includes/navbar.php';
             </a>
 
             <!-- Settings -->
-            <a href="settings.php" class="grid-link">
+            <a href="new_settings.php" class="grid-link">
                 <div class="grid-item"> 
                     <img src="../assets/pictures/settings-icon.png" alt="Settings"> 
                     <p>Settings</p> 

@@ -20,7 +20,7 @@ if (isset($_SESSION['user_id'])) {
 ?>
 
 <!-- Unified Header -->
-<header class="top-bar <?php if ($_SESSION['role'] === 'admin') echo 'admin-navbar'; ?>">
+<header class="top-bar <?php if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'org_admin') echo 'admin-navbar'; ?>">
     
 
     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
@@ -41,9 +41,9 @@ if (isset($_SESSION['user_id'])) {
     <?php endif; ?>
 
     <div class="top-right">
-        <img src="../fromOtherBranches/Revised admin/pics/bell.png" alt="Notifications" class="bell"/>
+        <img src="../fromOtherBranches/pics/bell.png" alt="Notifications" class="bell"/>
         <div class="profile" onclick="toggleProfileDropdown()">
-            <img src="../fromOtherBranches/Revised admin/pics/profile.png" alt="Admin" />
+            <img src="../fromOtherBranches/pics/profile.png" alt="Admin" />
             <div class="profile-info">
                 <strong><?= htmlspecialchars($display_name); ?></strong>
                 <span><?= $role_label; ?></span>

@@ -16,7 +16,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <?php endif; ?>
 
 
-    <?php if ($currentPage == 'post.php'): ?>
+    <?php if ($currentPage == 'new-post.php'): ?>
     <link rel="stylesheet" href="../assets/stylesheets/modals_styles.css">
     <?php endif; ?>
     
