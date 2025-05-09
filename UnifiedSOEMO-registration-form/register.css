@@ -1,0 +1,130 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(120deg, #CDFFD8 0%, #94B9FF 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('studentorg.png') center/cover no-repeat;
+    opacity: 0.25;
+    z-index: 0;
+}
+
+.register-container {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(120deg, #e0f7fa 60%, #b2ebf2 100%);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    border-radius: 18px;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    max-width: 700px;
+    width: 100%;
+    margin: 40px auto;
+    box-sizing: border-box;
+}
+
+.register-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #1a365d;
+    margin-bottom: 1.5rem;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-width: 180px;
+}
+
+.form-group.full-width {
+    flex: 1 1 100%;
+}
+
+label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2a4365;
+    margin-bottom: 0.4rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #b2ebf2;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: #fff;
+    color: #1a365d;
+    outline: none;
+    transition: border 0.2s;
+    box-shadow: 0 2px 8px rgba(148, 185, 255, 0.08);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+    border: 1.5px solid #94B9FF;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 60px;
+    max-height: 180px;
+}
+
+.submit-btn {
+    margin-top: 1.2rem;
+    padding: 0.9rem 0;
+    width: 100%;
+    background: linear-gradient(90deg, #94B9FF 0%, #CDFFD8 100%);
+    color: #1a365d;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(148, 185, 255, 0.15);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(90deg, #CDFFD8 0%, #94B9FF 100%);
+    color: #0a2540;
+}
+
+@media (max-width: 700px) {
+    .register-container {
+        padding: 1.2rem 0.5rem 1rem 0.5rem;
+        max-width: 98vw;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+} 

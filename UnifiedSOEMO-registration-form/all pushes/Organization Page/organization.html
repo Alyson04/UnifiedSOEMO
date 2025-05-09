@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUP Organizations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="IMG/logo.png" alt="PUP Logo">
+        </div>
+        <nav class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="organization.html" class="active">ORGANIZATION</a>
+            <a href="events.html">EVENTS</a>
+            <a href="about.html">ABOUT US</a>
+        </nav>        
+        <div class="search-profile">
+            <div class="search-container">
+                <input type="text" class="search" placeholder="Search">
+                <img src="IMG/search-icon.png" class="search-icon" alt="Search">
+            </div>
+            <span class="notification"><i class="fa-solid fa-bell"></i></span>
+            <div class="profile">
+                <img src="IMG/moni roy.png" alt="Profile">
+                <div class="profile-info">
+                    <span class="profile-name">Moni Roy</span>
+                    <span class="profile-role">Student</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="background">
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search Organizations...">
+        </div>
+    </section>  
+    <section class="student-org">
+        <h2 class="section-title">STUDENT ORGANIZATION</h2>
+        <div class="student-org-wrapper">
+            <div class="student-org-container">
+                <div class="student-org-container">
+                    <div class="student-org-card">
+                        <img src="IMG/org1.jpg" alt="Org 1">
+                        <h4>PUP SENTRAL NA KONSEHO NG MAG-AARAL</h4>
+                        <p>The PUP SKM serves as the prime representative of the student body of 
+                            the PUP Main Campus. #ServeThePeople
+                        </p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+                    <div class="student-org-card">
+                        <img src="IMG/org2.jpg" alt="Org 2">
+                        <h4>PUP INSTITUTE OF TECHNOLOGY STUDENT COUNCIL</h4>
+                        <p>May the voices in your head be soothed, and the rest of your journey be 
+                            filled with tranquillity. Empowering Innovators, Shaping Tomorrow’s Technology.
+                        </p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+                    <div class="student-org-card">
+                        <img src="IMG/org3.jpg" alt="Org 3">
+                        <h4>PUP PROGRAMMERS' GUILD</h4>
+                        <p>A community-based student organization with the advocacy, 
+                            "Coding is for everyone."
+                        </p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+                    <div class="student-org-card">
+                        <img src="IMG/org4.jpg" alt="Org 4">
+                        <h4>PUP SANDIWA</h4>
+                        <p>Samahang Nagtataguyod ng Iisang Diwa't Adhika</p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+                    <div class="student-org-card">
+                        <img src="IMG/org5.jpg" alt="Org 5">
+                        <h4>HATAW PUP</h4>
+                        <p>Hataw PUP is an accredited university-wide, advocacy student organization 
+                            at PUP–Manila.
+                        </p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+                    <div class="student-org-card">
+                        <img src="IMG/org6.jpg" alt="Org 6">
+                        <h4>PUP SINTANG PUSA</h4>
+                        <p>For the cats of PUP, we serve! </p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+                    <div class="student-org-card">
+                        <img src="IMG/org7.jpg" alt="Org 7">
+                        <h4>YOUTH FOR ANIMALS PUP</h4>
+                        <p>Your Voice Matters: For Animals, For Our Future</p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+                    <div class="student-org-card">
+                        <img src="IMG/org8.jpg" alt="Org 8">
+                        <h4>PUP POLYSOUND BAND</h4>
+                        <p>PUP Polysound Band is the resident house band of Polytechnic University of 
+                            the Philippines, under the University Center for Culture and the Arts.
+                        </p>
+                        <a href="studentorg.html" class="join-btn">LEARN MORE</a>
+                    </div>
+            </div>
+        </div>
+    </section>    
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentPage = window.location.pathname.split("/").pop(); 
+        const navLinks = document.querySelectorAll(".nav-links a");
+
+        navLinks.forEach(link => {
+            if (link.getAttribute("href") === currentPage) {
+                link.classList.add("active"); 
+            }
+        });
+    });
+</script>
+
+</html>
