@@ -1,0 +1,200 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
+    color: #2A4365;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header and Navigation */
+.header {
+    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 90px;
+}
+
+nav a {
+    color: #2A4365;
+    font-size: 1.1em;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: none;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    transition: text-shadow 0.3s ease-in-out;
+}
+
+nav a.active {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    font-weight: 800;
+}
+
+/* About Section */
+.about-section {
+    text-align: center;
+    padding: 30px 0;
+    background: #DAD0AC;
+    margin: 20px 0;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.about-section h1 {
+    font-size: 28px;
+    font-weight: 710;
+    color: #1E3350;
+    margin-bottom: 30px;
+}
+
+.about-text {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    padding: 0 20px;
+}
+
+.about-text p {
+    font-size: 1.1em;
+    color: #2A4365;
+    line-height: 1.6;
+}
+
+.images {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.about-image {
+    width: 400px;
+    height: 300px;
+    border-radius: 20px;
+    object-fit: cover;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Mission and Vision Section */
+.mission-vision {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 30px;
+    background: #2A4365;
+    margin: 20px 0;
+    border-radius: 20px;
+}
+
+.mission, .vision {
+    background: #DAD0AC;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.mission h2, .vision h2 {
+    font-size: 1.8em;
+    font-weight: 800;
+    color: #2A4365;
+    margin-bottom: 20px;
+}
+
+.mission p, .vision p {
+    color: #2A4365;
+    line-height: 1.6;
+    font-size: 1em;
+}
+
+/* Contact Section */
+.contact-section {
+    text-align: center;
+    padding: 30px;
+    background: #DAD0AC;
+    margin: 20px 0;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.contact-section h2 {
+    font-size: 1.8em;
+    font-weight: 800;
+    color: #2A4365;
+    margin-bottom: 20px;
+}
+
+.contact-section p {
+    color: #2A4365;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+
+.contact-section ul {
+    list-style: none;
+    margin-top: 15px;
+}
+
+.contact-section li {
+    margin-bottom: 10px;
+}
+
+.contact-section a {
+    color: #2A4365;
+    text-decoration: none;
+    font-weight: 600;
+    transition: text-shadow 0.3s ease-in-out;
+}
+
+.contact-section a:hover {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .mission-vision {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .images {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .about-image {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .mission, .vision {
+        margin: 10px;
+    }
+}
