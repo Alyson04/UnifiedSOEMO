@@ -6,6 +6,7 @@ require '../config/db_conn.php';
 
 // Get logged-in user's ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
+$org_id = $_SESSION['org_id'] ?? null;
 $admin_name = '';
 
 // Fetch admin's full name from database
@@ -20,6 +21,12 @@ if ($admin_id) {
     }
     $stmt->close();
 }
+
+$sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role = 'student' AND org_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $org_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $conn->close();
     
@@ -45,60 +52,58 @@ include '../includes/navbar.php';
             </button>
             </div>
 
-        <!-- Users Table -->
-        <div class="user-table">
+         <!-- Users Table -->
+         <div class="user-table">
             <table>
                 <thead>
                     <tr>
-                        <th>User ID</th>
-                        <th>Name</th>
+                        <th>Full Name</th>
                         <th>Email</th>
                         <th>Status</th>
+                        <th>Date Created</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php while ($user = $result->fetch_assoc()): ?>
                     <tr>
-                        <td>UID-01</td>
-                        <td>Jerome Abarca</td>
-                        <td>abarca@gmail.com</td>
-                        <td class="active">Active</td>
+                        <td><?= htmlspecialchars($user['fullName']); ?></td>
+                        <td><?= htmlspecialchars($user['email']); ?></td>
+                        <td>
+                            <?php 
+                                if ($user['is_approved'] === "approved") {
+                                    echo "Approved";
+                                } elseif ($user['is_approved'] === "declined") {
+                                    echo "Declined";
+                                } else {
+                                    echo "Pending";
+                                }
+                            ?>
+                        </td>
+                        <td><?= htmlspecialchars($user['created_at']); ?></td>
+                        <td>
+                            <?php if ($user['is_approved'] === "approved" || $user['is_approved'] === "declined"): ?>
+                                <form action="../api/process_application.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+                                    <button type="submit" name="action" value="accept" disabled>Accept</button>
+                                </form>
+                                <form action="../api/process_application.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+                                    <button type="submit" name="action" value="decline" disabled>Decline</button>
+                                </form>
+                            <?php else: ?>
+                                <form action="../api/process_application.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+                                    <button type="submit" name="action" value="accept">Accept</button>
+                                </form>
+                                <form action="../api/process_application.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+                                    <button type="submit" name="action" value="decline">Decline</button>
+                                </form>
+                            <?php endif; ?>
+                        </td>
                     </tr>
-                    <tr>
-                        <td>UID-02</td>
-                        <td>Clifford Balana</td>
-                        <td>balana@gmail.com</td>
-                        <td class="inactive">Inactive</td>
-                    </tr>
-                    <tr>
-                        <td>UID-03</td>
-                        <td>Janna Caballero</td>
-                        <td>caballero@gmail.com</td>
-                        <td class="active">Active</td>
-                    </tr>
-                    <tr>
-                        <td>UID-04</td>
-                        <td>Ashanti Caculba</td>
-                        <td>caculba@gmail.com</td>
-                        <td class="inactive">Inactive</td>
-                    </tr>
-                    <tr>
-                        <td>UID-05</td>
-                        <td>Alyson Calimag</td>
-                        <td>calimag@gmail.com</td>
-                        <td class="active">Active</td>
-                    </tr>
-                    <tr>
-                        <td>UID-06</td>
-                        <td>Jusphine Lacano</td>
-                        <td>lacano@gmail.com</td>
-                        <td class="inactive">Inactive</td>
-                    </tr>
-                    <tr>
-                        <td>UID-07</td>
-                        <td>Rica Mae Malgapo</td>
-                        <td>malgapo@gmail.com</td>
-                        <td class="active">Active</td>
-                    </tr>
+                <?php endwhile; ?>
                 </tbody>
             </table>
         </div>

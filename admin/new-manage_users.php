@@ -20,6 +20,8 @@ if ($admin_id) {
     }
     $stmt->close();
 }
+$sql = "SELECT id, fullName, email, is_approved, created_at FROM users";
+$result = $conn->query($sql);
 
 $conn->close();
     
@@ -39,7 +41,7 @@ include '../includes/navbar.php';
         <h2 class="page-title">MANAGE USERS</h2>
 
         <div class="search-bar">
-            <input type="text" placeholder="Search Events...">
+            <input type="text" placeholder="Search Users...">
             <button>
                 <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
             </button>
@@ -50,55 +52,31 @@ include '../includes/navbar.php';
             <table>
                 <thead>
                     <tr>
-                        <th>User ID</th>
-                        <th>Name</th>
+                        <th>Full Name</th>
                         <th>Email</th>
                         <th>Status</th>
+                        <th>Date Created</th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php while ($user = $result->fetch_assoc()): ?>
                     <tr>
-                        <td>UID-01</td>
-                        <td>Jerome Abarca</td>
-                        <td>abarca@gmail.com</td>
-                        <td class="active">Active</td>
+                        <td><?= htmlspecialchars($user['fullName']); ?></td>
+                        <td><?= htmlspecialchars($user['email']); ?></td>
+                        <td>
+                            <?php 
+                                if ($user['is_approved'] === "approved") {
+                                    echo "Approved";
+                                } elseif ($user['is_approved'] === "declined") {
+                                    echo "Declined";
+                                } else {
+                                    echo "Pending";
+                                }
+                            ?>
+                        </td>
+                        <td><?= htmlspecialchars($user['created_at']); ?></td>
                     </tr>
-                    <tr>
-                        <td>UID-02</td>
-                        <td>Clifford Balana</td>
-                        <td>balana@gmail.com</td>
-                        <td class="inactive">Inactive</td>
-                    </tr>
-                    <tr>
-                        <td>UID-03</td>
-                        <td>Janna Caballero</td>
-                        <td>caballero@gmail.com</td>
-                        <td class="active">Active</td>
-                    </tr>
-                    <tr>
-                        <td>UID-04</td>
-                        <td>Ashanti Caculba</td>
-                        <td>caculba@gmail.com</td>
-                        <td class="inactive">Inactive</td>
-                    </tr>
-                    <tr>
-                        <td>UID-05</td>
-                        <td>Alyson Calimag</td>
-                        <td>calimag@gmail.com</td>
-                        <td class="active">Active</td>
-                    </tr>
-                    <tr>
-                        <td>UID-06</td>
-                        <td>Jusphine Lacano</td>
-                        <td>lacano@gmail.com</td>
-                        <td class="inactive">Inactive</td>
-                    </tr>
-                    <tr>
-                        <td>UID-07</td>
-                        <td>Rica Mae Malgapo</td>
-                        <td>malgapo@gmail.com</td>
-                        <td class="active">Active</td>
-                    </tr>
+                <?php endwhile; ?>
                 </tbody>
             </table>
         </div>

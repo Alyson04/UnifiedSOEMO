@@ -23,6 +23,15 @@ $sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDA
 $result_past = $conn->query($sql_past);
 $past_events = $result_past->fetch_assoc()['past_events'];
 
+// Get upcoming events
+$sql_upcoming_events = "SELECT title, event_date FROM events WHERE event_date >= CURDATE() ORDER BY event_date ASC";
+$result_upcoming_events = $conn->query($sql_upcoming_events);
+
+$upcoming_events = [];
+while ($row = $result_upcoming_events->fetch_assoc()) {
+    $upcoming_events[] = $row;
+}
+
 // Get recent events
 $sql_recent_events = "SELECT title, event_date FROM events ORDER BY event_date DESC LIMIT 5";
 $result_recent_events = $conn->query($sql_recent_events);
@@ -82,27 +91,31 @@ include '../includes/navbar.php';
       </a>
     </section>
    
+<!-- Upcoming Events Section -->
 <section class="events-upcoming">
     <div class="list-events">
-      <h3>Upcoming Events</h3>
-      <div>June 9</div>
-      <div>June 16</div>
-      <div>June 23</div>
-      <div>June 30</div>
-      <div>July 10</div>
-      <div>July 14</div>
+        <h3>Event Dates</h3>
+        <?php if (!empty($upcoming_events)) : ?>
+            <?php foreach ($upcoming_events as $event) : ?>
+                <div><?= date("M d", strtotime($event['event_date'])) ?></div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div>No upcoming events found.</div>
+        <?php endif; ?>
     </div>
   
     <div class="list-events">
-        <h3>Events Name</h3>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
+        <h3>Event Names</h3>
+        <?php if (!empty($upcoming_events)) : ?>
+            <?php foreach ($upcoming_events as $event) : ?>
+                <div><?= htmlspecialchars($event['title']) ?></div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div>No upcoming events found.</div>
+        <?php endif; ?>
     </div>
-  </section>
+</section>
+
       
   </main>
 

@@ -23,6 +23,14 @@ $sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDA
 $result_past = $conn->query($sql_past);
 $past_events = $result_past->fetch_assoc()['past_events'];
 
+$sql_past_events = "SELECT title, event_date FROM events WHERE event_date < CURDATE() ORDER BY event_date DESC";
+$result_past_events = $conn->query($sql_past_events);
+
+$past_events_list = [];
+while ($row = $result_past_events->fetch_assoc()) {
+    $past_events_list[] = $row;
+}
+
 // Get recent events
 $sql_recent_events = "SELECT title, event_date FROM events ORDER BY event_date DESC LIMIT 5";
 $result_recent_events = $conn->query($sql_recent_events);
@@ -83,27 +91,29 @@ include '../includes/navbar.php';
     </section>     
 
    
-<section class="events-upcoming">
+    <section class="events-upcoming">
     <div class="list-events">
-      <h3>Past Events</h3>
-      <div>June 9</div>
-      <div>June 16</div>
-      <div>June 23</div>
-      <div>June 30</div>
-      <div>July 10</div>
-      <div>July 14</div>
+        <h3>Past Events</h3>
+        <?php if (!empty($past_events_list)) : ?>
+            <?php foreach ($past_events_list as $event) : ?>
+                <div><?= date("M d", strtotime($event['event_date'])) ?></div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div>No past events found.</div>
+        <?php endif; ?>
     </div>
-  
+
     <div class="list-events">
         <h3>Events Name</h3>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
-        <div>Events Name</div>
+        <?php if (!empty($past_events_list)) : ?>
+            <?php foreach ($past_events_list as $event) : ?>
+                <div><?= htmlspecialchars($event['title']) ?></div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div>No past events found.</div>
+        <?php endif; ?>
     </div>
-  </section>
+</section>
       
   </main>
 

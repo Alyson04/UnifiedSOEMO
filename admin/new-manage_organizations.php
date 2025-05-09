@@ -8,6 +8,15 @@ require '../config/db_conn.php';
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
+// Fetch all organizations
+$sql = "SELECT name, description, created_at FROM organizations ORDER BY created_at ASC";
+$result = $conn->query($sql);
+
+$organizations = [];
+while ($row = $result->fetch_assoc()) {
+    $organizations[] = $row;
+}
+
 // Fetch admin's full name from database
 if ($admin_id) {
     $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
@@ -41,7 +50,7 @@ include '../includes/navbar.php';
 
         <!-- Search Bar -->
         <div class="search-bar">
-            <input type="text" placeholder="Search Events...">
+            <input type="text" placeholder="Search Organizations...">
             <button>
                 <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
             </button>
@@ -52,52 +61,23 @@ include '../includes/navbar.php';
             <table>
                 <thead>
                     <tr>
-                        <th>Org ID</th>
                         <th>Name</th>
-                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Date Created</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>OID-01</td>
-                        <td>PUP Sentral na Konseho ng Mag-aaral</td>
-                        <td>Student Councils</td>
-                    </tr>
-                    <tr>
-                        <td>OID-02</td>
-                        <td>PUP Institute of Technology Student Council</td>
-                        <td>Student Councils</td>
-                    </tr>
-                    <tr>
-                        <td>OID-03</td>
-                        <td>PUP The Programmers' Club</td>
-                        <td>Academic Org</td>
-                    </tr>
-                    <tr>
-                        <td>OID-04</td>
-                        <td>PUP SANDIWA</td>
-                        <td>Advocacy Groups</td>
-                    </tr>
-                    <tr>
-                        <td>OID-05</td>
-                        <td>HATAW PUP</td>
-                        <td>Advocacy Groups</td>
-                    </tr>
-                    <tr>
-                        <td>OID-06</td>
-                        <td>PUP Sintang Pusa</td>
-                        <td>Animal Welfare</td>
-                    </tr>
-                    <tr>
-                        <td>OID-07</td>
-                        <td>Youth for Animals PUP</td>
-                        <td>Animal Welfare</td>
-                    </tr>
-                    <tr>
-                        <td>OID-08</td>
-                        <td>PUP Polysound Band</td>
-                        <td>Arts and Culture</td>
-                    </tr>
+                    <?php if (!empty($organizations)) : ?>
+                        <?php foreach ($organizations as $org) : ?>
+                            <tr>
+                                <td><?= htmlspecialchars($org['name']) ?></td>
+                                <td><?= htmlspecialchars($org['description']) ?></td>
+                                <td><?= date("M d, Y", strtotime($org['created_at'])) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr><td colspan="5">No organizations found.</td></tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

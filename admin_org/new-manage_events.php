@@ -8,6 +8,19 @@ require '../config/db_conn.php';
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
+$org_id = $_SESSION['org_id'] ?? null;
+
+// Fetch all events
+$sql = "SELECT id, title, event_date, org_id, created_at FROM events WHERE org_id = ? ORDER BY created_at DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $org_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$events = [];
+while ($row = $result->fetch_assoc()) {
+    $events[] = $row;
+}
 // Fetch admin's full name from database
 if ($admin_id) {
     $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
@@ -54,55 +67,23 @@ include '../includes/navbar.php';
             <table>
                 <thead>
                     <tr>
-                        <th>Event ID</th>
-                        <th>Name</th>
-                        <th>Date</th>
-                        <th>Actions</th>
+                        <th>Title</th>
+                        <th>Event Date</th>
+                        <th>Date Created</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>EID-01</td>
-                        <td>Hackathon</td>
-                        <td>01-01-2025</td>
-                        <td><button class="edit-btn">Edit/Cancel</button></td>
-                    </tr>
-                    <tr>
-                        <td>EID-02</td>
-                        <td>Animal Saving</td>
-                        <td>01-02-2025</td>
-                        <td><button class="edit-btn">Edit/Cancel</button></td>
-                    </tr>
-                    <tr>
-                        <td>EID-03</td>
-                        <td>Charity</td>
-                        <td>01-06-2025</td>
-                        <td><button class="edit-btn">Edit/Cancel</button></td>
-                    </tr>
-                    <tr>
-                        <td>EID-04</td>
-                        <td>Coding Club</td>
-                        <td>01-07-2025</td>
-                        <td><button class="edit-btn">Edit/Cancel</button></td>
-                    </tr>
-                    <tr>
-                        <td>EID-05</td>
-                        <td>Coding Club</td>
-                        <td>01-08-2025</td>
-                        <td><button class="edit-btn">Edit/Cancel</button></td>
-                    </tr>
-                    <tr>
-                        <td>EID-06</td>
-                        <td>Community Concert</td>
-                        <td>01-09-2025</td>
-                        <td><button class="edit-btn">Edit/Cancel</button></td>
-                    </tr>
-                    <tr>
-                        <td>EID-07</td>
-                        <td>Animal Welfare</td>
-                        <td>01-10-2025</td>
-                        <td><button class="edit-btn">Edit/Cancel</button></td>
-                    </tr>
+                    <?php if (!empty($events)) : ?>
+                        <?php foreach ($events as $event) : ?>
+                            <tr>
+                                <td><?= htmlspecialchars($event['title']) ?></td>
+                                <td><?= date("M d, Y", strtotime($event['event_date'])) ?></td>
+                                <td><?= date("M d, Y", strtotime($event['created_at'])) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr><td colspan="6">No events found.</td></tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
