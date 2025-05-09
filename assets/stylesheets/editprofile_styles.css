@@ -106,7 +106,8 @@ body {
 }
 
 .main-content {
-    background: #1c1c1c;
+    padding: 20px;
+    background: #CDFFD8;
     color: #1c1c1c;
     border-radius: 12px;
     max-width: 600px;

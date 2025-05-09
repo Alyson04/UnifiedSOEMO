@@ -67,7 +67,7 @@ document.getElementById("cancel-btn").addEventListener("click", function () {
     document.getElementById("password").disabled = true;
     document.getElementById("save-btn").disabled = true;
     document.getElementById("cancel-btn").disabled = true;
-    document.getElementById("edit-btn").style.display = "inline-block"; // Show Edit button again
+    document.getElementById("edit-btn").style.display = "block"; // Show Edit button again
 });
 </script>
 

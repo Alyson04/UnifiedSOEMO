@@ -74,7 +74,7 @@ include '../includes/navbar.php';
             </a>
 
             <!-- Post -->
-            <a href="post.php" class="grid-link">
+            <a href="new-post.php" class="grid-link">
                 <div class="grid-item"> 
                     <img src="../assets/pictures/settings-icon.png" alt="Settings"> 
                     <p>Post</p> 

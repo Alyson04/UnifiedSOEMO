@@ -7,7 +7,7 @@ require '../config/db_conn.php';
 $admin_id = $_SESSION['user_id'] ?? null;
 
 if (!$admin_id) {
-    header("Location: ../login.php");
+    header("Location: ../public/login.php");
     exit();
 }
 
