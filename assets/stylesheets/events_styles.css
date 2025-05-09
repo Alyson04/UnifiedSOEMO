@@ -2,6 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
 }
 /* Navbar */
 .navbar {
@@ -94,4 +95,149 @@ body {
   .nav-list a:hover {
     color: #1abc9c;
   }
+
+  .blue-section {
+    background-color: #2A4365;
+    width: 100%;
+    padding: 2vh 0; /* Keeps responsiveness */
+    display: flex;
+    justify-content: center; /* Centers image horizontally */
+    align-items: center; /* Centers image vertically */
+}
+
+.section-image {
+    width: 90%; /* Makes it match the content width */
+    max-width: 1542px; /* Prevents excessive stretching */
+    height: auto; /* Maintains aspect ratio */
+    object-fit: cover; /* Keeps a clean crop */
+    border-radius: 5px; /* Optional: Smooth edges */
+}
+.text-section {
+    text-align: center;  /* Centers the text */
+    font-family: 'Inter', sans-serif; /* Matches the font */
+    font-size: 1.2rem; /* Adjust size for readability */
+    font-weight: 400; /* Regular weight */
+    color: #2A4365; /* Matches dark blue shade */
+    max-width: 1500px; /* Restricts width for better readability */
+    margin: 0 auto; /* Centers the text block */
+    padding: 20px 0; /* Adds vertical spacing */
+    line-height: 1.6; /* Improves readability */
+}
+.calendar-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.calendar {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    font-family: 'Inter', sans-serif;
+}
+
+.calendar-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #2A4365; /* Background color for week headers */
+    color: white; /* Text color for week headers */
+    border-radius: 5px;
+}
+
+.calendar-weekdays span {
+    padding: 10px;
+    display: block;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 days in a row */
+    gap: 5px; /* Space between dates */
+    text-align: center;
+}
+
+.calendar-days span {
+    padding: 12px;
+    min-width: 40px; /* Ensures equal width */
+    min-height: 40px; /* Ensures equal height */
+}
+
+.calendar-days span:hover {
+    background-color: #1E3555; /* Slightly darker when hovered */
+}
+
+/* Hide empty spaces at the start of the month */
+.empty {
+    display: block;
+    background: transparent;
+}
+
+
+.dates a {
+    display: inline-block;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    background-color: #2A4365;
+    border-radius: 5px;
+}
+
+.dates a:hover {
+    background-color: #1E2F4A;
+}
+
+
+.events-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Reduce the gap */
+    width: 78%; /* Adjust width to bring them closer */
+}
+
+.upcoming-events, .past-events {
+    background-color: #DAD0AC; /* Updated color */
+    padding: 20px; /* Added padding back */
+    max-width: 800px;
+    border-radius: 10px;
+    margin-left: 50px;
+}
+
+.past-events{
+    margin-right: 150px;
+}
+
+
+.upcoming-events a, .past-events a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    margin-bottom: 10px;
+}
+
+.upcoming-events img, .past-events img {
+    width: 65%;
+    max-width: 180px; /* Limit max size */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+
+.upcoming-events a:hover, .past-events a:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
   
