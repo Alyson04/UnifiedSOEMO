@@ -1,159 +1,74 @@
-/* General Styles */
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-/* Page Container */
-.student-org-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 90%;
-    max-width: 1200px;
+.org-container {
+    max-width: 800px;
+    margin: 50px auto;
     padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
 }
 
-/* Left Section - Organization Details */
-.org-details {
-    background: #F5F5DC;
-    padding: 30px;
-    border-radius: 15px;
-    width: 60%;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-.org-details img {
-    width: 100x;
-    height: 30px;
+.org-logo {
+    max-width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+    border-radius: 8px;
     object-fit: contain;
-    border-radius: 15px;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
     margin-bottom: 20px;
 }
 
-.org-details h2 {
-    text-align: center;
-    color: #2A4365;
-    font-size: 1.8em;
-    font-weight: bold;
-}
-
-.org-details p {
-    font-size: 1em;
-    color: #2A4365;
-    text-align: justify;
-    line-height: 1.5;
-}
-
-/* JOIN NOW Button */
-.join-btn {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    margin-top: 20px;
-    transition: background 0.3s;
-    display: inline-block;
-    text-align: center;
-}
-
-.join-btn:hover {
-    background: #0056b3;
-}
-
-/* Right Section - Student Organization List */
-.student-org-list {
-    width: 35%;
-    background: #2A4365;
-    padding: 20px;
-    border-radius: 15px;
-    color: white;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Title */
-.student-org-list h3 {
-    font-size: 1.5em;
-    text-align: center;
-    font-weight: bold;
+p {
+    font-size: 16px;
+    line-height: 1.6;
     margin-bottom: 15px;
 }
 
-/* Student Organization Cards */
-.org-card {
-    background: #DAD0AC;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 220px; /* Fixed height for uniformity */
+strong {
+    color: #34495e;
 }
 
-/* Org Image */
-.org-card img {
-    width: 90px;
-    height: 90px;
-    object-fit: contain;
-    border-radius: 10px;
-    margin-bottom: 10px;
+.org-container ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
 }
 
-/* Org Name */
-.org-card h4 {
-    font-size: 1em;
-    color: #2A4365;
-    font-weight: bold;
-    margin-bottom: 5px;
-    text-align: center;
-    max-height: 2.4em; /* Maximum of 2 lines */
-    line-height: 1.2em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Org Description */
-.org-card p {
-    font-size: 0.9em;
-    color: #2A4365;
-    text-align: center;
+.org-container ul li {
+    font-size: 15px;
     margin-bottom: 8px;
-    height: 3em; /* Fixed height to prevent shifting */
-    overflow: hidden;
+    list-style-type: disc;
 }
 
-/* JOIN NOW Button in Cards */
-.org-card .join-btn {
-    width: 85%;
-    padding: 8px;
-    font-size: 0.9em;
+.section-title {
+    font-size: 18px;
+    margin-top: 25px;
+    color: #1e272e;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .student-org-container {
-        flex-direction: column;
-        align-items: center;
-    }
+.join-section {
+    text-align: center;
+    margin-top: 30px;
+}
 
-    .org-details {
-        width: 100%;
-    }
+.join-button {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
 
-    .student-org-list {
-        width: 100%;
-        margin-top: 20px;
-    }
+.join-button:hover {
+    background-color: #2980b9;
 }

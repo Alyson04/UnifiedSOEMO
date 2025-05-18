@@ -65,19 +65,19 @@ include '../includes/navbar.php';
                 </div>
             </a>
 
-            <!-- Settings -->
-            <a href="new_settings.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/settings-icon.png" alt="Settings"> 
-                    <p>Settings</p> 
-                </div>
-            </a>
-
             <!-- Post -->
             <a href="new-post.php" class="grid-link">
                 <div class="grid-item"> 
                     <img src="../assets/pictures/download.png" alt="Settings"> 
                     <p>Post</p> 
+                </div>
+            </a>
+            
+            <!-- Settings -->
+            <a href="new_settings.php" class="grid-link">
+                <div class="grid-item"> 
+                    <img src="../assets/pictures/settings-icon.png" alt="Settings"> 
+                    <p>Settings</p> 
                 </div>
             </a>
         </div>
