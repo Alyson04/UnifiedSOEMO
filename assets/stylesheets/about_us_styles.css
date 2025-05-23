@@ -1,12 +1,10 @@
-* {
+body {
+    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
+    color: #2A4365;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
-}
-body {
-    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
-    color: #2A4365;
 }
 .container {
     max-width: 1200px;
