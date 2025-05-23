@@ -5,7 +5,7 @@ require '../api/auth.php';
 $student_id = $_SESSION['user_id'] ?? null;
 
 if (!$student_id) {
-    header("Location: ../login.php");
+    header("Location: ../public/login.php");
     exit();
 }
 
@@ -46,7 +46,7 @@ if (!empty($password)) {
 if ($stmt->execute()) {
     // Optionally update session values here
     $_SESSION['success_message'] = "Profile updated successfully.";
-    header("Location: ../pages/editprofile.php");
+    header("Location: ../students/edit_profile.php");
     exit();
 } else {
     echo json_encode(['success' => false, 'message' => 'Failed to update profile.']);
