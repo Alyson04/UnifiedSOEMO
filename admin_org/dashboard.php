@@ -1,6 +1,6 @@
 <?php 
 require '../api/auth.php';
-checkUserRole('org_admin'); // Only allow admins
+checkUserRole('org_admin'); // Only allow org_admins
 
 require '../config/db_conn.php';
 
@@ -9,10 +9,15 @@ $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role != 'admin'";
 $result = $conn->query($sql);
 $total_users = $result->fetch_assoc()['total_users'];
 
+
 // Get upcoming events
 $sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE()";
 $result_events = $conn->query($sql_events);
 $total_events = $result_events->fetch_assoc()['total_events'];
+
+$sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDATE()";
+$result_past = $conn->query($sql_past);
+$past_events = $result_past->fetch_assoc()['past_events'];
 
 // Get recent events
 $sql_recent_events = "SELECT title, event_date FROM events ORDER BY event_date DESC LIMIT 5";
@@ -41,86 +46,98 @@ if ($admin_id) {
 
 $conn->close();
     
-$title = "Organizations Dashboard";
-$style = "admindashboard_styles.css";
+$title = "Unified SOEMO Dashboard";
+$style = "admindashboard.css";
 include '../includes/header.php';
+?>
+
+
+<?php
+include '../includes/sidebar.php';
+?>
+
+  <!-- Main Panel -->
+<main class="main-content">
+<?php
 include '../includes/navbar.php';
-?>  
-    <!-- Main Section -->
-    <section class="main-container">
-        <div class="grid-container">
-            <!-- Manage Users -->
-            <a href="new-manage_users.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/user-icon.png" alt="Manage Users"> 
-                    <p>Manage Users</p> 
-                </div>
-            </a>
+?>
 
-            <!-- Events -->
-            <a href="new-manage_events.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/event-icon.png" alt="Events"> 
-                    <p>Events</p> 
-                </div>
-            </a>
-
-            <!-- Post -->
-            <a href="new-post.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/download.png" alt="Settings"> 
-                    <p>Post</p> 
-                </div>
-            </a>
-            
-            <!-- Settings -->
-            <a href="new_settings.php" class="grid-link">
-                <div class="grid-item"> 
-                    <img src="../assets/pictures/settings-icon.png" alt="Settings"> 
-                    <p>Settings</p> 
-                </div>
-            </a>
-        </div>
+    <!-- Stats -->
+    <section class="stats">
+      <a href="dashboard.php" class="card stat-card active">
+      <h2><?= $total_users ?></h2><p>Total Members</p>
+      </a>
+      <a href="upcoming.php" class="card stat-card">
+      <h2><?= $total_events ?></h2><p>Upcoming Events</p>
+      </a>
+      <a href="past.php" class="card stat-card">
+      <h2><?= $past_events ?></h2><p>Past Events</p>
+      </a>
     </section>
+    
 
-    <!-- Dashboard Summary -->
-    <section class="summary">
-        <h2>Dashboard Summary</h2>
-        <div class="stat">
-            <span>Total Users: <?php echo $total_users; ?></span>
-            <div class="progress"><div style="width: <?php echo min($total_users, 100); ?>%;"></div></div>
+    <section class="charts">
+      <div class="chart-box">
+        <h3>User Growth (Jan–Jun)</h3>
+        <div class="line-chart">
+          <div class="grid-lines"></div>
+          <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="#23406C"
+              stroke-width="2"
+              points="0,10 20,15 40,25 60,30 80,40 100,45"
+            />
+          </svg>
+          <div class="x-axis-labels">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+          </div>
         </div>
-        <div class="stat">
-            <span>Upcoming Events: <?php echo $total_events; ?></span>
-            <div class="progress"><div style="width: <?php echo min($total_events, 100); ?>%;"></div></div>
+      </div>
+    
+      <div class="chart-box">
+        <h3>User Growth (Jul–Dec)</h3>
+        <div class="line-chart">
+          <div class="grid-lines"></div>
+          <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="#23406C"
+              stroke-width="2"
+              points="0,15 20,18 40,35 60,30 80,20 100,40"
+            />
+          </svg>
+          <div class="x-axis-labels">
+            <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+          </div>
         </div>
-        <div class="stat">
-            <span>Recent Events:</span>
-            <ul>
-                <?php 
-                $has_past_events = false;
+      </div>
+    </section>    
 
-                if (!empty($recent_events)) {
-                    foreach ($recent_events as $event) {
-                        $event_date = strtotime($event['event_date']);
-                        $today = strtotime(date("Y-m-d"));
-
-                        if ($event_date <= $today) {
-                            echo "<li>" . htmlspecialchars($event['title']) . " - " . date("M d, Y", $event_date) . "</li>";
-                            $has_past_events = true;
-                        }
-                    }
-
-                    if (!$has_past_events) {
-                        echo "<li>No recent events</li>";
-                    }
-                } else {
-                    echo "<li>No recent events</li>";
-                }
-                ?>
-            </ul>
-        </div>
-
+    <!-- Recent Signups -->
+    <section class="recent-signups">
+      <h3>Recent Signups</h3>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Email</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Jusphine Lacano</td>
+            <td>jusphinemlacano@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+          <tr>
+            <td>Janna Mae Caballero</td>
+            <td>jannamaeccaballero@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+          <tr>
+            <td>Rica Mae Malgapo</td>
+            <td>ricamaemalgapo@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
+    
+  </main>
 
 <?php include '../includes/footer.php'; ?>
