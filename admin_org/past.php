@@ -4,10 +4,32 @@ checkUserRole('org_admin'); // Only allow org_admins
 
 require '../config/db_conn.php';
 
-// Get total users excluding admin
-$sql = "SELECT COUNT(*) AS total_users FROM users WHERE role != 'admin'";
-$result = $conn->query($sql);
-$total_users = $result->fetch_assoc()['total_users'];
+$total_users = 0;
+$admin_id = $_SESSION['user_id'] ?? null;
+$admin_name = '';
+$org_id = null;
+
+// Get org_id and admin's name
+if ($admin_id) {
+    $stmt = $conn->prepare("SELECT fullName, org_id FROM users WHERE ID = ?");
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $stmt->bind_result($fullName, $org_id);
+    if ($stmt->fetch()) {
+        $admin_name = ucwords(strtolower($fullName));
+    }
+    $stmt->close();
+}
+
+// Count students in the same org
+if ($org_id !== null) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'student' AND org_id = ?");
+    $stmt->bind_param("i", $org_id);
+    $stmt->execute();
+    $stmt->bind_result($total_users);
+    $stmt->fetch();
+    $stmt->close();
+}
 
 // Get upcoming events
 $sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE()";
@@ -34,78 +56,57 @@ $recent_events = [];
 while ($row = $result_recent_events->fetch_assoc()) {
     $recent_events[] = $row;
 }
-// Get logged-in user's ID from session
-$admin_id = $_SESSION['user_id'] ?? null;
-$admin_name = '';
-
-// Fetch admin's full name from database
-if ($admin_id) {
-    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
-    $stmt = $conn->prepare($sql_admin);
-    $stmt->bind_param("i", $admin_id);
-    $stmt->execute();
-    $result_admin = $stmt->get_result();
-    if ($result_admin->num_rows > 0) {
-        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
-    }
-    $stmt->close();
-}
 
 $conn->close();
-    
+
 $title = "Unified SOEMO Dashboard";
 $style = "past.css";
 include '../includes/header.php';
 ?>
 
+<?php include '../includes/sidebar.php'; ?>
 
-<?php
-include '../includes/sidebar.php';
-?>
-
-  <!-- Main Panel -->
+<!-- Main Panel -->
 <main class="main-content">
-<?php
-include '../includes/navbar.php';
-?>
+<?php include '../includes/navbar.php'; ?>
 
-    <!-- Stats -->
-    <section class="stats">
-      <a href="dashboard.php" class="card stat-card ">
-      <h2><?= $total_users ?></h2><p>Total Members</p>
-      <a href="upcoming.php" class="card stat-card ">
-      <h2><?= $total_events ?></h2><p>Upcoming Events</p>
-      </a>
-      <a href="past.php" class="card stat-card active">
-      <h2><?= $past_events ?></h2><p>Past Events</p>
-      </a>
-    </section>     
+<!-- Stats -->
+<section class="stats">
+  <a href="dashboard.php" class="card stat-card">
+    <h2><?= $total_users ?></h2><p>Total Members</p>
+  </a>
+  <a href="upcoming.php" class="card stat-card">
+    <h2><?= $total_events ?></h2><p>Upcoming Events</p>
+  </a>
+  <a href="past.php" class="card stat-card active">
+    <h2><?= $past_events ?></h2><p>Past Events</p>
+  </a>
+</section>     
 
-   
-    <section class="events-upcoming">
-    <div class="list-events">
-        <h3>Past Events</h3>
-        <?php if (!empty($past_events_list)) : ?>
-            <?php foreach ($past_events_list as $event) : ?>
-                <div><?= date("M d", strtotime($event['event_date'])) ?></div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <div>No past events found.</div>
-        <?php endif; ?>
-    </div>
+<section class="events-upcoming">
+  <div class="list-events">
+    <h3>Past Events</h3>
+    <?php if (!empty($past_events_list)) : ?>
+        <?php foreach ($past_events_list as $event) : ?>
+            <div><?= date("M d", strtotime($event['event_date'])) ?></div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div>No past events found.</div>
+    <?php endif; ?>
+  </div>
 
-    <div class="list-events">
-        <h3>Events Name</h3>
-        <?php if (!empty($past_events_list)) : ?>
-            <?php foreach ($past_events_list as $event) : ?>
-                <div><?= htmlspecialchars($event['title']) ?></div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <div>No past events found.</div>
-        <?php endif; ?>
-    </div>
+  <div class="list-events">
+    <h3>Events Name</h3>
+    <?php if (!empty($past_events_list)) : ?>
+        <?php foreach ($past_events_list as $event) : ?>
+            <div><?= htmlspecialchars($event['title']) ?></div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div>No past events found.</div>
+    <?php endif; ?>
+  </div>
 </section>
-      
-  </main>
 
-  <?php include '../includes/footer.php'; ?>
+</main>
+
+<?php include '../includes/footer.php'; ?>
