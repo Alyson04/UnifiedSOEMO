@@ -41,7 +41,7 @@ if (isset($_SESSION['user_id'])) {
     <?php endif; ?>
 
     <div class="top-right">
-        <img src="../fromOtherBranches/pics/bell.png" alt="Notifications" class="bell"/>
+        <?php include 'notification_modal.php'; ?>
         <div class="profile" onclick="toggleProfileDropdown()">
             <img src="../fromOtherBranches/pics/profile.png" alt="Admin" />
             <div class="profile-info">
