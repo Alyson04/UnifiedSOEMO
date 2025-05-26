@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
         { text: "This site has amazing features to explore.", image: "../pictures/Tutorial2.PNG" },
         { text: "Navigate through the events.", image: "../pictures/Tutorial3.PNG" },
         { text: "Learn about us more.", image: "../pictures/Tutorial4.PNG" },
-        { text: "Congratulations! You're all set!", image: "Tutorial5.PNG" }
+        { text: "Congratulations! You're all set!", image: "../pictures/Tutorial5.PNG" }
     ];
     let step = 0;
 
