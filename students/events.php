@@ -24,7 +24,7 @@ include '../includes/header.php';
 include '../includes/navbar.php';
 ?>
         <div class="blue-section">
-        <img src="IMG/ribbon.png" alt="Ribbon Cutting Ceremony" class="section-image">
+        <img src="../assets/pictures/ribbon.png" alt="ribbon" class="section-image">
     </div>
     <div class="text-section">
         <p>
@@ -96,15 +96,15 @@ include '../includes/navbar.php';
             <div class="upcoming-events">
                 <h2>UPCOMING EVENTS</h2>
                 <a href="#">
-                    <img src="IMG/pupcet.png" alt="PUPCET 2025">
+                    <img src="../assets/pictures/pupcet.png" alt="PUPCET 2025">
                     <p><strong>#PUPCET2025</strong><br>January 12, 2025<br>View Details</p>
                 </a>
                 <a href="#">
-                    <img src="IMG/exam1.png" alt="Final Examination">
+                    <img src="../assets/pictures/exam.png" alt="Final Examination">
                     <p><strong>Final Examination</strong><br>January 12, 2025<br>View Details</p>
                 </a>
                 <a href="#">
-                    <img src="IMG/exam2.png" alt="Final Examination">
+                    <img src="../assets/pictures/exam.png" alt="Final Examination">
                     <p><strong>Final Examination</strong><br>January 12, 2025<br>View Details</p>
                 </a>
             </div>
@@ -112,11 +112,11 @@ include '../includes/navbar.php';
             <div class="past-events">
                 <h2>PAST EVENT HIGHLIGHTS</h2>
                 <a href="#">
-                    <img src="IMG/sucaa.png" alt="SUCAA 2024">
+                    <img src="../assets/pictures/sucaa.png" alt="SUCAA 2024">
                     <p><strong>#SUCAA2024</strong><br>January 12, 2025<br>View Details</p>
                 </a>
                 <a href="#">
-                    <img src="IMG/iskolaris.png" alt="Iskolaris 2025">
+                    <img src="../assets/pictures/iskolaris.png" alt="Iskolaris 2025">
                     <p><strong>Iskolaris 2025</strong><br>January 12, 2025<br>View Details</p>
                 </a>
             </div>
