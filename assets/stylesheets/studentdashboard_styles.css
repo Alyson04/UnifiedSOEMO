@@ -283,6 +283,8 @@ body {
     background: linear-gradient(to right, #CDFFD8, #94B9FF);
     padding: 20px 0px;
     margin-top: 50px;
+    margin-left: 850px;
+    margin-right: 850px;
     max-width: 15%;
     border: 10px;
     color: #222;
