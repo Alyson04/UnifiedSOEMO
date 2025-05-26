@@ -110,7 +110,7 @@ function displayOrgs(orgs) {
     const container = document.getElementById("orgContainer");
     container.innerHTML = "";
 
-    const selected = shuffle([...orgs]).slice(0, 2); // Show 2 random orgs
+    const selected = shuffle([...orgs]).slice(0, 3); // Show 2 random orgs
     selected.forEach(org => {
         const card = document.createElement("div");
         card.className = "org-card";
@@ -120,7 +120,7 @@ function displayOrgs(orgs) {
                 <h3>${org.name}</h3>
                 <p>${org.desc}</p>
             </div>
-            <a class="join-btn" href="join_org.php?org_id=${encodeURIComponent(org.id)}">JOIN NOW</a>
+            <a class="join-btn" href="org_page.php?id=${encodeURIComponent(org.id)}">JOIN NOW</a>
         `;
         container.appendChild(card);
     });
