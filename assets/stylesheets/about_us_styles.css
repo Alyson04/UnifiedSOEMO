@@ -103,12 +103,13 @@ body {
     color: #1abc9c;
   }
   
+ /* General layout */
 .about-wrapper {
-    padding: 0 5%;
     font-family: 'Inter', sans-serif;
+    padding: 0 5%;
 }
 
-/* Section Headers */
+/* Section Titles */
 .section-title {
     font-size: 26px;
     font-weight: 800;
@@ -119,28 +120,30 @@ body {
     margin: 30px 0 15px;
 }
 
-/* ABOUT US Section */
+/* ABOUT US */
 .about-us-section {
     background: linear-gradient(to right, #e0ffff, #c6d8ff);
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
     padding: 20px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.1);
 }
 
 .about-us-content {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .about-text-box {
     flex: 1;
     padding: 20px;
     font-size: 1.05rem;
+    line-height: 1.7;
     color: #2A4365;
-    line-height: 1.6;
 }
 
 .about-image-box {
@@ -151,10 +154,11 @@ body {
 .about-image-box img {
     width: 100%;
     max-width: 400px;
+    height: auto;
     border-radius: 10px;
 }
 
-/* MISSION & VISION */
+/* MISSION and VISION */
 .mission-vision-section {
     background-color: #2A4365;
     padding: 20px;
@@ -164,8 +168,10 @@ body {
 
 .mission-vision-grid {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
     gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .mission-box, .vision-box {
@@ -173,34 +179,36 @@ body {
     background: linear-gradient(to right, #ccf5e7, #cce5ff);
     padding: 20px;
     border-radius: 10px;
+    min-width: 280px;
     color: #2A4365;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .mission-box h3, .vision-box h3 {
-    font-size: 1.2em;
     margin-bottom: 10px;
+    font-size: 1.2rem;
 }
 
 /* CONTACT US */
 .contact-us-section {
     background: linear-gradient(to right, #ccf5e7, #cce5ff);
     padding: 20px;
-    border-radius: 10px;
     margin-top: 20px;
+    border-radius: 10px;
 }
 
 .contact-content {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
     align-items: center;
 }
 
 .contact-text-box {
     flex: 1;
-    font-size: 1rem;
     color: #2A4365;
+    font-size: 1rem;
     line-height: 1.6;
 }
 
@@ -210,7 +218,8 @@ body {
 }
 
 .contact-image-box img {
-    width: 100%;
-    max-width: 300px;
+    width: 300%;
+    max-width: 500px;
+    height: 350px;
     border-radius: 10px;
 }

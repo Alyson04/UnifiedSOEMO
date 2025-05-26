@@ -25,7 +25,6 @@ include '../includes/navbar.php'
 ?>
 
 <div class="about-wrapper">
-
     <section class="about-us-section">
         <h2 class="section-title">ABOUT US</h2>
         <div class="about-us-content">
@@ -33,7 +32,7 @@ include '../includes/navbar.php'
                 <p><strong>Unified SOEMO</strong> is a dynamic platform designed to connect students and organizations, fostering collaboration and engagement. Our goal is to empower individuals to discover opportunities, participate in meaningful activities, and build lasting connections within their academic and social communities.</p>
             </div>
             <div class="about-image-box">
-                <img src="assets/images/about-us.png" alt="About Us">
+                <img src="../assets/pictures/about-us.png" alt="About Us">
             </div>
         </div>
     </section>
@@ -62,17 +61,20 @@ include '../includes/navbar.php'
                 📧 <a href="mailto:support@unsoemo.com">support@unsoemo.com</a><br>
                 Send us an email, and we'll get back to you within 24–48 hours.</p>
 
-                <p><strong>Social Media</strong><br>
-                Facebook: UnifiedSoemo Official<br>
-                Twitter: @UnifiedSoemo<br>
-                Instagram: @UnifiedSoemo</p>
+              <p><strong>Social Media</strong><br>
+            Connect with us on our social platforms for updates and quick assistance:<br>
+            Facebook: <a href="https://www.facebook.com/UnifiedSoemo" target="_blank">UnifiedSoemo Official</a><br>
+            Twitter: <a href="https://twitter.com/UnifiedSoemo" target="_blank">@UnifiedSoemo</a><br>
+            Instagram: <a href="https://instagram.com/UnifiedSoemo" target="_blank">@UnifiedSoemo</a>
+            </p>
+
             </div>
             <div class="contact-image-box">
-                <img src="../assets/pictures/documents.png" alt="Documents">
+                <img src="../assets/pictures/contact.png" alt="Contact Image">
             </div>
         </div>
     </section>
-
 </div>
+
 
 <?php include '../includes/footer.php'; ?>
