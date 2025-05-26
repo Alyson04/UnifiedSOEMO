@@ -53,13 +53,13 @@ if (isset($_POST['fullName'], $_POST['email'], $_POST['password']) && $orgId !==
 }
 
 // --- 3. Insert into `loadorg` table ---
-if (isset($_POST['introduction'], $_POST['skills'], $_POST['requirements'])) {
-    $intro = $_POST['introduction'];
-    $skills = $_POST['skills'];
+if (isset($_POST['objectives'], $_POST['skills'], $_POST['requirements'])) {
+    $obj = $_POST['objectives'];
+    $how_to_join = $_POST['skills'];
     $requirements = $_POST['requirements'];
 
-    $stmt3 = $conn->prepare("INSERT INTO loadorg (introduction, skills, requirements, org_id) VALUES (?, ?, ?, ?)");
-    $stmt3->bind_param("sssi", $intro, $skills, $requirements, $orgId);
+    $stmt3 = $conn->prepare("INSERT INTO loadorg (objective, how_to_join, requirements, org_id) VALUES (?, ?, ?, ?)");
+    $stmt3->bind_param("sssi", $obj, $how_to_join, $requirements, $orgId);
     $stmt3->execute();
     $stmt3->close();
 }
