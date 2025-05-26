@@ -103,121 +103,114 @@ body {
     color: #1abc9c;
   }
   
-  /* About Section */
-.about-section {
+.about-wrapper {
+    padding: 0 5%;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Section Headers */
+.section-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: white;
+    background-color: #2A4365;
     text-align: center;
-    padding: 30px 0;
-    background: #DAD0AC;
-    margin: 20px 0;
-    border-radius: 20px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    margin: 30px 0 15px;
 }
 
-.about-section h1 {
-    font-size: 28px;
-    font-weight: 710;
-    color: #1E3350;
-    margin-bottom: 30px;
-}
-
-.about-text {
-    max-width: 800px;
-    margin: 0 auto 30px;
-    padding: 0 20px;
-}
-
-.about-text p {
-    font-size: 1.1em;
-    color: #2A4365;
-    line-height: 1.6;
-}
-
-.images {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+/* ABOUT US Section */
+.about-us-section {
+    background: linear-gradient(to right, #e0ffff, #c6d8ff);
+    border-radius: 8px;
     padding: 20px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
 }
 
-.about-image {
-    width: 400px;
-    height: 300px;
-    border-radius: 20px;
-    object-fit: cover;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Mission and Vision Section */
-.mission-vision {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+.about-us-content {
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    padding: 30px;
-    background: #2A4365;
-    margin: 20px 0;
-    border-radius: 20px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.mission, .vision {
-    background: #DAD0AC;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    text-align: center;
-}
-
-.mission h2, .vision h2 {
-    font-size: 1.8em;
-    font-weight: 800;
-    color: #2A4365;
-    margin-bottom: 20px;
-}
-
-.mission p, .vision p {
+.about-text-box {
+    flex: 1;
+    padding: 20px;
+    font-size: 1.05rem;
     color: #2A4365;
     line-height: 1.6;
-    font-size: 1em;
 }
 
-/* Contact Section */
-.contact-section {
+.about-image-box {
+    flex: 1;
     text-align: center;
-    padding: 30px;
-    background: #DAD0AC;
-    margin: 20px 0;
-    border-radius: 20px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.contact-section h2 {
-    font-size: 1.8em;
-    font-weight: 800;
+.about-image-box img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+/* MISSION & VISION */
+.mission-vision-section {
+    background-color: #2A4365;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.mission-vision-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.mission-box, .vision-box {
+    flex: 1;
+    background: linear-gradient(to right, #ccf5e7, #cce5ff);
+    padding: 20px;
+    border-radius: 10px;
     color: #2A4365;
-    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.contact-section p {
-    color: #2A4365;
-    margin-bottom: 15px;
-    font-size: 1em;
-}
-
-.contact-section ul {
-    list-style: none;
-    margin-top: 15px;
-}
-
-.contact-section li {
+.mission-box h3, .vision-box h3 {
+    font-size: 1.2em;
     margin-bottom: 10px;
 }
 
-.contact-section a {
-    color: #2A4365;
-    text-decoration: none;
-    font-weight: 600;
-    transition: text-shadow 0.3s ease-in-out;
+/* CONTACT US */
+.contact-us-section {
+    background: linear-gradient(to right, #ccf5e7, #cce5ff);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
-.contact-section a:hover {
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+.contact-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.contact-text-box {
+    flex: 1;
+    font-size: 1rem;
+    color: #2A4365;
+    line-height: 1.6;
+}
+
+.contact-image-box {
+    flex: 1;
+    text-align: center;
+}
+
+.contact-image-box img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
 }

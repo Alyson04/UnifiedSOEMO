@@ -24,41 +24,55 @@ include '../includes/header.php';
 include '../includes/navbar.php' 
 ?>
 
-        <section class="about-section">
-            <h1>About Us</h1>
-            <div class="about-text">
-                <p><?php echo "Unified SOEMO is a dynamic platform designed to connect students and organizations, fostering collaboration and engagement. Our goal is to empower individuals to discover opportunities, participate in meaningful activities, and build lasting connections within their academic and social communities."; ?></p>
-            </div>
-            <div class="images">
-                <img src="../assets/pictures/image51.png" alt="PUP Campus" class="about-image">
-                <img src="../assets/pictures/studentorg.png" alt="Students" class="about-image">
-            </div>
-        </section>
+<div class="about-wrapper">
 
-        <section class="mission-vision">
-            <div class="mission">
-                <h2>Mission</h2>
-                <p><?php echo "At Unified SOEMO, our mission is to empower students by connecting them with organizations that foster growth, learning, and community involvement. We strive to create an inclusive platform where every student can easily discover and engage with groups that align with their passions, helping them maximize their potential and enrich their campus experience."; ?></p>
+    <section class="about-us-section">
+        <h2 class="section-title">ABOUT US</h2>
+        <div class="about-us-content">
+            <div class="about-text-box">
+                <p><strong>Unified SOEMO</strong> is a dynamic platform designed to connect students and organizations, fostering collaboration and engagement. Our goal is to empower individuals to discover opportunities, participate in meaningful activities, and build lasting connections within their academic and social communities.</p>
             </div>
-            <div class="vision">
-                <h2>Vision</h2>
-                <p><?php echo "Our vision is to be the leading platform for student engagement, fostering a vibrant and interconnected campus community. We aim to inspire students to build meaningful connections, develop lifelong skills, and contribute to a culture of collaboration and inclusivity within their universities and beyond."; ?></p>
+            <div class="about-image-box">
+                <img src="assets/images/about-us.png" alt="About Us">
             </div>
-        </section>
-
-        <section class="contact-section">
-            <h2>Contact Us</h2>
-            <p><?php echo "We'd love to hear from you! Whether you have questions, feedback, or need assistance, the Unified SOEMO team is here to help. Feel free to reach out to us through any of the following channels:"; ?></p>
-            <p>Email: <a href="mailto:support@unsoemo.com">support@unsoemo.com</a></p>
-            <p>Social Media:</p>
-            <ul>
-                <li>Facebook: <a href="#">UnifiedSoemo Official</a></li>
-                <li>Twitter: <a href="#">@UnifiedSoemo</a></li>
-                <li>Instagram: <a href="#">@UnifiedSoemo</a></li>
-            </ul>
-        </section>
-        <div>
-        <img src="../assets/pictures/documents.png" alt="Documents" class="about-image">
         </div>
+    </section>
+
+    <section class="mission-vision-section">
+        <h2 class="section-title">MISSION and VISION</h2>
+        <div class="mission-vision-grid">
+            <div class="mission-box">
+                <h3>Mission</h3>
+                <p>At Unified SOEMO, our mission is to empower students by connecting them with organizations that foster growth, learning, and community involvement. We strive to create an inclusive platform where every student can easily discover and engage with groups that align with their passions and aspirations, helping them maximize their potential and enrich their campus experience.</p>
+            </div>
+            <div class="vision-box">
+                <h3>Vision</h3>
+                <p>Our vision is to be the leading platform for student engagement, fostering a vibrant and interconnected campus community. We aim to inspire students to build meaningful connections, develop lifelong skills, and contribute to a culture of collaboration and inclusivity within their universities and beyond.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-us-section">
+        <h2 class="section-title">CONTACT US</h2>
+        <div class="contact-content">
+            <div class="contact-text-box">
+                <h4>Contact Us</h4>
+                <p>We’d love to hear from you! Whether you have questions, feedback, or need assistance, the Unified SOEMO team is here to help. Feel free to reach out to us through any of the following channels:</p>
+                <p><strong>Email</strong><br>
+                📧 <a href="mailto:support@unsoemo.com">support@unsoemo.com</a><br>
+                Send us an email, and we'll get back to you within 24–48 hours.</p>
+
+                <p><strong>Social Media</strong><br>
+                Facebook: UnifiedSoemo Official<br>
+                Twitter: @UnifiedSoemo<br>
+                Instagram: @UnifiedSoemo</p>
+            </div>
+            <div class="contact-image-box">
+                <img src="../assets/pictures/documents.png" alt="Documents">
+            </div>
+        </div>
+    </section>
+
+</div>
 
 <?php include '../includes/footer.php'; ?>
