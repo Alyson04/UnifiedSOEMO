@@ -113,13 +113,15 @@ body {
 }
 .popup {
     background: white;
-    padding: 20px;
+    padding: 20px 200px;
     border-radius: 10px;
     width: 300px;
     text-align: center;
     position: relative;
     opacity: 0;
     transition: opacity 0.5s ease;
+    align-items: center;
+    justify-content: center;
 }
 .popup.show {
     opacity: 1; /* FOR ANIMATION */
@@ -161,10 +163,10 @@ body {
 
 /* IMAGE POPUP */
 .tutorial-image {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    margin-bottom: 10px;
+    display: block;
+    margin: 0 auto 20px auto; /* center horizontally + space below */
+    max-width: 100%;
+    height: auto;
 }
 /* WELCOME PART */
 .welcome {
