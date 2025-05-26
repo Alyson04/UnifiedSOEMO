@@ -61,6 +61,12 @@ include '../includes/navbar.php';
     </button>
     </div>
 
+        <!-- Add New Event Button -->
+    <div class="add-event-button" style="margin: 15px 0;">
+        <a href="add_event.php" class="btn-add-event">+ Add New Event</a>
+    </div>
+
+
 
         <!-- Events Table -->
         <div class="event-table">
