@@ -85,7 +85,7 @@ if ($student_id) {
                 and tools to streamline communication and engagement. It helps students discover opportunities, 
                 connect with communities, and stay informed about activities that align with their interests.
             </p>
-            <button class="learn-more-btn">LEARN MORE ABOUT US</button>
+            <a href="../students/about_us.php" style="text-decoration: none" button class="learn-more-btn">LEARN MORE ABOUT US</button></a>
         </div>
     </div>
 </section>

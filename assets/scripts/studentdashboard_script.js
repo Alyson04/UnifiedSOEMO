@@ -34,12 +34,12 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
     const tutorialSteps = [
-        { text: "Welcome to our site! Let's take a quick tour.", image: "step1.jpg" },
-        { text: "This site has amazing features to explore.", image: "step2.jpg" },
-        { text: "Click on menus to navigate easily.", image: "step3.jpg" },
-        { text: "Check out our latest updates here.", image: "step4.jpg" },
-        { text: "Congratulations! You're all set!", image: "step5.jpg" }
-    ];
+    { text: "Welcome to our site! Let's take a quick tour, here is the dashboard for students.", image:"../assets/pictures/Tutorial1.png" },
+    { text: "This site has amazing features to explore.", image: "../assets/pictures/Tutorial2.png" },
+    { text: "Navigate through the events.", image: "../assets/pictures/Tutorial3.png" },
+    { text: "Learn about us more.", image: "../assets/pictures/Tutorial4.png" },
+    { text: "Congratulations! You're all set!, here is the logout to exit.", image:"../assets/pictures/Tutorial5.png" } 
+];
     let step = 0;
 
     function fadePopup(callback) {
