@@ -63,7 +63,4 @@ if (isset($_POST['objectives'], $_POST['skills'], $_POST['requirements'])) {
     $stmt3->execute();
     $stmt3->close();
 }
-
-
-header("refresh:3, ../admin/manage_organizations.php");
 ?>

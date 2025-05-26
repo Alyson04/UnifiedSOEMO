@@ -68,42 +68,9 @@ if ($student_id) {
 
     <section class="organizations">
         <h2>STUDENT ORGANIZATION</h2>
-        <div class="org-container">
-            <div class="org-card">
-                <div class="org-content">
-                    <img src="../assets/pictures/PUP_SNKNMA.png" alt="PUP SKM">
-                    <h3>PUP SENTRAL NA KONSEHO NG MGA-ARAL</h3>
-                    <p>The PUP SKM serves as the prime representative of the student body of the PUP Main Campus. #ServeThePeople</p>
-                </div>
-                <button class="join-btn">JOIN NOW</button>
-            </div>
-            <div class="org-card">
-                <div class="org-content">
-                    <img src="../assets/pictures/PUP_IOTSC.png" alt="PUP Student Council">
-                    <h3>PUP INSTITUTE OF TECHNOLOGY STUDENT COUNCIL</h3>
-                    <p>May the voices in your head be soothed, and the rest of your journey be filled with tranquillity.
-                        Empowering Innovators, Shaping Tomorrow’s Technology.</p>
-                </div>
-                <button class="join-btn">JOIN NOW</button>
-            </div>
-            <div class="org-card">
-                <div class="org-content">
-                    <img src="../assets/pictures/PUP_YFAP.png" alt="Youth for Animals">
-                    <h3>YOUTH FOR ANIMALS PUP</h3>
-                    <p>Your Voice Matters: For Animals, For Our Future.</p>
-                </div>
-                <button class="join-btn">JOIN NOW</button>
-            </div>
-            <div class="org-card">
-                <div class="org-content">
-                    <img src="../assets/pictures/H_PUP.png" alt="HATAW PUP">
-                    <h3>HATAW PUP</h3>
-                    <p>Hataw PUP is an accredited university-wide, advocacy student organization at PUP–Manila.</p>
-                </div>
-                <button class="join-btn">JOIN NOW</button>
-            </div>
-            <button class="discover-btn">DISCOVER MORE</button>
+        <div class="org-container" id="orgContainer">
         </div>
+        <button class="discover-btn" onclick="window.location.href='organizations.php'">DISCOVER MORE</button>
     </section>
 
 <section class="services">
@@ -122,6 +89,53 @@ if ($student_id) {
         </div>
     </div>
 </section>
+
+<script>
+async function fetchOrgs() {
+    try {
+        const res = await fetch('../api/get_orgs.php');
+        const orgs = await res.json();
+        return orgs;
+    } catch (error) {
+        console.error("Failed to fetch orgs:", error);
+        return [];
+    }
+}
+
+function shuffle(array) {
+    return array.sort(() => 0.5 - Math.random());
+}
+
+function displayOrgs(orgs) {
+    const container = document.getElementById("orgContainer");
+    container.innerHTML = "";
+
+    const selected = shuffle([...orgs]).slice(0, 2); // Show 2 random orgs
+    selected.forEach(org => {
+        const card = document.createElement("div");
+        card.className = "org-card";
+        card.innerHTML = `
+            <div class="org-content">
+                <img src="${org.img}" alt="${org.name}">
+                <h3>${org.name}</h3>
+                <p>${org.desc}</p>
+            </div>
+            <a class="join-btn" href="join_org.php?org_id=${encodeURIComponent(org.id)}">JOIN NOW</a>
+        `;
+        container.appendChild(card);
+    });
+}
+
+let cachedOrgs = [];
+
+async function initOrgs() {
+    cachedOrgs = await fetchOrgs();
+    displayOrgs(cachedOrgs);
+    setInterval(() => displayOrgs(cachedOrgs), 20000);
+}
+
+document.addEventListener("DOMContentLoaded", initOrgs);
+</script>
 
 <script src="../assets/scripts/studentdashboard_script.js"></script>
 
