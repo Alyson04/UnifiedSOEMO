@@ -34,10 +34,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
     const tutorialSteps = [
-        { text: "Welcome to our site! Let's take a quick tour, here is the dashboard for students.", image: "../pictures/tutorial1.jpg" },
-        { text: "This site has amazing features to explore.", image: "../pictures/tutorial2.jpg" },
-        { text: "Navigate through the events.", image: "../pictures/tutorial3.jpg" },
-        { text: "Learn about us more.", image: "../pictures/tutorial4.jpg" },
+        { text: "Welcome to our site! Let's take a quick tour, here is the dashboard for students.", image: "../pictures/Tutorial1.png" },
+        { text: "This site has amazing features to explore.", image: "../pictures/Tutorial2.png" },
+        { text: "Navigate through the events.", image: "../pictures/Tutorial3.png" },
+        { text: "Learn about us more.", image: "../pictures/Tutorial4.png" },
         { text: "Congratulations! You're all set!", image: "step5.jpg" }
     ];
     let step = 0;
