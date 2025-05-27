@@ -115,7 +115,7 @@ body {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    width: 1350px; /* image width + padding */
+    width: 750px; /* image width + padding */
     max-width: 95%;
     text-align: center;
     position: relative;
@@ -165,10 +165,17 @@ body {
 /* IMAGE POPUP */
 .tutorial-image {
     display: block;
+<<<<<<< HEAD
     margin: 0 auto 0px auto;
     width: 1280px;
     height: 720px;
     object-fit: cover; /* or 'contain' depending on your preference */
+=======
+    margin: 0 auto 20px auto;
+    width: 640px;
+    height: 480px;
+    object-fit: fill; /* or 'contain' depending on your preference */
+>>>>>>> bd14ccfc0bd122b2ad487f602e9c2c56585dbd9e
 }
 /* WELCOME PART */
 .welcome {
@@ -291,8 +298,8 @@ body {
     background: linear-gradient(to right, #CDFFD8, #94B9FF);
     padding: 20px 10px;
     margin-top: 50px;
-    margin-left: 850px;
-    margin-right: 850px;
+    margin-left: 550px;
+    margin-right: 550px;
     max-width: 15%;
     border: 10px;
     color: #222;
@@ -303,6 +310,7 @@ body {
     flex-basis: 100%;
     font-weight: bolder;
     outline: 2px solid #2A4365; /* BORDER OUTLINE */
+    font-size: 18px;
 }
 
 .discover-btn:hover {

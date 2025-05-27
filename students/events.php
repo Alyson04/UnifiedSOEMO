@@ -24,7 +24,7 @@ include '../includes/header.php';
 include '../includes/navbar.php';
 ?>
         <div class="blue-section">
-        <img src="../assets/pictures/ribbon.png" alt="ribbon" class="section-image">
+        <img src="../assets/pictures/ribbons.png" alt="ribbon" class="section-image">
     </div>
     <div class="text-section">
         <p>
