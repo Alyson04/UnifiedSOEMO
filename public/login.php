@@ -7,10 +7,10 @@
             
             <form action="../api/login.php" method="POST">
                 <label>Email Address:</label>
-                <input type="email" class="input-field" name="email" placeholder="Enter your email">
+                <input type="email" class="input-field" name="email" placeholder="Enter your email"required>
                 
                 <label>Password:</label>
-                <input type="password" class="input-field" name="password" placeholder="Enter your password">
+                <input type="password" class="input-field" name="password" placeholder="Enter your password"required>
                 
                 <div class="remember-me">
                     <input type="checkbox" id="remember">
