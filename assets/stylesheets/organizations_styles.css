@@ -235,7 +235,6 @@ body {
   overflow: hidden;
 
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Show up to 3 lines */
   -webkit-box-orient: vertical;
 
   white-space: normal;
