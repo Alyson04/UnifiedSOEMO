@@ -22,9 +22,11 @@
                 <p class="forgot-password"><a href="#">Forgot Password?</a></p>
             </form>
             
-            <p class="terms">By using this service, you understood and agree to the PUP Online Services <a href="#">Terms of Use</a> and <a href="#">Privacy Statement</a></p>
+           <p class="terms">
+               By using this service, you understand and agree to the PUP Online Services 
+            <a href="https://www.pup.edu.ph/terms/">Terms of Use</a> and 
+             <a href="https://www.pup.edu.ph/privacy/">Privacy Statement</a>.
+            </p>
+
         </div>
     </div>
-
-
-<?php include '../includes/footer.php'; ?>

@@ -1,6 +1,5 @@
 <?php $title = "Register"; $style = "register_styles.css"; include '../includes/header.php'; ?>
 
-
 <!-- Left Side - Signup Form -->
 <div class="left-container">
     <div class="signup-form">
@@ -27,16 +26,18 @@
         </form>
 
         <hr>
-        <button class="google-btn" onclick="window.location.href='../api/google_login.php'">Register with Google</button>
+        <button class="google-btn" onclick="window.location.href='../api/google_login.php'">
+            <img src="../assets/pictures/google-icon.png" alt="Google Login" class="google-icon">
+            Sign Up with Google
+        </button>
 
-        <p class="terms">
-            By using this service, you understand and agree to the PUP Online Services 
-            <a href="terms.html">Terms of Use</a> and <a href="privacy.html">Privacy Statement</a>.
+       <p class="terms">
+         By using this service, you understand and agree to the PUP Online Services 
+         <a href="https://www.pup.edu.ph/terms/">Terms of Use</a> and 
+         <a href="https://www.pup.edu.ph/privacy/">Privacy Statement</a>.
         </p>
     </div>
 </div>
 
 <!-- Right Side - Background Image -->
 <div class="right-container"></div>
-
-<?php include '../includes/footer.php'; ?>
