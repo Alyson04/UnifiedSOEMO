@@ -113,9 +113,10 @@ body {
 }
 .popup {
     background: white;
-    padding: 20px 200px;
+    padding: 20px;
     border-radius: 10px;
-    width: 300px;
+    width: 1350px; /* image width + padding */
+    max-width: 95%;
     text-align: center;
     position: relative;
     opacity: 0;
@@ -164,9 +165,10 @@ body {
 /* IMAGE POPUP */
 .tutorial-image {
     display: block;
-    margin: 0 auto 20px auto; /* center horizontally + space below */
-    max-width: 100%;
-    height: auto;
+    margin: 0 auto 20px auto;
+    width: 1280px;
+    height: 720px;
+    object-fit: cover; /* or 'contain' depending on your preference */
 }
 /* WELCOME PART */
 .welcome {
@@ -222,7 +224,7 @@ body {
     margin-top: 20px;
     background: #2A4365;
     padding-top: 40px;
-    padding-bottom: 10px;
+    padding-bottom: 40px;
 }
 
 .org-card {
@@ -269,21 +271,25 @@ body {
     left: 50%;            /* center horizontally */
     transform: translateX(-50%); /* center correction */
     background: linear-gradient(to right, #CDFFD8, #94B9FF);
-    color: white;
+    color: black;
     padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
+    text-decoration: none; /* NO UNDERLINE */
+    font-weight: bold;
+    /* outline: 1px solid #2A4365; BORDER OUTLINE */
 }
 
 .join-btn:hover {
     background: #a8c0ff;
+    color: white;
 }
 
 .discover-btn:last-child {
     background: linear-gradient(to right, #CDFFD8, #94B9FF);
-    padding: 20px 0px;
+    padding: 20px 10px;
     margin-top: 50px;
     margin-left: 850px;
     margin-right: 850px;
@@ -295,16 +301,20 @@ body {
     transition: 0.3s;
     order: 2;
     flex-basis: 100%;
+    font-weight: bolder;
+    outline: 2px solid #2A4365; /* BORDER OUTLINE */
 }
 
 .discover-btn:hover {
     background: #a8c0ff;
-    color: rgb(207, 159, 159);
+    /* color: rgb(207, 159, 159); //PINK HOVER OPTIONAL*/ 
+    color: white;
 }
 /* ~~ PART OF SERVICE ~~ */
 .services {
     background: linear-gradient(to right, #CDFFD8, #94B9FF);
     padding-bottom: 100px;
+    padding-top: 10px;
     text-align: center;
 }
 
@@ -362,6 +372,7 @@ body {
 .learn-more-btn:hover {
     background: #a8c0ff;
     color: white;
+    
 }
 
 .notification-modal {
