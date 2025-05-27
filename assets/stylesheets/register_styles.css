@@ -112,6 +112,7 @@ label {
 }
 
 /* Google Button */
+/* Google Button */
 .google-btn {
     width: 100%;
     padding: 12px;
@@ -127,8 +128,8 @@ label {
 }
 
 .google-btn .google-icon {
-    width: 18px;
-    height: 18px;
+    width: 30px;  /* Increased size */
+    height: 25px; /* Increased size */
     margin-right: 10px;
 }
 

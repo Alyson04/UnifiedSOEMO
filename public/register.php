@@ -27,7 +27,7 @@
 
         <hr>
         <button class="google-btn" onclick="window.location.href='../api/google_login.php'">
-            <img src="../assets/pictures/google-icon.png" alt="Google Login" class="google-icon">
+            <img src="../assets/pictures/google_icons.png" alt="Google Login" class="google-icon">
             Sign Up with Google
         </button>
 
