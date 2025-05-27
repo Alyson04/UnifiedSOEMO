@@ -168,7 +168,7 @@ body {
     margin: 0 auto 20px auto;
     width: 640px;
     height: 480px;
-    object-fit: cover; /* or 'contain' depending on your preference */
+    object-fit: fill; /* or 'contain' depending on your preference */
 }
 /* WELCOME PART */
 .welcome {
@@ -303,6 +303,7 @@ body {
     flex-basis: 100%;
     font-weight: bolder;
     outline: 2px solid #2A4365; /* BORDER OUTLINE */
+    font-size: 18px;
 }
 
 .discover-btn:hover {
