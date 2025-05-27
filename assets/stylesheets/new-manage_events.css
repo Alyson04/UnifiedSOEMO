@@ -255,3 +255,18 @@ tr:nth-child(even) td {
 .edit-btn:hover {
     background: #002d73;
 }
+
+.btn-add-event {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2e86de;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add-event:hover {
+    background-color: #1b4f72;
+}

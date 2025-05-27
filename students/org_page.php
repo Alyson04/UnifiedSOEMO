@@ -99,5 +99,7 @@ include '../includes/navbar.php';
     <p>Organization not found.</p>
 <?php endif; ?>
 
+<script src="../assets/scripts/notif_script.js"></script>
+
 
 <?php include '../includes/footer.php';?>

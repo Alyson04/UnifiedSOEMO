@@ -71,5 +71,5 @@ $result = mysqli_query($conn, $sql);
     </div>
 </section>
 
-
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

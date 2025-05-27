@@ -73,8 +73,8 @@ include '../includes/navbar.php';
 
                     <form id="form3">
 
-                        <label for="introduction">Introduction:</label>
-                        <input type="text" id="introduction" name="introduction" required><br>
+                        <label for="objectives">Introduction:</label>
+                        <input type="text" id="objectives" name="objectives" required><br>
 
                         <label for="skills">Skills:</label>
                         <input type="text" id="skills" name="skills" required><br>

@@ -16,4 +16,5 @@ require '../api/auth.php';
     </form>
 </div>
 
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

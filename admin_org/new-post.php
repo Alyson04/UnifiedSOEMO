@@ -25,10 +25,19 @@ include '../includes/navbar.php';
 ?>
 
 <form id="postForm" enctype="multipart/form-data">
-  <textarea name="content" placeholder="What's on your mind?" required></textarea>
-  <input type="file" name="image" accept="image/*">
-  <button type="submit">Post</button>
+  <div class="form-wrapper">
+    <textarea name="content" placeholder="What's on your mind?" required></textarea>
+
+    <div class="form-bottom">
+      <label for="image-upload" class="upload-label">
+        <img src="../assets/pictures/icon.png" alt="Upload" />
+      </label>
+      <input type="file" name="image" id="image-upload" accept="image/*" style="display: none;">
+      <button type="submit">Post</button>
+    </div>
+  </div>
 </form>
+
 
 <?php include '../includes/modals.php';?>
 
@@ -104,4 +113,18 @@ function loadPosts() {
         console.error('Error loading posts:', err);
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInput = document.getElementById('image-upload');
+  const fileNameDisplay = document.getElementById('file-name');
+
+  fileInput.addEventListener('change', function() {
+    fileNameDisplay.textContent = fileInput.files.length > 0
+      ? fileInput.files[0].name
+      : 'No file chosen';
+  });
+});
+
 </script>
+
+
