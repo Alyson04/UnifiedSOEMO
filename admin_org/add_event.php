@@ -63,4 +63,5 @@ include '../includes/sidebar.php';
     </form>
 </div>
 
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

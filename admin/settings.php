@@ -81,4 +81,6 @@ document.getElementById("cancel-btn").addEventListener("click", function () {
 });
 </script>
 
+<script src="../assets/scripts/notif_script.js"></script>
+
 <?php include '../includes/footer.php'; ?>

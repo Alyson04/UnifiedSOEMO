@@ -33,7 +33,7 @@ include '../includes/navbar.php';
 
 <?php include '../includes/footer.php'; ?>
 
-
+<script src="../assets/scripts/notif_script.js"></script>
 <script>
 // Add the event listeners for confirm and cancel buttons only once
 document.addEventListener('DOMContentLoaded', function() {

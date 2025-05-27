@@ -126,5 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+<script src="../assets/scripts/notif_script.js"></script>
 
 
