@@ -271,21 +271,25 @@ body {
     left: 50%;            /* center horizontally */
     transform: translateX(-50%); /* center correction */
     background: linear-gradient(to right, #CDFFD8, #94B9FF);
-    color: white;
+    color: black;
     padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
+    text-decoration: none; /* NO UNDERLINE */
+    font-weight: bold;
+    /* outline: 1px solid #2A4365; BORDER OUTLINE */
 }
 
 .join-btn:hover {
     background: #a8c0ff;
+    color: white;
 }
 
 .discover-btn:last-child {
     background: linear-gradient(to right, #CDFFD8, #94B9FF);
-    padding: 20px 0px;
+    padding: 20px 10px;
     margin-top: 50px;
     margin-left: 850px;
     margin-right: 850px;
@@ -297,11 +301,14 @@ body {
     transition: 0.3s;
     order: 2;
     flex-basis: 100%;
+    font-weight: bolder;
+    outline: 2px solid #2A4365; /* BORDER OUTLINE */
 }
 
 .discover-btn:hover {
     background: #a8c0ff;
-    color: rgb(207, 159, 159);
+    /* color: rgb(207, 159, 159); //PINK HOVER OPTIONAL*/ 
+    color: white;
 }
 /* ~~ PART OF SERVICE ~~ */
 .services {
