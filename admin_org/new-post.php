@@ -4,6 +4,11 @@ checkUserRole('org_admin'); // Only allow admins
 
 require '../config/db_conn.php';
 
+// Start session only if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Get logged-in user's ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
 
@@ -43,7 +48,32 @@ include '../includes/navbar.php';
 
 <div id="postsWrapper">
   <div id="postsContainer">
-    <!-- Posts will be loaded here -->
+    <?php
+   $query = "SELECT posts.*, users.fullName 
+          FROM posts
+          LEFT JOIN users ON posts.user_id = users.id
+          ORDER BY posts.created_at DESC";
+       $result = mysqli_query($conn, $query);
+   if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $content = htmlspecialchars($row['content']);
+        $profile_img = '../assets/pictures/icon.png'; // Or fetch user profile picture if you have it
+        $username = htmlspecialchars($row['fullName'] ?? 'Unknown');
+
+        $postImage = isset($row['image']) && $row['image'] !== '' ? "../uploads/" . htmlspecialchars($row['image']) : null;
+
+            echo "<div class='post-card'>
+                    <div class='post-header'>
+                      <img src='{$profile_img}' alt='{$username}' />
+                      <span class='username'>{$username}</span>
+                    </div>
+                    <div class='post-content'>{$content}</div>
+                  </div>";
+        }
+    } else {
+        echo "<p>No posts available.</p>";
+    }
+    ?>
   </div>
 </div>
 
@@ -52,24 +82,21 @@ include '../includes/navbar.php';
 <script>
 // Add the event listeners for confirm and cancel buttons only once
 document.addEventListener('DOMContentLoaded', function() {
-    loadPosts();
-
     const confirmationModal = document.getElementById('confirmationModal');
     const confirmBtn = document.getElementById('confirmBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const postForm = document.getElementById('postForm');
-    
+
     if (confirmationModal) {
         confirmationModal.style.display = 'none';
     }
+
     // Handle form submission
     postForm.addEventListener('submit', function(e) {
         e.preventDefault(); // Prevent the form from submitting immediately
-        
-        // Show the confirmation modal
         confirmationModal.style.display = 'flex';
     });
-    
+
     // Handle confirm button click
     confirmBtn.addEventListener('click', function() {
         const formData = new FormData(postForm);
@@ -81,50 +108,22 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                loadPosts(); // reload posts
-                postForm.reset(); // reset the form
-                confirmationModal.style.display = 'none'; // Hide modal
+                location.reload(); // Reload the page to show new post
             } else {
                 alert(data.message || "Something went wrong.");
-                confirmationModal.style.display = 'none'; // Hide modal
+                confirmationModal.style.display = 'none';
             }
         })
         .catch(err => {
             console.error('Fetch error:', err);
             alert('An error occurred.');
-            confirmationModal.style.display = 'none'; // Hide modal
+            confirmationModal.style.display = 'none';
         });
     });
-    
+
     // Handle cancel button click
     cancelBtn.addEventListener('click', function() {
-        confirmationModal.style.display = 'none'; // Hide modal
+        confirmationModal.style.display = 'none';
     });
 });
-
-// Function to load posts
-function loadPosts() {
-    fetch('../api/get_post.php') // Fetch posts from get_posts.php
-    .then(res => res.text())
-    .then(html => {
-        document.getElementById('postsContainer').innerHTML = html;
-    })
-    .catch(err => {
-        console.error('Error loading posts:', err);
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const fileInput = document.getElementById('image-upload');
-  const fileNameDisplay = document.getElementById('file-name');
-
-  fileInput.addEventListener('change', function() {
-    fileNameDisplay.textContent = fileInput.files.length > 0
-      ? fileInput.files[0].name
-      : 'No file chosen';
-  });
-});
-
 </script>
-
-
