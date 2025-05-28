@@ -66,7 +66,7 @@ include '../includes/sidebar.php';
 include '../includes/navbar.php';
 ?>
         <div class="outer-box">
-          <h2 class="section-title">Edit Profile</h2>
+          <h2 class="section-title">EDIT PROFILE</h2>
       
           <div class="inner-card">
                 <div class="card-section upload-section">

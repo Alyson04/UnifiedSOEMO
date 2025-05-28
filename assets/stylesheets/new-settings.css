@@ -166,9 +166,9 @@
   }
 
 .outer-box {
-    background-color: #243049; /* Dark blue outer container */
-    padding: 30px;
-    border-radius: 12px;
+    background-color: #ffffffcc;
+    padding: 40px;
+    border-radius: 25px;
     margin-top: 20px;
     margin-left: 20px;
     color: #fff;
@@ -181,8 +181,8 @@
 .section-title {
     font-size: 26px;
     text-align: center;
-    background-color: #D9E9FF;
-    color: #243049;
+    background-color:  #243049;
+    color: #fff;
     padding: 15px;
     border-radius: 20px;
     margin-bottom: 35px;
@@ -194,6 +194,7 @@
 
 /* Inner Card - light background */
 .inner-card {
+    border: 2.5px solid #2A4365;
     background-color: #D9E9FF;
     border-radius: 20px;
     padding: 35px 40px;
