@@ -45,13 +45,6 @@ include '../includes/navbar.php';
 <div class="content">
         <h2 class="page-title">MANAGE USERS</h2>
 
-        <div class="search-bar">
-            <input type="text" placeholder="Search Users...">
-            <button>
-                <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
-            </button>
-            </div>
-
          <!-- Users Table -->
          <div class="user-table">
             <table>
