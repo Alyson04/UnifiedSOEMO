@@ -34,6 +34,10 @@ include '../includes/navbar.php';
         <h2 class="page-title">Edit Profile</h2>
 
         <button id="edit-btn">Edit</button>
+        <div class="profile-pic-container">
+            <img src="../assets/images/default-profile.png" alt="Profile Picture" id="profile-preview">
+            <input type="file" name="profile_pic" id="profile_pic" accept="image/*" disabled>
+        </div>
 
         <form action="../api/update_profile.php" method="POST">
             <label for="fullName">Full Name:</label>
@@ -45,14 +49,18 @@ include '../includes/navbar.php';
             <label for="password">New Password:</label>
             <input type="password" name="password" id="password" placeholder="Enter new password" disabled>
 
-            <button type="submit" id="save-btn" disabled>Save Changes</button>
-            <button type="button" id="cancel-btn" disabled>Cancel</button>
+            <div class="button-group">
+                <button type="submit" id="save-btn" disabled>Save Changes</button>
+                <button type="button" id="cancel-btn" disabled>Cancel</button>
+            </div>
+
         </form>
     </div>
 </div>
 
 <script>
 document.getElementById("edit-btn").addEventListener("click", function () {
+    document.getElementById("profile_pic").disabled = false;
     document.getElementById("fullName").disabled = false;
     document.getElementById("email").disabled = false;
     document.getElementById("password").disabled = false;
@@ -71,5 +79,6 @@ document.getElementById("cancel-btn").addEventListener("click", function () {
 });
 </script>
 <script src="../assets/scripts/notif_script.js"></script>
+<script src="../assets/scripts/editprofile_script.js"></script>
 
 <?php include '../includes/footer.php'; ?>
