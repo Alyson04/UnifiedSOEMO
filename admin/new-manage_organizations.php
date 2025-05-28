@@ -31,57 +31,45 @@ if ($admin_id) {
 }
 
 $conn->close();
-    
+
 $title = "Unified SOEMO Dashboard";
-$style = "new-manage_organizations.css";
+$style = "new-manage_events.css"; // Reuse manage events style
 include '../includes/header.php';
 include '../includes/sidebar.php';
 ?>
 
-  <!-- Main Panel -->
+<!-- Main Panel -->
 <main class="main-content">
-<?php
-include '../includes/navbar.php';
-?>
+<?php include '../includes/navbar.php'; ?>
 
-<!-- Main Content -->
 <div class="content">
-        <h2 class="page-title">Manage Organizations</h2>
+    <h2 class="page-title">Manage Organizations</h2>
 
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" placeholder="Search Organizations...">
-            <button>
-                <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
-            </button>
-            </div>
-
-        <!-- Organizations Table -->
-        <div class="org-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Date Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($organizations)) : ?>
-                        <?php foreach ($organizations as $org) : ?>
-                            <tr>
-                                <td><?= htmlspecialchars($org['name']) ?></td>
-                                <td><?= htmlspecialchars($org['description']) ?></td>
-                                <td><?= date("M d, Y", strtotime($org['created_at'])) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <tr><td colspan="5">No organizations found.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+    <!-- Organizations Table -->
+    <div class="event-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Date Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($organizations)) : ?>
+                    <?php foreach ($organizations as $org) : ?>
+                        <tr>
+                            <td><?= htmlspecialchars($org['name']) ?></td>
+                            <td><?= htmlspecialchars($org['description']) ?></td>
+                            <td><?= date("M d, Y", strtotime($org['created_at'])) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr><td colspan="3">No organizations found.</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
-
+</div>
 
 <?php include '../includes/footer.php'; ?>
