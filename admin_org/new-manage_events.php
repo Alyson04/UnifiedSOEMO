@@ -52,15 +52,6 @@ include '../includes/navbar.php';
 <div class="content">
         <h2 class="page-title">MANAGE EVENTS</h2>
 
-        <!-- Search Bar -->
-        <!-- Search Bar -->
-    <div class="search-bar">
-    <input type="text" placeholder="Search Events...">
-    <button>
-        <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
-    </button>
-    </div>
-
         <!-- Add New Event Button -->
     <div class="add-event-button" style="margin: 15px 0;">
         <a href="add_event.php" class="btn-add-event">+ Add New Event</a>

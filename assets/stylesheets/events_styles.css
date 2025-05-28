@@ -231,7 +231,7 @@ body {
 /* Upcoming and Past Events container styling */
 .upcoming-events, .past-events {
     background-color: #f9fafb; /* light, clean background */
-    padding: 25px 30px;
+    padding: 25px 25px;
     border-radius: 16px;
     width: 100%;
     max-width: 360px; /* slightly wider */

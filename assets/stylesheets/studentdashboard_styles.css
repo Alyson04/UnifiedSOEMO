@@ -8,12 +8,12 @@
     /* Navbar */
     .navbar {
         background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1px 5px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .logo img {
