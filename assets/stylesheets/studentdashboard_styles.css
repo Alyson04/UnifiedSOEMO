@@ -165,18 +165,10 @@
     /* IMAGE POPUP */
     .tutorial-image {
         display: block;
-    <<<<<<< HEAD
-        margin: 0 auto 0px auto;
-        width: 1280px;
-        height: 720px;
-        object-fit: cover; /* or 'contain' depending on your preference */
-    =======
         margin: 0 auto 20px auto;
         width: 640px;
         height: 480px;
-        object-fit: fill; /* or 'contain' depending on your preference */
-    >>>>>>> bd14ccfc0bd122b2ad487f602e9c2c56585dbd9e
-    }
+        object-fit: fill; /* or 'contain' depending on your preference */}
     /* WELCOME PART */
     /* WELCOME PART */
 .welcome {
@@ -368,6 +360,7 @@
 
     .join-btn:hover {
     background-color: #1e40af;
+    color: black;
     }
 
     /* DISCOVER MORE BUTTON */
