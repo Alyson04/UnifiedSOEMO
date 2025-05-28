@@ -4,6 +4,7 @@ body {
     padding: 0;
     font-family: 'Inter', sans-serif;
     box-sizing: border-box;
+    background-color: #fff;
 }
 
 /* Navbar */
@@ -101,12 +102,88 @@ body {
 .org-container {
     max-width: 800px;
     margin: 50px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    padding: 40px;
+    background-color: #E2EDFA;
+    border-radius: 24px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
     color: #333;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+    border: 3px solid #4682B4;
+    background-clip: padding-box;
+}
+
+
+.org-container::before,
+.org-container::after,
+.org-container .corner-top-right,
+.org-container .corner-bottom-left {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #4682B4;
+    border-radius: 4px;
+}
+
+/* Top-left corner */
+.org-container::before {
+    top: 10px;
+    left: 10px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 10px 0 0 0;
+}
+
+/* Bottom-right corner */
+.org-container::after {
+    bottom: 10px;
+    right: 10px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 10px 0;
+}
+
+/* Top-right corner */
+.org-container .corner-top-right {
+    top: 10px;
+    right: 10px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 10px 0 0;
+}
+
+/* Bottom-left corner */
+.org-container .corner-bottom-left {
+    bottom: 10px;
+    left: 10px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 10px;
+}
+
+details {
+    background: #f4faff;
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    transition: 0.3s ease;
+    font-size: 15px;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+details[open] {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    border-color: #3498db;
 }
 
 .org-logo {
@@ -128,6 +205,7 @@ p {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 15px;
+    text-align: justify;
 }
 
 strong {
