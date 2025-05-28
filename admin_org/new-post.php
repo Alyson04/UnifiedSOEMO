@@ -11,6 +11,30 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Get logged-in user's ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
+$org_id = $_SESSION['org_id'] ?? null;
+$admin_name = '';
+
+// Fetch admin's full name from database
+if ($admin_id) {
+    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_admin);
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result_admin = $stmt->get_result();
+    if ($result_admin->num_rows > 0) {
+        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
+
+$sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role = 'student' AND org_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $org_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+
+
 
 if (!$admin_id) {
   header("Location: ../public/login.php");
@@ -82,7 +106,7 @@ include '../includes/navbar.php';
     ?>
   </div>
 </div>
-
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
 
 <script>
