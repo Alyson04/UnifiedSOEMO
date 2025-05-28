@@ -83,26 +83,29 @@ include '../includes/sidebar.php';
                     <td><?= ucfirst($status) ?: 'Pending'; ?></td>
                     <td><?= htmlspecialchars($user['applied_at']); ?></td>
                     <td>
-                        <?php if ($status === "approved" || $status === "declined"): ?>
-                            <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                <button type="submit" name="action" value="accept" disabled>Accept</button>
-                            </form>
-                            <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                <button type="submit" name="action" value="decline" disabled>Decline</button>
-                            </form>
-                        <?php else: ?>
-                            <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                <button type="submit" name="action" value="accept">Accept</button>
-                            </form>
-                            <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                <button type="submit" name="action" value="decline">Decline</button>
-                            </form>
-                        <?php endif; ?>
-                    </td>
+    <?php if ($status === "approved" || $status === "declined"): ?>
+        <form action="../api/process_application.php" method="POST" style="display:inline;">
+            <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+            <input type="hidden" name="org_id" value="<?= $org_id; ?>">  <!-- Added here -->
+            <button type="submit" name="action" value="accept" disabled>Accept</button>
+        </form>
+        <form action="../api/process_application.php" method="POST" style="display:inline;">
+            <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+            <button type="submit" name="action" value="decline" disabled>Decline</button>
+        </form>
+    <?php else: ?>
+        <form action="../api/process_application.php" method="POST" style="display:inline;">
+            <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+            <input type="hidden" name="org_id" value="<?= $org_id; ?>">  <!-- Added here -->
+            <button type="submit" name="action" value="accept">Accept</button>
+        </form>
+        <form action="../api/process_application.php" method="POST" style="display:inline;">
+            <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
+            <button type="submit" name="action" value="decline">Decline</button>
+        </form>
+    <?php endif; ?>
+</td>
+
                 </tr>
             <?php endwhile; ?>
             </tbody>
