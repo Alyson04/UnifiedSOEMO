@@ -55,7 +55,7 @@ include '../includes/navbar.php';
 
 <form id="postForm" enctype="multipart/form-data">
   <div class="form-wrapper">
-    <textarea id="content" name="content" placeholder="What's on your mind?" required></textarea>
+    <textarea id="content" name="content" placeholder="What's on your mind?" style="overflow:hidden; resize:none;" required></textarea>
 <p id="warning" style="color:red;"></p>
 
     <div class="form-bottom">
@@ -158,24 +158,48 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 const textarea = document.getElementById('content');
 const warning = document.getElementById('warning');
 const maxChars = 500;
 const maxWordLength = 20;
 
-textarea.addEventListener('input', function () {
-  const words = textarea.value.split(/\s+/);
-  const longWord = words.find(word => word.length > maxWordLength);
+function autoGrow(element) {
+  element.style.height = 'auto'; // reset height
+  element.style.height = element.scrollHeight + 'px'; // set height to scrollHeight
+}
 
-  if (textarea.value.length > maxChars) {
-    textarea.value = textarea.value.substring(0, maxChars);
-    warning.textContent = "Maximum character limit reached (500).";
-  } else if (longWord) {
-    warning.textContent = `Word too long (max ${maxWordLength} characters): "${longWord}"`;
-    textarea.value = textarea.value.replace(longWord, longWord.substring(0, maxWordLength));
+textarea.addEventListener('input', function () {
+  // Auto grow textarea height
+  autoGrow(textarea);
+
+  let value = textarea.value;
+
+  // Limit total characters
+  if (value.length > maxChars) {
+    value = value.substring(0, maxChars);
+    warning.textContent = `Maximum character limit reached (${maxChars}).`;
   } else {
     warning.textContent = "";
+  }
+
+  // Check for long words and truncate them
+  const words = value.trim().split(/\s+/);
+  let modified = false;
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].length > maxWordLength) {
+      words[i] = words[i].substring(0, maxWordLength);
+      warning.textContent = `Word too long (max ${maxWordLength} characters), truncated.`;
+      modified = true;
+    }
+  }
+
+  if (modified) {
+    value = words.join(' ');
+  }
+
+  // Update textarea value only if modified
+  if (textarea.value !== value) {
+    textarea.value = value;
   }
 });
 </script>
