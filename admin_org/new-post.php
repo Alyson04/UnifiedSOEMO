@@ -55,7 +55,8 @@ include '../includes/navbar.php';
 
 <form id="postForm" enctype="multipart/form-data">
   <div class="form-wrapper">
-    <textarea name="content" placeholder="What's on your mind?" required></textarea>
+    <textarea id="content" name="content" placeholder="What's on your mind?" required></textarea>
+<p id="warning" style="color:red;"></p>
 
     <div class="form-bottom">
       <label for="image-upload" class="upload-label">
@@ -155,5 +156,26 @@ document.addEventListener('DOMContentLoaded', function() {
     cancelBtn.addEventListener('click', function() {
         confirmationModal.style.display = 'none';
     });
+});
+
+
+const textarea = document.getElementById('content');
+const warning = document.getElementById('warning');
+const maxChars = 500;
+const maxWordLength = 20;
+
+textarea.addEventListener('input', function () {
+  const words = textarea.value.split(/\s+/);
+  const longWord = words.find(word => word.length > maxWordLength);
+
+  if (textarea.value.length > maxChars) {
+    textarea.value = textarea.value.substring(0, maxChars);
+    warning.textContent = "Maximum character limit reached (500).";
+  } else if (longWord) {
+    warning.textContent = `Word too long (max ${maxWordLength} characters): "${longWord}"`;
+    textarea.value = textarea.value.replace(longWord, longWord.substring(0, maxWordLength));
+  } else {
+    warning.textContent = "";
+  }
 });
 </script>

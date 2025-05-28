@@ -327,5 +327,10 @@ td.inactive {
 .action-btn:hover {
     background-color: #0056b3;
 }
-
-
+.status-filter-form {
+    margin-bottom: 1em;
+}
+.status-filter-form select {
+    padding: 5px;
+    font-size: 14px;
+}

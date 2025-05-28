@@ -22,6 +22,7 @@ if ($admin_id) {
     $stmt->close();
 }
 
+$status_filter = $_GET['status'] ?? '';
 // Fetch students who applied to this org
 $sql = "
     SELECT 
@@ -35,8 +36,16 @@ $sql = "
     WHERE u.role = 'student' AND a.org_id = ?
 ";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $org_id);
+// Add status condition if filter is set
+if (!empty($status_filter)) {
+    $sql .= " AND a.application_status = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $org_id, $status_filter);
+} else {
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $org_id);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -61,6 +70,17 @@ include '../includes/sidebar.php';
             <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
         </button>
     </div>
+    <!-- Status Filter -->
+<form method="GET" class="status-filter-form">
+    <label for="status_filter">Filter</label>
+    <select name="status" id="status_filter" onchange="this.form.submit()">
+        <option value="">All</option>
+        <option value="approved" <?= (($_GET['status'] ?? '') === 'approved') ? 'selected' : '' ?>>Approved</option>
+        <option value="declined" <?= (($_GET['status'] ?? '') === 'declined') ? 'selected' : '' ?>>Declined</option>
+        <option value="under review" <?= (($_GET['status'] ?? '') === 'under review') ? 'selected' : '' ?>>Under Review</option>
+    </select>
+</form>
+
 
     <!-- Users Table -->
     <div class="user-table">
