@@ -65,26 +65,11 @@ include '../includes/sidebar.php';
 <?php
 include '../includes/navbar.php';
 ?>
-         <div class="outer-box">
-          <h2 class="section-title">Manage Users</h2>
+        <div class="outer-box">
+          <h2 class="section-title">Edit Profile</h2>
       
           <div class="inner-card">
-            <div class="card-row-horizontal">
-              <!-- Left: User Information -->
-              <div class="card-section user-info-section">
-                  <h3>User Information</h3>
-                  <div class="card-row">
-                      <div class="card-label">User List:</div>
-                      <div class="card-action">[View List] ✎</div>
-                  </div>
-                  <div class="card-row">
-                      <div class="card-label">Add User:</div>
-                      <div class="card-action">[Add New] ✎</div>
-                  </div>
-              </div>
-            
-              <!-- Right: Upload Logo -->
-              <div class="card-section upload-section">
+                <div class="card-section upload-section">
                   <h3>Organization Logo</h3>
                   <form action="#" method="POST" enctype="multipart/form-data">
                       <div class="upload-frame">
@@ -95,33 +80,33 @@ include '../includes/navbar.php';
                           <input type="file" id="logo-upload" name="logo" accept="image/*" />
                       </div>
                   </form>
-              </div>
-            </div>            
-      
-              <!-- Section 2 -->
-              <div class="card-section">
-                  <h3>Roles & Permissions</h3>
-                  <div class="card-row">
-                      <div class="card-label">Manage Roles:</div>
-                      <div class="card-action">[Manage] ✎</div>
-                  </div>
-                  <div class="card-row">
-                      <div class="card-label">Edit Permissions:</div>
-                      <div class="card-action">[Edit] ✎</div>
-                  </div>
-              </div>
-      
-              <!-- Section 3 -->
-              <div class="card-section">
-                  <h3>Activity Logs</h3>
-                  <div class="card-row">
-                      <div class="card-label">User Logs:</div>
-                      <div class="card-action">[View Logs] ✎</div>
-                  </div>
-              </div>
-              <!-- Section 4: Upload Logo / Media -->
-          </div>
-      </div>
+                </div>
 
-      <script src="../assets/scripts/notif_script.js"></script>
+               <div class="card-section">
+                    <h3>Account Settings</h3>
+                    <div class="card-row">
+                    <div class="card-label">Full Name   :</div>
+                    <div class="card-action">[Change Full Name] ✎</div>
+                </div>
+                <div class="card-row">
+                    <div class="card-label">Username    :</div>
+                    <div class="card-action">[Change Username] ✎</div>
+                </div>
+                <div class="card-row">
+                    <div class="card-label">Password    :</div>
+                    <div class="card-action">[Change Password] ✎</div>
+                </div>
+
+                <!-- Save/Cancel Buttons -->
+                <div class="action-buttons">
+                    <button class="save-btn" type="submit">Save Changes</button>
+                    <button class="cancel-btn" type="button">Cancel</button>
+                </div>
+
+            </div>      
+        </div>
+</div>              
+</div>
+
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
