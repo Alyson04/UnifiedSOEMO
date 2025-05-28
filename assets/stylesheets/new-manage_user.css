@@ -284,3 +284,28 @@ td.inactive {
 .hidden {
   display: none;
 }
+
+.top-actions {
+    margin-bottom: 15px;
+}
+
+.action-btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    margin-left: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.action-btn:first-child {
+    margin-left: 0;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
