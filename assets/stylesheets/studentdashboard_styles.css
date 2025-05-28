@@ -392,131 +392,112 @@
     }
 
     /* ======== SERVICES SECTION ======== */
-    .services {
-    max-width: 1100px;
-    margin: 0 auto 100px;
-    padding: 40px 20px;
-    background: #f3f4f6;
-    border-radius: 12px;
-    text-align: center;
-    }
+   /* ======== SERVICES SECTION ======== */
+.services {
+  max-width: 1100px;
+  margin: 0 auto 100px;
+  padding: 40px 30px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  position: relative;
+}
 
-    .services h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 40px;
-    color: #222;
-    }
+.services h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #222;
+  text-align: center;
+}
 
-    .services-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 40px;
-    max-width: 100%;
-    }
+.services-container {
+  display: flex;
+  align-items: center;
+  gap: 50px; /* more gap between image and text */
+  max-width: 100%;
+}
 
-    .services-image img {
-    max-width: 320px;
-    width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-    }
+/* Image */
+.services-image img {
+  max-width: 480px; /* increased from 380px */
+  width: 200%;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
 
-    .services-text {
+.services-image img:hover {
+  transform: scale(1.05);
+}
+
+/* Text and button wrapper */
+.services-text {
+  flex: 1 1 auto;
+  color: #444;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px; /* give some space for button */   
     flex: 1 1 480px;
     text-align: left;
     color: #444;
-    }
+    
+}
 
-    .services-text p {
-    font-size: 1.15rem;
-    line-height: 1.5;
-    }
+/* Button aligned to right */
+.learn-more-btn {
+  align-self: flex-end; /* keep button on right */
+  margin-top: 20px;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: transparent;
+  border: 2px solid #2563eb;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+  user-select: none;
+}
 
-    .learn-more-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 12px 28px;
+.learn-more-btn:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .services-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  .services-text {
+    min-height: auto;
+    margin-bottom: 20px;
+  }
+  .learn-more-btn {
+    align-self: center;
+    margin-top: 10px;
+  }
+  .services-image img {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 600px) {
+  .services h2 {
+    font-size: 1.5rem;
+  }
+  .services-text {
     font-size: 1rem;
-    font-weight: 700;
-    color: #2563eb;
-    background: transparent;
-    border: 2px solid #2563eb;
-    border-radius: 9999px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    text-decoration: none;
-    }
-
-    .learn-more-btn:hover {
-    background-color: #2563eb;
-    color: white;
-    }
-
-    /* ======== RESPONSIVE ======== */
-    @media (max-width: 900px) {
-    .welcome {
-        flex-direction: column;
-        padding: 30px 20px;
-    }
-    .welcome .text,
-    .welcome .image {
-        flex: none;
-        max-width: 100%;
-        padding: 0;
-        margin-bottom: 30px;
-    }
-    .services-container {
-        flex-direction: column;
-    }
-    .services-text {
-        text-align: center;
-    }
-    }
-
-    @media (max-width: 600px) {
-    .org-card {
-        width: 100%;
-        max-width: 320px;
-        padding-bottom: 80px;
-    }
-    .join-btn {
-        padding: 12px 28px;
-    }
-    .discover-btn {
-        width: 100%;
-        max-width: 320px;
-    }
-    .welcome h1 {
-        font-size: 2rem;
-    }
-    .welcome p {
-        font-size: 1rem;
-    }
-    .services h2 {
-        font-size: 1.5rem;
-    }
-    .services-text p {
-        font-size: 1rem;
-    }
-    }
-    .notification-modal {
-    position: absolute;
-    top: 110%; /* appear just below the bell icon */
-    left: 0;
-    width: 50px;
-    max-height: 100px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-    z-index: 999;
-    overflow-y: auto;
-    padding: 5px;
-    }
-
-    .hidden {
-    display: none;
-    }
+  }
+  .services-image img {
+    max-width: 100%;
+  }
+}

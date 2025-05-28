@@ -174,13 +174,13 @@ body {
 }
 
 /* Card styling - smaller padding, consistent size */
-/* Cards grid with a bit more gap */
 .student-org-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 260px); /* fixed width 260px */
-  gap: 28px; /* increased gap from 20px to 28px */
+  grid-template-columns: repeat(auto-fill, 260px);
+  gap: 36px; /* increased gap for more space */
   justify-content: center;
 }
+
 
 .student-org-card {
   background: #e8f1fa;
