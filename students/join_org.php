@@ -37,7 +37,7 @@ include '../includes/navbar.php';
 ?>
 
 <div class="join-container">
-    <h2>Join Organization</h2>
+    <h2 class="section-title">Join Organization</h2>
     <form action="../api/submit_join.php" method="post" enctype="multipart/form-data">
     <input type="hidden" name="org_id" value="<?= htmlspecialchars($org_id) ?>">
     

@@ -109,8 +109,7 @@ body {
     position: relative;
     color: #333;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-
-    border: 3px solid #4682B4;
+    border: 2.5px solid #2A4365;
     background-clip: padding-box;
 }
 
@@ -123,7 +122,7 @@ body {
     position: absolute;
     width: 20px;
     height: 20px;
-    border: 3px solid #4682B4;
+    border: 2.5px solid #2A4365;
     border-radius: 4px;
 }
 
@@ -183,7 +182,7 @@ summary {
 
 details[open] {
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    border-color: #3498db;
+    border-color: #2A4365;
 }
 
 .org-logo {
@@ -240,7 +239,7 @@ strong {
     display: inline-block;
     padding: 12px 25px;
     font-size: 16px;
-    background-color: #3498db;
+    background-color: #2A4365;
     color: white;
     border-radius: 8px;
     text-decoration: none;
@@ -248,7 +247,7 @@ strong {
 }
 
 .join-button:hover {
-    background-color: #2980b9;
+    background-color: #3c5f8f;
 }
 
 .notification-modal {
