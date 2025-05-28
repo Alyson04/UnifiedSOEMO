@@ -303,6 +303,7 @@ form input {
   max-width: 700px;
   width: 100%; 
   min-width: 400px;
+  height: 100px;
 }
 
 

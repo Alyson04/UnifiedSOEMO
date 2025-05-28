@@ -110,7 +110,7 @@ function displayOrgs(orgs) {
     const container = document.getElementById("orgContainer");
     container.innerHTML = "";
 
-    const selected = shuffle([...orgs]).slice(0, 3); // Show 2 random orgs
+    const selected = shuffle([...orgs]).slice(0, 3);
     selected.forEach(org => {
         const card = document.createElement("div");
         card.className = "org-card";
@@ -131,7 +131,7 @@ let cachedOrgs = [];
 async function initOrgs() {
     cachedOrgs = await fetchOrgs();
     displayOrgs(cachedOrgs);
-    setInterval(() => displayOrgs(cachedOrgs), 20000);
+    setInterval(() => displayOrgs(cachedOrgs), 5000);
 }
 
 document.addEventListener("DOMContentLoaded", initOrgs);

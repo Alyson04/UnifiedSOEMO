@@ -23,7 +23,7 @@ include '../includes/header.php';
 include '../includes/sidebar.php';
 ?>
 
-  <!-- Main Panel -->
+<!-- Main Panel -->
 <main class="main-content">
 <?php
 include '../includes/navbar.php';
@@ -43,32 +43,38 @@ include '../includes/navbar.php';
   </div>
 </form>
 
-
 <?php include '../includes/modals.php';?>
 
 <div id="postsWrapper">
   <div id="postsContainer">
     <?php
-   $query = "SELECT posts.*, users.fullName 
-          FROM posts
-          LEFT JOIN users ON posts.user_id = users.id
-          ORDER BY posts.created_at DESC";
-       $result = mysqli_query($conn, $query);
-   if ($result && mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        $content = htmlspecialchars($row['content']);
-        $profile_img = '../assets/pictures/icon.png'; // Or fetch user profile picture if you have it
-        $username = htmlspecialchars($row['fullName'] ?? 'Unknown');
+    $query = "SELECT posts.*, users.fullName 
+              FROM posts
+              LEFT JOIN users ON posts.user_id = users.id
+              ORDER BY posts.created_at DESC";
+    $result = mysqli_query($conn, $query);
 
-        $postImage = isset($row['image']) && $row['image'] !== '' ? "../uploads/" . htmlspecialchars($row['image']) : null;
+    if ($result && mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $content = htmlspecialchars($row['content']);
+            $profile_img = '../assets/pictures/icon.png'; // Or fetch user profile picture if you have it
+            $username = htmlspecialchars($row['fullName'] ?? 'Unknown');
 
             echo "<div class='post-card'>
                     <div class='post-header'>
                       <img src='{$profile_img}' alt='{$username}' />
                       <span class='username'>{$username}</span>
                     </div>
-                    <div class='post-content'>{$content}</div>
-                  </div>";
+                    <div class='post-content'>{$content}</div>";
+
+            if (!empty($row['image_path'])) {
+                $postImage = "../uploads/" . htmlspecialchars($row['image_path']);
+                echo "<div class='post-image'>
+                        <img src='{$postImage}' alt='Post Image' style='max-width: 100%; border-radius: 10px; margin-top: 10px;' />
+                      </div>";
+            }
+
+            echo "</div>";
         }
     } else {
         echo "<p>No posts available.</p>";
