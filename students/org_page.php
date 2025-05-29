@@ -64,46 +64,39 @@ include '../includes/navbar.php';
         <?php endif; ?>
 
         <?php if (!empty($org['objective'])): ?>
-    <details>
-        <summary><strong>🎯 Objective</strong></summary>
-        <p><?= nl2br(htmlspecialchars($org['objective'])) ?></p>
-    </details>
+    <div class="details-box">
+        <details>
+            <summary>🎯 Objective</summary>
+            <p><?= nl2br(htmlspecialchars($org['objective'])) ?></p>
+        </details>
+    </div>
 <?php endif; ?>
 
 <?php if (!empty($org['how_to_join'])): ?>
-    <details>
-        <summary><strong>📝 How to Join</strong></summary>
-        <p><?= nl2br(htmlspecialchars($org['how_to_join'])) ?></p>
-    </details>
+    <div class="details-box">
+        <details>
+            <summary>📝 How to Join</summary>
+            <p><?= nl2br(htmlspecialchars($org['how_to_join'])) ?></p>
+        </details>
+    </div>
 <?php endif; ?>
 
 <?php if (!empty($org['requirements'])): ?>
-    <details>
-        <summary><strong>📌 Requirements</strong></summary>
-        <ul>
-            <?php
-            $requirements = explode(',', $org['requirements']);
-            foreach ($requirements as $req):
-            ?>
-                <li><?= htmlspecialchars(trim($req)) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </details>
+    <div class="details-box">
+        <details>
+            <summary>📌 Requirements</summary>
+            <ul>
+                <?php
+                $requirements = explode(',', $org['requirements']);
+                foreach ($requirements as $req):
+                ?>
+                    <li><?= htmlspecialchars(trim($req)) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </details>
+    </div>
 <?php endif; ?>
 
-<?php if (!empty($org['highlights'])): ?>
-    <details>
-        <summary><strong>🌟 Highlights</strong></summary>
-        <ul>
-            <?php
-            $highlights = explode(',', $org['highlights']);
-            foreach ($highlights as $highlight):
-            ?>
-                <li><?= htmlspecialchars(trim($highlight)) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </details>
-<?php endif; ?>
 
 
          <div class="join-section">

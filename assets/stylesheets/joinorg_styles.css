@@ -1,143 +1,110 @@
+/* General Styles */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
     box-sizing: border-box;
-    background-color: #fff;
+    background-color: white;
     color: #1c1c1c;
+}
+
+/* Join Form Container */
+.outer-container {
+    background-color: #D9E9FF;
+    padding: 20px;
+    border-radius: 16px;
+    max-width: 800px;
+    margin: 30px auto;
+    box-shadow: 0 4px 15px rgba(2, 119, 189, 0.15);
 }
 
 .join-container {
     max-width: 600px;
-    margin: 50px auto;
-    padding: 40px;
-    padding-left: 20px;
-    background-color: #E2EDFA;
-    border-radius: 24px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    position: relative;
+    margin: 20px auto;
+    padding: 20px 80px;
+    padding-left: 60px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(2, 119, 189, 0.15);
+    border: 2px solid #014f86;
     color: #333;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    border: 2.5px solid #2A4365;
-    background-clip: padding-box;
+    font-family: 'Inter', sans-serif;
 }
 
-/* Corner decorations (copied from org-container) */
-.join-container::before,
-.join-container::after,
-.join-container .corner-top-right,
-.join-container .corner-bottom-left {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2.5px solid #2A4365;
-    border-radius: 4px;
-}
-
-.join-container::before {
-    top: 10px;
-    left: 10px;
-    border-right: none;
-    border-bottom: none;
-    border-radius: 10px 0 0 0;
-}
-
-.join-container::after {
-    bottom: 10px;
-    right: 10px;
-    border-left: none;
-    border-top: none;
-    border-radius: 0 0 10px 0;
-}
-
-.join-container .corner-top-right {
-    top: 10px;
-    right: 10px;
-    border-left: none;
-    border-bottom: none;
-    border-radius: 0 10px 0 0;
-}
-
-.join-container .corner-bottom-left {
-    bottom: 10px;
-    left: 10px;
-    border-right: none;
-    border-top: none;
-    border-radius: 0 0 0 10px;
-}
-
+/* Title */
 .section-title {
     text-align: center;
-    font-size: 30px;
-    color: #2c3e50;
-    margin-bottom: 30px;
+    font-size: 28px;
+    color: #014f86;
+    font-weight: 900;
+    margin-bottom: 25px;
 }
 
+/* Labels */
 .join-container label {
     display: block;
-    margin-top: 15px;
+    margin-top: 20px;
     font-weight: bold;
-    color: #34495e;
+    color: #1e272e;
 }
 
+/* Inputs & Textareas */
 .join-container input,
 .join-container textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    padding: 12px;
+    border: 1.5px solid #ccc;
+    border-radius: 10px;
     font-size: 15px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    background-color: #fff;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    background-color: #f9f9f9;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
+/* Submit Button */
 .join-container button {
     display: block;
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     font-size: 16px;
-    background-color: #2A4365;
+    background-color: #014f86;
     color: white;
-    border-radius: 8px;
-    text-decoration: none;
+    border-radius: 10px;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .join-container button:hover {
-    background-color: #3c5f8f;
+    background-color: #2980b9;
 }
 
-.form-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.form-buttons button,
-.form-buttons .cancel-button {
-    flex: 1;
-}
-
+/* Cancel Button */
 .cancel-button {
     display: inline-block;
-    padding: 12px;
+    width: 100%;
+    text-align: center;
+    padding: 14px;
     font-size: 16px;
     background-color: #ccc;
     color: #333;
-    border-radius: 8px;
-    text-align: center;
+    border-radius: 10px;
+    font-weight: 700;
     text-decoration: none;
-    font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
 .cancel-button:hover {
     background-color: #bbb;
+}
+
+/* Form Button Group */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding-left: 25px;
+    margin-top: 25px;
 }

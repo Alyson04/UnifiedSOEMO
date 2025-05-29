@@ -36,38 +36,38 @@ include '../includes/header.php';
 include '../includes/navbar.php';
 ?>
 
-<div class="join-container">
-    
-    <h2 class="section-title">Join Organization</h2>
-    <form action="../api/submit_join.php" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="org_id" value="<?= htmlspecialchars($org_id) ?>">
-    
-    <label>Organization Name:</label>
-    <input type="text" value="<?= htmlspecialchars($org_name) ?>" disabled>
+<div class="outer-container">
+  <div class="join-container">
+      <h2 class="section-title">Join Organization</h2>
+      <form action="../api/submit_join.php" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="org_id" value="<?= htmlspecialchars($org_id) ?>">
 
-    <label>Full Name:</label>
-    <input type="text" value="<?= htmlspecialchars($student_name) ?>" disabled>
+          <label>Organization Name:</label>
+          <input type="text" value="<?= htmlspecialchars($org_name) ?>" disabled>
 
-    <label for="contact_number">Contact Number:</label>
-    <input type="text" name="contact_number" id="contact_number" required>
+          <label>Full Name:</label>
+          <input type="text" value="<?= htmlspecialchars($student_name) ?>" disabled>
 
-    <label for="age">Age:</label>
-    <input type="number" name="age" id="age" required>
+          <label for="contact_number">Contact Number:</label>
+          <input type="text" name="contact_number" id="contact_number" required>
 
-    <label for="year_section">Year & Section:</label>
-    <input type="text" name="year_section" id="year_section" required>
+          <label for="age">Age:</label>
+          <input type="number" name="age" id="age" required>
 
-    <label for="portfolio">Upload Portfolio / Required Files (PDF, DOCX, JPG, PNG):</label>
-    <input type="file" name="portfolio_file" id="portfolio" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+          <label for="year_section">Year & Section:</label>
+          <input type="text" name="year_section" id="year_section" required>
 
-    <div class="form-buttons">
-        <button type="submit">Submit Application</button>
-        <a href="org_page.php?id=<?= urlencode($org_id) ?>" class="cancel-button">Cancel</a>
-    </div>
+          <label for="portfolio">Upload Portfolio / Required Files (PDF, DOCX, JPG, PNG):</label>
+          <input type="file" name="portfolio_file" id="portfolio" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
 
-</form>
-
+          <div class="form-buttons">
+              <button type="submit">Submit Application</button>
+              <a href="org_page.php?id=<?= urlencode($org_id) ?>" class="cancel-button">Cancel</a>
+          </div>
+      </form>
+  </div>
 </div>
+
 <script src="../assets/scripts/notif_script.js"></script>
 
 <?php include '../includes/footer.php'; ?>
