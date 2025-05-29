@@ -31,7 +31,7 @@ $sql = "
         u.fullName, 
         u.email, 
         a.application_status, 
-        a.applied_at 
+        a.applied_at
     FROM org_applications a
     JOIN users u ON a.student_id = u.id
     WHERE u.role = 'student' AND a.org_id = ?
@@ -46,7 +46,10 @@ if (!empty($status_filter)) {
     $stmt->bind_param("i", $org_id);
 }
 
-$stmt->execute();
+if (!$stmt->execute()) {
+    die("SQL Execution failed: " . $stmt->error);
+}
+
 $result = $stmt->get_result();
 
 // Fetch all rows into an array
@@ -71,8 +74,9 @@ include '../includes/sidebar.php';
 <div class="content">
     <h2 class="page-title">MANAGE USERS</h2>
 
-    </div>
     <!-- Status Filter -->
+ <!-- Status Filter -->
+<!-- Status Filter -->
     <form method="GET" class="status-filter-form">
         <label for="status_filter">Filter</label>
         <select name="status" id="status_filter" onchange="this.form.submit()">
@@ -106,7 +110,7 @@ include '../includes/sidebar.php';
                             <td><?= ucfirst($user['application_status']) ?: 'Pending'; ?></td>
                             <td><?= htmlspecialchars($user['applied_at']); ?></td>
                             <td>
-                                <?php if (in_array($user['application_status'], ['approved', 'rejected'])): ?>
+                            <?php if (in_array($user['application_status'], ['approved', 'rejected'])): ?>
                                     <form action="../api/process_application.php" method="POST" style="display:inline;">
                                         <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
                                         <input type="hidden" name="org_id" value="<?= $org_id; ?>">
@@ -129,6 +133,7 @@ include '../includes/sidebar.php';
                                         <button type="submit" name="action" value="decline">Decline</button>
                                     </form>
                                 <?php endif; ?>
+
                             </td>
                         </tr>
                     <?php endforeach; ?>
