@@ -36,45 +36,57 @@ if ($org_id !== null) {
     $stmt->close();
 }
 
-// Get upcoming events for the logged-in org only
-$total_events = 0;
-if ($org_id !== null) {
-    $sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE() AND org_id = ?";
-    $stmt_events = $conn->prepare($sql_events);
-    $stmt_events->bind_param("i", $org_id);
-    $stmt_events->execute();
-    $result_events = $stmt_events->get_result();
-    $total_events = $result_events->fetch_assoc()['total_events'];
-    $stmt_events->close();
-}
+// Get upcoming events
+$sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE()";
+$result_events = $conn->query($sql_events);
+$total_events = $result_events->fetch_assoc()['total_events'];
 
-// Get past events for the logged-in org only
-$past_events = 0;
-if ($org_id !== null) {
-    $sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDATE() AND org_id = ?";
-    $stmt_past = $conn->prepare($sql_past);
-    $stmt_past->bind_param("i", $org_id);
-    $stmt_past->execute();
-    $result_past = $stmt_past->get_result();
-    $past_events = $result_past->fetch_assoc()['past_events'];
-    $stmt_past->close();
-}
+// Get past events
+$sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDATE()";
+$result_past = $conn->query($sql_past);
+$past_events = $result_past->fetch_assoc()['past_events'];
 
-// Get recent events for the logged-in org only
+// Get recent events
+$sql_recent_events = "SELECT title, event_date FROM events ORDER BY event_date DESC LIMIT 5";
+$result_recent_events = $conn->query($sql_recent_events);
+
 $recent_events = [];
-if ($org_id !== null) {
-    $sql_recent_events = "SELECT title, event_date FROM events WHERE org_id = ? ORDER BY event_date DESC LIMIT 5";
-    $stmt_recent = $conn->prepare($sql_recent_events);
-    $stmt_recent->bind_param("i", $org_id);
-    $stmt_recent->execute();
-    $result_recent_events = $stmt_recent->get_result();
-
-    while ($row = $result_recent_events->fetch_assoc()) {
-        $recent_events[] = $row;
-    }
-    $stmt_recent->close();
+while ($row = $result_recent_events->fetch_assoc()) {
+    $recent_events[] = $row;
 }
 
+
+// Get monthly signups for the organization
+$sql_monthly_signups = "
+    SELECT MONTH(created_at) AS month, COUNT(*) AS signups 
+    FROM users 
+    WHERE role = 'student' AND org_id = ? 
+    GROUP BY MONTH(created_at) 
+    ORDER BY MONTH(created_at)
+";
+$stmt = $conn->prepare($sql_monthly_signups);
+$stmt->bind_param("i", $org_id);
+$stmt->execute();
+$result_monthly = $stmt->get_result();
+
+$monthly_signups = array_fill(1, 12, 0); // Initialize with zeros for all months 1 to 12
+while ($row = $result_monthly->fetch_assoc()) {
+    $monthly_signups[(int)$row['month']] = (int)$row['signups'];
+}
+$stmt->close();
+
+// Get recent users (last 5 signups)
+$sql_recent_signups = "SELECT fullName, email FROM users WHERE org_id = ? ORDER BY created_at DESC LIMIT 5";
+$stmt = $conn->prepare($sql_recent_signups);
+$stmt->bind_param("i", $org_id);
+$stmt->execute();
+$result_recent_signups = $stmt->get_result();
+
+$recent_signups = [];
+while ($row = $result_recent_signups->fetch_assoc()) {
+    $recent_signups[] = $row;
+}
+$stmt->close();
 $conn->close();
 
 $title = "Unified SOEMO Dashboard";
@@ -101,30 +113,28 @@ include '../includes/header.php';
     </a>
   </section>
 
+  <!-- User Growth Stats -->
   <section class="charts">
-    <div class="chart-box">
-      <h3>User Growth (Jan–Jun)</h3>
-      <div class="line-chart">
+    <div class="chart-box" style="width: 100%; margin-bottom: 20px;">
+      <h3>User Growth (Monthly)</h3>
+      <div class="line-chart" style="position: relative; height: 180px;">
         <div class="grid-lines"></div>
-        <svg viewBox="0 0 100 50" preserveAspectRatio="none">
-          <polyline fill="none" stroke="#23406C" stroke-width="2" points="0,10 20,15 40,25 60,30 80,40 100,45" />
+        <svg viewBox="0 0 100 50" preserveAspectRatio="none" style="position: absolute; top: 10px; left: 10px; width: calc(100% - 10px); height: 150px;">
+          <polyline id="monthly-growth-polyline" fill="none" stroke="#23406C" stroke-width=".5" points="" />
         </svg>
-        <div class="x-axis-labels">
-          <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-        </div>
       </div>
-    </div>
-
-    <div class="chart-box">
-      <h3>User Growth (Jul–Dec)</h3>
-      <div class="line-chart">
-        <div class="grid-lines"></div>
-        <svg viewBox="0 0 100 50" preserveAspectRatio="none">
-          <polyline fill="none" stroke="#23406C" stroke-width="2" points="0,15 20,18 40,35 60,30 80,20 100,40" />
-        </svg>
-        <div class="x-axis-labels">
-          <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
-        </div>
+      <div class="month-numbers" style="margin-top: 12px; font-weight: 600; color: #23406C; display: grid; grid-template-columns: repeat(12, 1fr); text-align: center; gap: 8px;">
+        <!-- Month Names -->
+        <?php
+        $month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        foreach ($month_names as $month) {
+            echo "<div>$month</div>";
+        }
+        // Actual signup counts row
+        for ($m = 1; $m <= 12; $m++) {
+            echo "<div>{$monthly_signups[$m]}</div>";
+        }
+        ?>
       </div>
     </div>
   </section>
@@ -137,22 +147,40 @@ include '../includes/header.php';
         <tr><th>Name</th><th>Email</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Jusphine Lacano</td>
-          <td>jusphinemlacano@iskolarnagbayan.pup.edu.ph</td>
-        </tr>
-        <tr>
-          <td>Janna Mae Caballero</td>
-          <td>jannamaeccaballero@iskolarnagbayan.pup.edu.ph</td>
-        </tr>
-        <tr>
-          <td>Rica Mae Malgapo</td>
-          <td>ricamaemalgapo@iskolarnagbayan.pup.edu.ph</td>
-        </tr>
+        <?php if (count($recent_signups) === 0): ?>
+          <tr><td colspan="2">No recent signups found for this organization.</td></tr>
+        <?php else: ?>
+          <?php foreach ($recent_signups as $user): ?>
+            <tr>
+              <td><?= htmlspecialchars($user['fullName']); ?></td>
+              <td><?= htmlspecialchars($user['email']); ?></td>
+            </tr>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </tbody>
     </table>
   </section>
 
 </main>
+
+<script>
+  // Monthly signups data from PHP backend
+  const monthlySignups = <?= json_encode(array_values($monthly_signups)); ?>;
+
+  function buildPoints(data) {
+    const maxCount = Math.max(...data, 1); // Prevent division by zero
+    return data.map((count, i) => {
+      const x = i * (100 / (data.length - 1)); // Evenly spread along x-axis
+      const y = 50 - (count / maxCount) * 40; // scale y (invert for SVG coords)
+      return `${x},${y}`;
+    }).join(' ');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const monthlyGrowthPolyline = document.getElementById('monthly-growth-polyline');
+    if (monthlyGrowthPolyline) monthlyGrowthPolyline.setAttribute('points', buildPoints(monthlySignups));
+  });
+</script>
+
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
