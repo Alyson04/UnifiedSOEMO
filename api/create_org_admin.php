@@ -28,10 +28,11 @@ if (isset($_POST['name'], $_POST['description'])) {
             mkdir($uploadDir, 0755, true);
         }
 
-        // Move and update image path in DB
+        // Move uploaded file
         if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+            // Save only the filename in the DB, NOT the full path
             $stmtUpdate = $conn->prepare("UPDATE organizations SET image_path = ? WHERE id = ?");
-            $stmtUpdate->bind_param("si", $targetPath, $orgId);
+            $stmtUpdate->bind_param("si", $newImageName, $orgId);
             $stmtUpdate->execute();
             $stmtUpdate->close();
         }

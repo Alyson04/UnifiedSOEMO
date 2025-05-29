@@ -3,7 +3,8 @@ require '../api/auth.php';
 $student_id = $_SESSION['user_id'] ?? null;
 $student_name = '';
 require '../config/db_conn.php';
-// Fetch admin's full name from database
+
+// Fetch student's full name from database
 if ($student_id) {
     $sql_student = "SELECT fullName FROM users WHERE ID = ?";
     $stmt = $conn->prepare($sql_student);
@@ -38,7 +39,6 @@ if ($org_id) {
     $stmt->close();
 }
 
-
 $conn->close();
 
 $title = "Organizations";
@@ -53,9 +53,15 @@ include '../includes/navbar.php';
         <div class="corner-top-right"></div>
         <div class="corner-bottom-left"></div>
         
-        <?php if (!empty($org['image_path'])): ?>
-            <img src="<?= htmlspecialchars($org['image_path']) ?>" alt="<?= htmlspecialchars($org['name']) ?> Logo" class="org-logo">
-        <?php endif; ?>
+        <?php 
+        // Prepare image path: prepend folder path if image exists, else default
+        if (!empty($org['image_path'])) {
+            $imagePath = "../assets/uploads_organizations/" . htmlspecialchars($org['image_path']);
+        } else {
+            $imagePath = "../assets/pictures/default.jpg";
+        }
+        ?>
+        <img src="<?= $imagePath ?>" alt="<?= htmlspecialchars($org['name']) ?> Logo" class="org-logo">
 
         <h1><?= htmlspecialchars($org['name']) ?></h1>
 
@@ -64,44 +70,42 @@ include '../includes/navbar.php';
         <?php endif; ?>
 
         <?php if (!empty($org['objective'])): ?>
-    <div class="details-box">
-        <details>
-            <summary>🎯 Objective</summary>
-            <p><?= nl2br(htmlspecialchars($org['objective'])) ?></p>
-        </details>
-    </div>
-<?php endif; ?>
+            <div class="details-box">
+                <details>
+                    <summary>🎯 Objective</summary>
+                    <p><?= nl2br(htmlspecialchars($org['objective'])) ?></p>
+                </details>
+            </div>
+        <?php endif; ?>
 
-<?php if (!empty($org['how_to_join'])): ?>
-    <div class="details-box">
-        <details>
-            <summary>📝 How to Join</summary>
-            <p><?= nl2br(htmlspecialchars($org['how_to_join'])) ?></p>
-        </details>
-    </div>
-<?php endif; ?>
+        <?php if (!empty($org['how_to_join'])): ?>
+            <div class="details-box">
+                <details>
+                    <summary>📝 How to Join</summary>
+                    <p><?= nl2br(htmlspecialchars($org['how_to_join'])) ?></p>
+                </details>
+            </div>
+        <?php endif; ?>
 
-<?php if (!empty($org['requirements'])): ?>
-    <div class="details-box">
-        <details>
-            <summary>📌 Requirements</summary>
-            <ul>
-                <?php
-                $requirements = explode(',', $org['requirements']);
-                foreach ($requirements as $req):
-                ?>
-                    <li><?= htmlspecialchars(trim($req)) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </details>
-    </div>
-<?php endif; ?>
+        <?php if (!empty($org['requirements'])): ?>
+            <div class="details-box">
+                <details>
+                    <summary>📌 Requirements</summary>
+                    <ul>
+                        <?php
+                        $requirements = explode(',', $org['requirements']);
+                        foreach ($requirements as $req):
+                        ?>
+                            <li><?= htmlspecialchars(trim($req)) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </details>
+            </div>
+        <?php endif; ?>
 
-
-
-         <div class="join-section">
-        <a href="join_org.php?org_id=<?= urlencode($org_id) ?>" class="join-button">Join Now</a>
-    </div>
+        <div class="join-section">
+            <a href="join_org.php?org_id=<?= urlencode($org_id) ?>" class="join-button">Join Now</a>
+        </div>
     </div>
 
 <?php else: ?>
@@ -109,8 +113,6 @@ include '../includes/navbar.php';
 <?php endif; ?>
 </div>
 
-
 <script src="../assets/scripts/notif_script.js"></script>
 
-
-<?php include '../includes/footer.php';?>
+<?php include '../includes/footer.php'; ?>
