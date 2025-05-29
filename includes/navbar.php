@@ -2,7 +2,7 @@
 // Default values
 $display_name = 'Guest';
 $role_label = '';
-$profile_img = '../assets/pictures/profile.png'; // Default profile pic
+$profile_img = '../assets/uploads_pfp/profile.png'; // Default profile pic
 
 // If user is logged in
 if (isset($_SESSION['user_id'])) {

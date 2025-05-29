@@ -5,17 +5,29 @@ $student_id = $_SESSION['user_id'] ?? null;
 $student_name = '';
 $email = '';
 require '../config/db_conn.php';
+
+$profile_img = '../assets/uploads_pfp/profile.png'; // fallback image
+
 if ($student_id) {
-    $sql_student = "SELECT fullName, email FROM users WHERE ID = ?";
+    $sql_student = "SELECT fullName, email, profile_picture FROM users WHERE ID = ?";
     $stmt = $conn->prepare($sql_student);
     $stmt->bind_param("i", $student_id);
     $stmt->execute();
     $result_student = $stmt->get_result();
+
     if ($result_student->num_rows > 0) {
         $row = $result_student->fetch_assoc();
         $student_name = ucwords(strtolower($row['fullName']));
         $email = $row['email'];
+
+        if (!empty($row['profile_picture'])) {
+            $uploaded_path = "../assets/uploads_pfp/" . $row['profile_picture'];
+            if (file_exists($uploaded_path)) {
+                $profile_img = $uploaded_path;
+            }
+        }
     }
+
     $stmt->close();
 }
 
@@ -34,12 +46,13 @@ include '../includes/navbar.php';
         <h2 class="page-title">Edit Profile</h2>
 
         <button id="edit-btn">Edit</button>
-        <div class="profile-pic-container">
-            <img src="../assets/images/default-profile.png" alt="Profile Picture" id="profile-preview">
-            <input type="file" name="profile_pic" id="profile_pic" accept="image/*" disabled>
-        </div>
 
-        <form action="../api/update_profile.php" method="POST">
+        <form action="../api/update_profile.php" method="POST" enctype="multipart/form-data">
+            <div class="profile-pic-container">
+                <img src="<?= htmlspecialchars($profile_img); ?>" alt="Profile Picture" id="profile-preview">
+                <input type="file" name="profile_pic" id="profile_pic" accept="image/*" disabled>
+            </div>
+
             <label for="fullName">Full Name:</label>
             <input type="text" name="fullName" id="fullName" value="<?= htmlspecialchars($student_name); ?>" disabled required>    
 
@@ -53,7 +66,6 @@ include '../includes/navbar.php';
                 <button type="submit" id="save-btn" disabled>Save Changes</button>
                 <button type="button" id="cancel-btn" disabled>Cancel</button>
             </div>
-
         </form>
     </div>
 </div>
@@ -70,6 +82,7 @@ document.getElementById("edit-btn").addEventListener("click", function () {
 });
 
 document.getElementById("cancel-btn").addEventListener("click", function () {
+    document.getElementById("profile_pic").disabled = true;
     document.getElementById("fullName").disabled = true;
     document.getElementById("email").disabled = true;
     document.getElementById("password").disabled = true;
