@@ -50,17 +50,7 @@ include '../includes/navbar.php';
 <!-- Main Content -->
 <div class="content">
         <h2 class="page-title">MANAGE EVENTS</h2>
-
-        <!-- Search Bar -->
-        <!-- Search Bar -->
-    <div class="search-bar">
-    <input type="text" placeholder="Search Events...">
-    <button>
-        <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
-    </button>
-    </div>
-
-
+        
         <!-- Events Table -->
         <div class="event-table">
             <table>

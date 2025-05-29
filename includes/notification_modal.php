@@ -1,19 +1,24 @@
 <!-- notification_modal.php -->
+<?php
+require_once '../config/db_conn.php';
+
+// Example query (replace with your actual notifications table/logic)
+$notifications = [];
+$stmt = $conn->prepare("SELECT message FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10");
+$stmt->bind_param("i", $_SESSION['user_id']); // Replace with your session user ID logic
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+  $notifications[] = $row['message'];
+}
+$stmt->close();
+?>
+
 <style>
 /* --- Notification Modal Styles --- */
 .notification-container {
   position: relative;
   display: inline-block;
-}
-
-.notification-icon-wrapper {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  background-image: url('../fromOtherBranches/pics/bell.png');
-  background-size: cover;
-  background-position: center;
 }
 
 .notification-badge {
@@ -77,7 +82,6 @@
 .modal-body::-webkit-scrollbar {
   width: 6px;
 }
-
 .modal-body::-webkit-scrollbar-thumb {
   background-color: #cbd5e0;
   border-radius: 10px;
@@ -85,38 +89,23 @@
 </style>
 
 <div class="notification-container">
-  <!-- Bell icon with red dot if there are notifications -->
-  <div class="notification-icon-wrapper" id="bellIcon">
-    <?php
-      // Example notifications array, replace with dynamic data
-      $notifications = [
-        "New user registered.",
-        "System update scheduled tonight.",
-        "Organization profile was updated.",
-        "New event created."
-      ];
-
-      // Check if there are new notifications (Example check, could be from DB or other conditions)
-      $new_notifications = count($notifications) > 0; // For example, if there are notifications
-      if ($new_notifications) {
-        echo "<span class='notification-badge' id='notificationBadge'></span>";
-      }
-    ?>
-  </div>
+  <!-- Bell icon with badge if there are notifications -->
+  <img src="../fromOtherBranches/pics/bell.png" alt="Notifications" id="bellIcon" style="width: 24px; cursor: pointer;" />
+  <?php if (!empty($notifications)) : ?>
+    <span class="notification-badge" id="notificationBadge"></span>
+  <?php endif; ?>
 
   <!-- Modal -->
   <div id="notificationModal" class="notification-modal">
     <div class="modal-header">Notifications</div>
     <div class="modal-body">
-      <?php
-        if (empty($notifications)) {
-          echo "<div class='notification-item'>No new notifications.</div>";
-        } else {
-          foreach ($notifications as $note) {
-            echo "<div class='notification-item'>" . htmlspecialchars($note) . "</div>";
-          }
-        }
-      ?>
+      <?php if (empty($notifications)) : ?>
+        <div class="notification-item">No new notifications.</div>
+      <?php else : ?>
+        <?php foreach ($notifications as $note) : ?>
+          <div class="notification-item"><?= htmlspecialchars($note) ?></div>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
   </div>
 </div>
@@ -127,16 +116,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const modal = document.getElementById("notificationModal");
   const badge = document.getElementById("notificationBadge");
 
-  // Show the notification modal when the bell icon is clicked
   bell.addEventListener("click", function () {
-    const isModalOpen = modal.style.display === "flex";
-    modal.style.display = isModalOpen ? "none" : "flex";
-
-    // Hide the badge (mark as read)
-    if (badge) badge.style.display = "none"; // Remove the red dot (badge)
+    const isOpen = modal.style.display === "flex";
+    modal.style.display = isOpen ? "none" : "flex";
+    if (badge) badge.style.display = "none";
   });
 
-  // Close modal if clicked outside
   document.addEventListener("click", function (e) {
     if (!bell.contains(e.target) && !modal.contains(e.target)) {
       modal.style.display = "none";
@@ -144,3 +129,4 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 </script>
+
