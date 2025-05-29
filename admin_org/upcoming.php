@@ -36,30 +36,56 @@ if ($org_id !== null) {
     $stmt->close();
 }
 
-// Get upcoming events
-$sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE()";
-$result_events = $conn->query($sql_events);
-$total_events = $result_events->fetch_assoc()['total_events'];
-
-// Get past events
-$sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDATE()";
-$result_past = $conn->query($sql_past);
-$past_events = $result_past->fetch_assoc()['past_events'];
-
-// Upcoming events list
-$sql_upcoming_events = "SELECT title, event_date FROM events WHERE event_date >= CURDATE() ORDER BY event_date ASC";
-$result_upcoming_events = $conn->query($sql_upcoming_events);
-$upcoming_events = [];
-while ($row = $result_upcoming_events->fetch_assoc()) {
-    $upcoming_events[] = $row;
+// Get upcoming events count for the org
+$total_events = 0;
+if ($org_id !== null) {
+    $sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE() AND org_id = ?";
+    $stmt_events = $conn->prepare($sql_events);
+    $stmt_events->bind_param("i", $org_id);
+    $stmt_events->execute();
+    $result_events = $stmt_events->get_result();
+    $total_events = $result_events->fetch_assoc()['total_events'];
+    $stmt_events->close();
 }
 
-// Recent events list
-$sql_recent_events = "SELECT title, event_date FROM events ORDER BY event_date DESC LIMIT 5";
-$result_recent_events = $conn->query($sql_recent_events);
+// Get past events count for the org
+$past_events = 0;
+if ($org_id !== null) {
+    $sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDATE() AND org_id = ?";
+    $stmt_past = $conn->prepare($sql_past);
+    $stmt_past->bind_param("i", $org_id);
+    $stmt_past->execute();
+    $result_past = $stmt_past->get_result();
+    $past_events = $result_past->fetch_assoc()['past_events'];
+    $stmt_past->close();
+}
+
+// Upcoming events list filtered by org_id
+$upcoming_events = [];
+if ($org_id !== null) {
+    $sql_upcoming_events = "SELECT title, event_date FROM events WHERE event_date >= CURDATE() AND org_id = ? ORDER BY event_date ASC";
+    $stmt_upcoming = $conn->prepare($sql_upcoming_events);
+    $stmt_upcoming->bind_param("i", $org_id);
+    $stmt_upcoming->execute();
+    $result_upcoming_events = $stmt_upcoming->get_result();
+    while ($row = $result_upcoming_events->fetch_assoc()) {
+        $upcoming_events[] = $row;
+    }
+    $stmt_upcoming->close();
+}
+
+// Recent events list filtered by org_id
 $recent_events = [];
-while ($row = $result_recent_events->fetch_assoc()) {
-    $recent_events[] = $row;
+if ($org_id !== null) {
+    $sql_recent_events = "SELECT title, event_date FROM events WHERE org_id = ? ORDER BY event_date DESC LIMIT 5";
+    $stmt_recent = $conn->prepare($sql_recent_events);
+    $stmt_recent->bind_param("i", $org_id);
+    $stmt_recent->execute();
+    $result_recent_events = $stmt_recent->get_result();
+    while ($row = $result_recent_events->fetch_assoc()) {
+        $recent_events[] = $row;
+    }
+    $stmt_recent->close();
 }
 
 $conn->close();
@@ -112,7 +138,6 @@ include '../includes/header.php';
     <?php endif; ?>
   </div>
 </section>
-
 
 </main>
 <script src="../assets/scripts/notif_script.js"></script>
