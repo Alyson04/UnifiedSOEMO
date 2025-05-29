@@ -101,7 +101,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height */
+    height: 115vh; /* Full viewport height */
     background: linear-gradient(to bottom right, #CDFFD8, #94B9FF);
 }
 
