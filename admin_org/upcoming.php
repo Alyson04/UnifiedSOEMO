@@ -114,5 +114,5 @@ include '../includes/header.php';
 </section>
 
 </main>
-
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

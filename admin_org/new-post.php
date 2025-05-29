@@ -11,6 +11,30 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Get logged-in user's ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
+$org_id = $_SESSION['org_id'] ?? null;
+$admin_name = '';
+
+// Fetch admin's full name from database
+if ($admin_id) {
+    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_admin);
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result_admin = $stmt->get_result();
+    if ($result_admin->num_rows > 0) {
+        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
+
+$sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role = 'student' AND org_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $org_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+
+
 
 if (!$admin_id) {
   header("Location: ../public/login.php");
@@ -23,7 +47,7 @@ include '../includes/header.php';
 include '../includes/sidebar.php';
 ?>
 
-  <!-- Main Panel -->
+<!-- Main Panel -->
 <main class="main-content">
 <?php
 include '../includes/navbar.php';
@@ -31,7 +55,8 @@ include '../includes/navbar.php';
 
 <form id="postForm" enctype="multipart/form-data">
   <div class="form-wrapper">
-    <textarea name="content" placeholder="What's on your mind?" required></textarea>
+    <textarea id="content" name="content" placeholder="What's on your mind?" style="overflow:hidden; resize:none;" required></textarea>
+<p id="warning" style="color:red;"></p>
 
     <div class="form-bottom">
       <label for="image-upload" class="upload-label">
@@ -43,32 +68,38 @@ include '../includes/navbar.php';
   </div>
 </form>
 
-
 <?php include '../includes/modals.php';?>
 
 <div id="postsWrapper">
   <div id="postsContainer">
     <?php
-   $query = "SELECT posts.*, users.fullName 
-          FROM posts
-          LEFT JOIN users ON posts.user_id = users.id
-          ORDER BY posts.created_at DESC";
-       $result = mysqli_query($conn, $query);
-   if ($result && mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        $content = htmlspecialchars($row['content']);
-        $profile_img = '../assets/pictures/icon.png'; // Or fetch user profile picture if you have it
-        $username = htmlspecialchars($row['fullName'] ?? 'Unknown');
+    $query = "SELECT posts.*, users.fullName 
+              FROM posts
+              LEFT JOIN users ON posts.user_id = users.id
+              ORDER BY posts.created_at DESC";
+    $result = mysqli_query($conn, $query);
 
-        $postImage = isset($row['image']) && $row['image'] !== '' ? "../uploads/" . htmlspecialchars($row['image']) : null;
+    if ($result && mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $content = htmlspecialchars($row['content']);
+            $profile_img = '../assets/pictures/icon.png'; // Or fetch user profile picture if you have it
+            $username = htmlspecialchars($row['fullName'] ?? 'Unknown');
 
             echo "<div class='post-card'>
                     <div class='post-header'>
                       <img src='{$profile_img}' alt='{$username}' />
                       <span class='username'>{$username}</span>
                     </div>
-                    <div class='post-content'>{$content}</div>
-                  </div>";
+                    <div class='post-content'>{$content}</div>";
+
+            if (!empty($row['image_path'])) {
+                $postImage = "../uploads/" . htmlspecialchars($row['image_path']);
+                echo "<div class='post-image'>
+                        <img src='{$postImage}' alt='Post Image' style='max-width: 100%; border-radius: 10px; margin-top: 10px;' />
+                      </div>";
+            }
+
+            echo "</div>";
         }
     } else {
         echo "<p>No posts available.</p>";
@@ -76,7 +107,7 @@ include '../includes/navbar.php';
     ?>
   </div>
 </div>
-
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
 
 <script>
@@ -125,5 +156,50 @@ document.addEventListener('DOMContentLoaded', function() {
     cancelBtn.addEventListener('click', function() {
         confirmationModal.style.display = 'none';
     });
+});
+
+const textarea = document.getElementById('content');
+const warning = document.getElementById('warning');
+const maxChars = 500;
+const maxWordLength = 20;
+
+function autoGrow(element) {
+  element.style.height = 'auto'; // reset height
+  element.style.height = element.scrollHeight + 'px'; // set height to scrollHeight
+}
+
+textarea.addEventListener('input', function () {
+  // Auto grow textarea height
+  autoGrow(textarea);
+
+  let value = textarea.value;
+
+  // Limit total characters
+  if (value.length > maxChars) {
+    value = value.substring(0, maxChars);
+    warning.textContent = `Maximum character limit reached (${maxChars}).`;
+  } else {
+    warning.textContent = "";
+  }
+
+  // Check for long words and truncate them
+  const words = value.trim().split(/\s+/);
+  let modified = false;
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].length > maxWordLength) {
+      words[i] = words[i].substring(0, maxWordLength);
+      warning.textContent = `Word too long (max ${maxWordLength} characters), truncated.`;
+      modified = true;
+    }
+  }
+
+  if (modified) {
+    value = words.join(' ');
+  }
+
+  // Update textarea value only if modified
+  if (textarea.value !== value) {
+    textarea.value = value;
+  }
 });
 </script>

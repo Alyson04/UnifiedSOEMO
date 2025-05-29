@@ -5,6 +5,6 @@
   
   <!-- Modal -->
   <div id="notificationModal" class="notification-modal hidden">
-    <p style="margin: 0; font-size: 12px;">No new alerts</p>
+    <div id="notificationsList" style="max-height: 200px; overflow-y: auto; font-size: 12px;"></div>
   </div>
 </div>

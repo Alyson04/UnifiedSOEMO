@@ -174,14 +174,14 @@ body {
 }
 
 /* Card styling - smaller padding, consistent size */
-/* Cards grid with a bit more gap */
 .student-org-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 260px); /* fixed width 260px */
-  gap: 28px; /* increased gap from 20px to 28px */
+  grid-template-columns: repeat(auto-fill, 260px);
+  gap: 40px; /* increased gap for more space */
   padding-right: 23px;
   justify-content: center;
 }
+
 
 .student-org-card {
   background: #D9E9FF;
@@ -260,6 +260,44 @@ body {
 .join-btn:hover {
   background: #015f8c;
   box-shadow: 0 10px 28px rgba(1, 95, 140, 0.5);
+}
+
+.notification-modal {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 300px;
+  max-height: 400px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  z-index: 100;
+  padding: 10px;
+}
+
+.notification-modal.hidden {
+  display: none;
+}
+
+.notification-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.notification-list p {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #333;
+}
+
+.notification-list p:last-child {
+  border-bottom: none;
 }
 
 /* Responsive tweaks */
