@@ -184,3 +184,6 @@ include '../includes/header.php';
 
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
+
+
+
