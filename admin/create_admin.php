@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADD A RECORD</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../assets/stylesheets/create_admin.css">
 </head>
 <body>
     <div class="container">
@@ -27,9 +27,6 @@
             <!-- Add Record Form -->
             <div class="card mb-4">
                 <div class="card-header">
-                <a href="new-manage_users.php" style="font-size:16px; padding: 10px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">
-                Back
-                </a>
                     <h3>Add a Record</h3>
                 </div>
                 <div class="card-body">
@@ -49,6 +46,7 @@
                         <input type="hidden" id="is_approved" name="is_approved" value="approved" required><br>
 
                         <button type="submit" class="btn btn-success">Add Record</button>
+                        <button type="cancel" class="btn btn-success">Cancel</button>
                     </form>
                 </div>
             </div>
