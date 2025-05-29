@@ -242,7 +242,6 @@ form input:disabled {
 #edit-btn:hover {
     background-color: #003f91;
 }
-
 .notification-modal {
   position: absolute;
   top: 40px;

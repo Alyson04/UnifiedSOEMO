@@ -33,8 +33,7 @@ $stmt->bind_param("i", $org_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-
-
+$conn->close();
 
 if (!$admin_id) {
   header("Location: ../public/login.php");
@@ -203,3 +202,6 @@ textarea.addEventListener('input', function () {
   }
 });
 </script>
+<script src="../assets/scripts/notif_script.js"></script>
+
+

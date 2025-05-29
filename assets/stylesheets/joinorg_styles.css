@@ -1,124 +1,84 @@
-/* General Styles */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
     box-sizing: border-box;
+    background-color: #fff;
+    color: #1c1c1c;
 }
 
-/* Navbar */
-.navbar {
-    background: linear-gradient(to right, #CDFFD8 40%, #94B9FF 70%);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1px 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.logo img {
-    height: 50px;
-}
-
-.search-profile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.search-profile input {
-    padding: 8px 35px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-    background-color: white;
-    font-size: .8em;
-    font-style: italic;
-}
-
-.search-profile img {
-    width: 24px;
-    height: 24px;
-}
-
-.profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.profile img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.profile-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.profile-text span {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.profile-text p {
-    font-size: 14px;
-    color: #666;
-    margin: 0;
-}
-
-.nav-list {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .nav-list li {
-    margin: 0 25px;
-  }
-  
-  .nav-list a {
-    color: #2A4365;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: bold;
-    transition: color 0.3s;
-  }
-  
-  .nav-list a:hover {
-    color: #1abc9c;
-  }
-
-  
 .join-container {
     max-width: 600px;
     margin: 50px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    font-family: "Segoe UI", sans-serif;
+    padding: 40px;
+    padding-left: 20px;
+    background-color: #E2EDFA;
+    border-radius: 24px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    color: #333;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    border: 2.5px solid #2A4365;
+    background-clip: padding-box;
 }
 
-.join-container h2 {
+/* Corner decorations (copied from org-container) */
+.join-container::before,
+.join-container::after,
+.join-container .corner-top-right,
+.join-container .corner-bottom-left {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2.5px solid #2A4365;
+    border-radius: 4px;
+}
+
+.join-container::before {
+    top: 10px;
+    left: 10px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 10px 0 0 0;
+}
+
+.join-container::after {
+    bottom: 10px;
+    right: 10px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 10px 0;
+}
+
+.join-container .corner-top-right {
+    top: 10px;
+    right: 10px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 10px 0 0;
+}
+
+.join-container .corner-bottom-left {
+    bottom: 10px;
+    left: 10px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 10px;
+}
+
+.section-title {
     text-align: center;
-    margin-bottom: 25px;
+    font-size: 30px;
     color: #2c3e50;
+    margin-bottom: 30px;
 }
 
 .join-container label {
     display: block;
     margin-top: 15px;
-    margin-bottom: 5px;
-    font-weight: 600;
+    font-weight: bold;
+    color: #34495e;
 }
 
 .join-container input,
@@ -126,29 +86,31 @@ body {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 15px;
-}
-
-.join-container textarea {
-    resize: vertical;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .join-container button {
-    margin-top: 20px;
+    display: block;
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    background-color: #2ecc71;
+    background-color: #2A4365;
     color: white;
-    border: none;
     border-radius: 8px;
+    text-decoration: none;
+    border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 .join-container button:hover {
-    background-color: #27ae60;
+    background-color: #3c5f8f;
 }
 .notification-modal {
   position: absolute;
@@ -164,9 +126,33 @@ body {
   z-index: 100;
   padding: 10px;
 }
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 20px;
+}
 
-.notification-modal.hidden {
-  display: none;
+.form-buttons button,
+.form-buttons .cancel-button {
+    flex: 1;
+}
+
+.cancel-button {
+    display: inline-block;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #ccc;
+    color: #333;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.notification-modal.cancel-button:hover {
+    background-color: #bbb;
 }
 
 .notification-header {

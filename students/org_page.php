@@ -47,9 +47,12 @@ include '../includes/header.php';
 include '../includes/navbar.php'; 
 ?>
 
-<div class="org-container">
+<div class="outer-container">
 <?php if ($org): ?>
     <div class="org-container">
+        <div class="corner-top-right"></div>
+        <div class="corner-bottom-left"></div>
+        
         <?php if (!empty($org['image_path'])): ?>
             <img src="<?= htmlspecialchars($org['image_path']) ?>" alt="<?= htmlspecialchars($org['name']) ?> Logo" class="org-logo">
         <?php endif; ?>
@@ -61,43 +64,58 @@ include '../includes/navbar.php';
         <?php endif; ?>
 
         <?php if (!empty($org['objective'])): ?>
-            <p><strong>Objective:</strong><br><?= nl2br(htmlspecialchars($org['objective'])) ?></p>
-        <?php endif; ?>
+    <details>
+        <summary><strong>🎯 Objective</strong></summary>
+        <p><?= nl2br(htmlspecialchars($org['objective'])) ?></p>
+    </details>
+<?php endif; ?>
 
-        <?php if (!empty($org['how_to_join'])): ?>
-            <p><strong>How to Join:</strong><br><?= nl2br(htmlspecialchars($org['how_to_join'])) ?></p>
-        <?php endif; ?>
+<?php if (!empty($org['how_to_join'])): ?>
+    <details>
+        <summary><strong>📝 How to Join</strong></summary>
+        <p><?= nl2br(htmlspecialchars($org['how_to_join'])) ?></p>
+    </details>
+<?php endif; ?>
 
-        <?php if (!empty($org['requirements'])): ?>
-            <p><strong>Requirements:</strong></p>
-            <ul>
-                <?php
-                $requirements = explode(',', $org['requirements']);
-                foreach ($requirements as $req):
-                ?>
-                    <li><?= htmlspecialchars(trim($req)) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
+<?php if (!empty($org['requirements'])): ?>
+    <details>
+        <summary><strong>📌 Requirements</strong></summary>
+        <ul>
+            <?php
+            $requirements = explode(',', $org['requirements']);
+            foreach ($requirements as $req):
+            ?>
+                <li><?= htmlspecialchars(trim($req)) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </details>
+<?php endif; ?>
 
-        <?php if (!empty($org['highlights'])): ?>
-            <p><strong>Highlights:</strong></p>
-            <ul>
-                <?php
-                $highlights = explode(',', $org['highlights']);
-                foreach ($highlights as $highlight):
-                ?>
-                    <li><?= htmlspecialchars(trim($highlight)) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-    </div>
-    <div class="join-section">
+<?php if (!empty($org['highlights'])): ?>
+    <details>
+        <summary><strong>🌟 Highlights</strong></summary>
+        <ul>
+            <?php
+            $highlights = explode(',', $org['highlights']);
+            foreach ($highlights as $highlight):
+            ?>
+                <li><?= htmlspecialchars(trim($highlight)) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </details>
+<?php endif; ?>
+
+
+         <div class="join-section">
         <a href="join_org.php?org_id=<?= urlencode($org_id) ?>" class="join-button">Join Now</a>
     </div>
+    </div>
+
 <?php else: ?>
     <p>Organization not found.</p>
 <?php endif; ?>
+</div>
+
 
 <script src="../assets/scripts/notif_script.js"></script>
 
