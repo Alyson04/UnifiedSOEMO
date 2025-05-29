@@ -94,12 +94,9 @@ body {
   z-index: 100;
   padding: 10px;
 }
-.form-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 20px;
-    background-color: #2980b9;
+
+.notification-modal.hidden {
+  display: none;
 }
 
 /* Cancel Button */
