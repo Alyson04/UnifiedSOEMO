@@ -19,7 +19,7 @@ if ($student_id) {
 
 // Fetch all events for current year ordered by event_date ascending
 $year = date('Y');
-$sql_events = "SELECT id, title, description, event_date, org_id, created_at 
+$sql_events = "SELECT id, title, description, event_date, org_id, created_at, thumbnail 
                FROM events 
                WHERE YEAR(event_date) = ? 
                ORDER BY event_date ASC";
@@ -80,11 +80,17 @@ include '../includes/navbar.php';
             <h2>UPCOMING EVENTS</h2>
             <?php if (count($upcoming_events) > 0): ?>
                 <?php foreach ($upcoming_events as $event): ?>
-                    <a href="#">
-                        <!-- No image available, so just text -->
-                        <p><strong><?= htmlspecialchars($event['title']) ?></strong><br>
-                        <?= date('F j, Y', strtotime($event['event_date'])) ?><br>
-                        View Details</p>
+                    <?php
+                        $thumb = !empty($event['thumbnail']) ? "../assets/uploads_highlights/" . htmlspecialchars($event['thumbnail']) : "../assets/default-thumbnail.jpg";
+                    ?>
+                    <a href="#" style="text-decoration: none; color: inherit;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <img src="<?= $thumb ?>" alt="Event Thumbnail" style="width: 180px; height: 80px; object-fit: cover; border-radius: 5px;">
+                            <div>
+                                <strong><?= htmlspecialchars($event['title']) ?></strong><br>
+                                <?= date('F j, Y', strtotime($event['event_date'])) ?>
+                            </div>
+                        </div>
                     </a>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -93,13 +99,20 @@ include '../includes/navbar.php';
         </div>
 
         <div class="past-events">
-            <h2>PAST EVENT HIGHLIGHTS</h2>
+            <h2>PAST EVENTS</h2>
             <?php if (count($past_events) > 0): ?>
                 <?php foreach ($past_events as $event): ?>
-                    <a href="#">
-                        <p><strong><?= htmlspecialchars($event['title']) ?></strong><br>
-                        <?= date('F j, Y', strtotime($event['event_date'])) ?><br>
-                        View Details</p>
+                    <?php
+                        $highlight = !empty($event['thumbnail']) ? "../assets/uploads_highlights/" . htmlspecialchars($event['thumbnail']) : "../assets/uploads_highlights/default-highlight.jpg";
+                    ?>
+                    <a href="#" style="text-decoration: none; color: inherit;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <img src="<?= $highlight ?>" alt="Event Highlight" style="width: 180px; height: 80px; object-fit: cover; border-radius: 5px;">
+                            <div>
+                                <strong><?= htmlspecialchars($event['title']) ?></strong><br>
+                                <?= date('F j, Y', strtotime($event['event_date'])) ?>
+                            </div>
+                        </div>
                     </a>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -123,7 +136,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "July", "August", "September", "October", "November", "December"
     ];
 
-    // Collect all event dates for highlight in calendar
     const eventDatesPHP = <?php
         $all_event_dates = array_map(fn($e) => $e['event_date'], array_merge($upcoming_events, $past_events));
         echo json_encode($all_event_dates);
@@ -152,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
             daySpan.textContent = day;
 
             const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-
             if(eventDateSet.has(dateStr)) {
                 daySpan.classList.add('event-day');
                 daySpan.title = "Event day";
@@ -185,7 +196,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <style>
-/* Styling for event days in calendar */
 .calendar-days span.event-day {
     background-color: #ffcc00;
     border-radius: 50%;
@@ -193,7 +203,6 @@ document.addEventListener("DOMContentLoaded", function () {
     cursor: pointer;
     color: #000;
 }
-
 .calendar-header {
     display: flex;
     justify-content: center;
@@ -201,7 +210,6 @@ document.addEventListener("DOMContentLoaded", function () {
     gap: 15px;
     margin-bottom: 10px;
 }
-
 .calendar-header button {
     cursor: pointer;
     font-size: 1.2rem;
@@ -211,7 +219,6 @@ document.addEventListener("DOMContentLoaded", function () {
     color: #007bff;
     transition: color 0.3s;
 }
-
 .calendar-header button:hover {
     color: #0056b3;
 }

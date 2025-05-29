@@ -34,13 +34,34 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
     const tutorialSteps = [
-    { text: "Welcome to our site! Let's take a quick tour, here is the dashboard for students.", image:"../assets/pictures/Tutorial1.png" },
-    { text: "This site has amazing features to explore.", image: "../assets/pictures/Tutorial2.png" },
-    { text: "Keep Updated to Organization.", image: "../assets/pictures/Tutorial3.png" },
-    { text: "Navigate through the events.", image: "../assets/pictures/Tutorial4.png" },
-    { text: "Learn about us more.", image: "../assets/pictures/Tutorial5.png" },
-    { text: "Learn about us more.", image: "../assets/pictures/Tutorial6.png" },
-    { text: "Learn about us more.", image: "../assets/pictures/Tutorial7.png" },
+     { 
+        text: "Welcome to our platform! We're excited to have you. Let’s begin your tour by exploring the dashboard for students.", 
+        image: "../assets/pictures/Tutorial1.png" 
+    },
+    { 
+        text: "This platform offers amazing features to explore. You can connect with student organizations, join events, and much more!", 
+        image: "../assets/pictures/Tutorial2.png" 
+    },
+    { 
+        text: "Stay updated with your favorite organizations. You’ll never miss out on new opportunities or important announcements!", 
+        image: "../assets/pictures/Tutorial3.png" 
+    },
+    { 
+        text: "Explore and navigate through various events that match your interests. Our site is designed to keep you engaged!", 
+        image: "../assets/pictures/Tutorial4.png" 
+    },
+    { 
+        text: "Want to know more about us? Learn more about our mission, values, and how we bring students together.", 
+        image: "../assets/pictures/Tutorial5.png" 
+    },
+    { 
+        text: "Check out our 'About Us' section for more detailed information on how this platform can help you make the most out of your student life.", 
+        image: "../assets/pictures/Tutorial6.png" 
+    },
+    { 
+        text: "Ready to explore everything? Click through to see all that’s in store, or skip this tour and dive right in.", 
+        image: "../assets/pictures/Tutorial7.png" 
+    }
 ];
     let step = 0;
 
