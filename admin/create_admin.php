@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADD A RECORD</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../assets/stylesheets/create_admin.css">
 </head>
 <body>
     <div class="container">
@@ -22,34 +22,39 @@
         </div>
         
         <div class="main-content">
-        
-            <div id="addRecordSection">
-            <!-- Add Record Form -->
-            <div class="card mb-4">
-                <div class="card-header">
-                <a href="new-manage_users.php" style="font-size:16px; padding: 10px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">
-                Back
-                </a>
-                    <h3>Add a Record</h3>
-                </div>
-                <div class="card-body">
-                    <form action="../api/create_admin.php" method="POST">
+      <div id="addRecordSection">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h3>Create an Admin</h3>
+          </div>
+          <div class="card-body">
+            <form action="../api/create_admin.php" method="POST">
+              <div class="form-group">
+                <label for="fullName">Fullname:</label>
+                <input type="text" id="fullName" name="fullName" required />
+              </div>
 
-                        <label for="fullName">Fullname:</label>
-                        <input type="text" id="fulName" name="fullName" required><br>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" required />
+              </div>
 
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" required><br>
+              <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required />
+              </div>
 
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" required><br>
+              <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required />
+              </div>
 
-                        <input type="hidden" id="role" name="role" value="admin" required><br>
+              <input type="hidden" name="role" value="admin" />
+              <input type="hidden" name="is_approved" value="approved" />
 
-                        <input type="hidden" id="is_approved" name="is_approved" value="approved" required><br>
-
-                        <button type="submit" class="btn btn-success">Add Record</button>
-                    </form>
+              <button type="submit" class="btn btn-success">Add Record</button>
+              <button type="button" onclick="history.back()" class="btn-cancel">Cancel</button>
+            </form>
                 </div>
             </div>
         </div>

@@ -23,7 +23,7 @@ if ($admin_id) {
 $conn->close();
 
 $title = "Create Organization Admin";
-$style = "admindashboard_styles.css";
+$style = "create_orgadmin.css";
 include '../includes/header.php';
 include '../includes/navbar.php';
 ?>   
@@ -34,7 +34,6 @@ include '../includes/navbar.php';
             <!-- Add Record Form -->
             <div class="card">
                 <div class="card-header">
-                <a href="new-manage_users.php" style="font-size:16px; padding: 10px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Back</a>
                     <h3>Create an Organization Admin</h3>
                 </div>
                 <div class="card-body">
