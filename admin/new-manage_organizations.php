@@ -70,6 +70,9 @@ include '../includes/sidebar.php';
             </tbody>
         </table>
     </div>
+
 </div>
+
+<script src="../assets/scripts/notif_script.js"></script>
 
 <?php include '../includes/footer.php'; ?>

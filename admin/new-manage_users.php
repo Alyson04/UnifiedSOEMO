@@ -47,6 +47,12 @@ include '../includes/navbar.php';
             </button>
             </div>
 
+        <div class="top-actions">
+    <a href="create_org_admin.php" class="action-btn">+ Create Org Admin</a>
+    <a href="create_admin.php" class="action-btn">+ Create Admin</a>
+</div>
+
+
         <!-- Users Table -->
         <div class="user-table">
             <table>
@@ -82,5 +88,5 @@ include '../includes/navbar.php';
         </div>
     </div>
 
-
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
