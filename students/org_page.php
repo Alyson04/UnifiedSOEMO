@@ -47,6 +47,7 @@ include '../includes/header.php';
 include '../includes/navbar.php'; 
 ?>
 
+<div class="outer-container">
 <?php if ($org): ?>
     <div class="org-container">
         <div class="corner-top-right"></div>
@@ -113,6 +114,7 @@ include '../includes/navbar.php';
 <?php else: ?>
     <p>Organization not found.</p>
 <?php endif; ?>
+</div>
 
 
 <script src="../assets/scripts/notif_script.js"></script>
