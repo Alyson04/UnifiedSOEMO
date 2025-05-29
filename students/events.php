@@ -24,7 +24,7 @@ include '../includes/header.php';
 include '../includes/navbar.php';
 ?>
         <div class="blue-section">
-        <img src="../assets/pictures/ribbon.png" alt="ribbon" class="section-image">
+        <img src="../assets/pictures/ribbons.png" alt="ribbon" class="section-image">
     </div>
     <div class="text-section">
         <p>
@@ -122,6 +122,6 @@ include '../includes/navbar.php';
             </div>
         </div>
     </div>
-<script src="../assets/scripts/notif_script.js"></script>
 
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

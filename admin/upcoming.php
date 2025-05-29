@@ -93,30 +93,28 @@ include '../includes/navbar.php';
    
 <!-- Upcoming Events Section -->
 <section class="events-upcoming">
-    <div class="list-events">
-        <h3>Event Dates</h3>
-        <?php if (!empty($upcoming_events)) : ?>
-            <?php foreach ($upcoming_events as $event) : ?>
-                <div><?= date("M d", strtotime($event['event_date'])) ?></div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <div>No upcoming events found.</div>
-        <?php endif; ?>
-    </div>
-  
-    <div class="list-events">
-        <h3>Event Names</h3>
-        <?php if (!empty($upcoming_events)) : ?>
-            <?php foreach ($upcoming_events as $event) : ?>
-                <div><?= htmlspecialchars($event['title']) ?></div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <div>No upcoming events found.</div>
-        <?php endif; ?>
-    </div>
-</section>
+  <div class="events-column dates-column">
+    <h3>Event Dates</h3>
+    <?php if (!empty($upcoming_events)) : ?>
+        <?php foreach ($upcoming_events as $event) : ?>
+            <div class="event-item"><?= date("M d, Y", strtotime($event['event_date'])) ?></div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div class="no-events">No upcoming events found.</div>
+    <?php endif; ?>
+  </div>
 
-      
+  <div class="events-column names-column">
+    <h3>Event Names</h3>
+    <?php if (!empty($upcoming_events)) : ?>
+        <?php foreach ($upcoming_events as $event) : ?>
+            <div class="event-item"><?= htmlspecialchars($event['title']) ?></div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div class="no-events">No upcoming events found.</div>
+    <?php endif; ?>
+  </div>
+</section>
   </main>
 <script src="../assets/scripts/notif_script.js"></script>
   <?php include '../includes/footer.php'; ?>

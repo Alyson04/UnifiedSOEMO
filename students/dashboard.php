@@ -85,7 +85,7 @@ if ($student_id) {
                 and tools to streamline communication and engagement. It helps students discover opportunities, 
                 connect with communities, and stay informed about activities that align with their interests.
             </p>
-            <a href="../students/about_us.php" style="text-decoration: none" button class="learn-more-btn">LEARN MORE ABOUT US</button></a>
+            <a href="../students/about_us.php" style="text-decoration: none" button class="learn-more-btn">LEARN MORE</button></a>
         </div>
     </div>
 </section>
@@ -110,7 +110,7 @@ function displayOrgs(orgs) {
     const container = document.getElementById("orgContainer");
     container.innerHTML = "";
 
-    const selected = shuffle([...orgs]).slice(0, 3); // Show 2 random orgs
+    const selected = shuffle([...orgs]).slice(0, 3);
     selected.forEach(org => {
         const card = document.createElement("div");
         card.className = "org-card";
@@ -131,7 +131,7 @@ let cachedOrgs = [];
 async function initOrgs() {
     cachedOrgs = await fetchOrgs();
     displayOrgs(cachedOrgs);
-    setInterval(() => displayOrgs(cachedOrgs), 20000);
+    setInterval(() => displayOrgs(cachedOrgs), 5000);
 }
 
 document.addEventListener("DOMContentLoaded", initOrgs);

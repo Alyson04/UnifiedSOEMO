@@ -34,7 +34,7 @@ include '../includes/navbar.php';
             <!-- Add Record Form -->
             <div class="card">
                 <div class="card-header">
-                <a href="dashboard.php" style="font-size:16px; padding: 10px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Back</a>
+                <a href="new-manage_users.php" style="font-size:16px; padding: 10px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Back</a>
                     <h3>Create an Organization Admin</h3>
                 </div>
                 <div class="card-body">
@@ -92,4 +92,5 @@ include '../includes/navbar.php';
 
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/createorg_script.js"></script>
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

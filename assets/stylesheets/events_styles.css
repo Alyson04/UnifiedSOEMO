@@ -141,133 +141,227 @@ body {
 
 /* CALENDAR STYLING */
 .calendar {
-    width: 33%;
-    max-width: 450px;
-    font-family: 'Inter', sans-serif;
+  flex: 1 1 300px;
+  max-width: 380px;
+  background: #ffffffcc; /* semi-transparent white */
+  border-radius: 20px;
+  padding: 25px 20px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
 }
 
+/* Calendar Header */
 .calendar-header {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    padding: 10px 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0277bd;
+  text-align: center;
+  margin-bottom: 15px;
+  letter-spacing: 1.5px;
 }
 
+/* Weekdays Row */
 .calendar-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    font-weight: bold;
-    text-align: center;
-    padding: 10px 0;
-    background-color: #2A4365;
-    color: white;
-    border-radius: 5px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #0277bd;
+  color: white;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 10px 0;
+  user-select: none;
 }
 
 .calendar-weekdays span {
-    padding: 10px;
+  user-select: none;
 }
 
+/* Days Grid */
 .calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    text-align: center;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-top: 12px;
 }
 
+/* Each Day */
 .calendar-days span {
-    padding: 12px;
-    min-width: 40px;
-    min-height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  cursor: default;
+  color: #01579b;
+  background: #e3f2fd;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
 
-.calendar-days span:hover {
-    background-color: #1E3555;
-    color: white;
-    border-radius: 5px;
+.calendar-days span:hover:not(.empty) {
+  background-color: #01579b;
+  color: white;
+  box-shadow: 0 4px 15px rgba(1,87,140,0.4);
 }
 
+/* Empty day cells */
 .empty {
-    display: block;
-    background: transparent;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none;
 }
 
+/* EVENTS SECTION */
 /* EVENTS SECTION */
 .events-section {
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: 40px; /* increased gap between upcoming and past events */
     flex-grow: 1;
     justify-content: flex-start;
+    flex-wrap: wrap;
 }
 
+/* Upcoming and Past Events container styling */
 .upcoming-events, .past-events {
-    background-color: #DAD0AC;
-    padding: 20px;
-    border-radius: 10px;
+    background-color: #f9fafb; /* light, clean background */
+    padding: 25px 25px;
+    border-radius: 16px;
     width: 100%;
-    max-width: 350px;
+    max-width: 360px; /* slightly wider */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: box-shadow 0.3s ease;
+}
+
+.upcoming-events:hover, .past-events:hover {
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
 }
 
 .upcoming-events h2, .past-events h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #2A4365;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #1e3a5f;
+    font-weight: 900;
     text-align: center;
+    letter-spacing: 1px;
 }
 
+/* Event link cards */
 .upcoming-events a, .past-events a {
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: black;
-    margin-bottom: 10px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 10px;
-}
-
-.upcoming-events img, .past-events img {
-    width: 65%;
-    max-width: 120px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-right: 15px;
+    color: #1e3a5f;
+    margin-bottom: 18px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .upcoming-events a:hover, .past-events a:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: #e2f0ff;
+    box-shadow: 0 8px 22px rgba(0, 123, 255, 0.25);
+    color: #0b2e6f;
 }
 
-.dates a {
-    display: inline-block;
-    text-align: center;
-    padding: 10px;
-    text-decoration: none;
-    color: white;
-    background-color: #2A4365;
-    border-radius: 5px;
+/* Event images */
+.upcoming-events img, .past-events img {
+    width: 130px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-right: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.2);
+    transition: transform 0.3s ease;
 }
 
-.dates a:hover {
-    background-color: #1E2F4A;
-}.notification-modal {
+.upcoming-events a:hover img, .past-events a:hover img {
+    transform: scale(1.05);
+}
+
+/* Event text */
+.upcoming-events p, .past-events p {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-style: italic;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.notification-modal {
   position: absolute;
-  top: 110%; /* appear just below the bell icon */
-  left: 0;
-  width: 50px;
-  max-height: 100px;
+  top: 40px;
+  right: 0;
+  width: 300px;
+  max-height: 400px;
   background-color: white;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-  z-index: 999;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
-  padding: 5px;
+  z-index: 100;
+  padding: 10px;
 }
 
-.hidden {
+.notification-modal.hidden {
   display: none;
 }
 
+.notification-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.notification-list p {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #333;
+}
+
+.notification-list p:last-child {
+  border-bottom: none;
+}
+
+/* Responsive improvements */
+@media (max-width: 860px) {
+    .events-section {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    }
+
+    .upcoming-events, .past-events {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    .upcoming-events a, .past-events a {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .upcoming-events img, .past-events img {
+        width: 100%;
+        height: auto;
+        margin-right: 0;
+        margin-bottom: 12px;
+        border-radius: 10px;
+    }
+}

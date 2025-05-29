@@ -13,9 +13,9 @@ if (!$student_id || !$org_id || !$contact_number || !$age || !$year_section) {
     die("Missing required fields.");
 }
 
-$portfolio_path = null; // Default to null
+$portfolio_path = null;
 
-// Optional file handling
+// Optional file upload
 if (isset($_FILES['portfolio_file']) && $_FILES['portfolio_file']['error'] === UPLOAD_ERR_OK) {
     $upload_dir = "../assets/uploads_portfolios/";
     if (!is_dir($upload_dir)) {
@@ -40,7 +40,7 @@ if (isset($_FILES['portfolio_file']) && $_FILES['portfolio_file']['error'] === U
     }
 }
 
-// Save to database
+// Save application
 $stmt = $conn->prepare("
     INSERT INTO org_applications 
     (student_id, org_id, contact_number, age, year_section, portfolio_path, applied_at) 
@@ -54,16 +54,51 @@ if (!$stmt) {
 $stmt->bind_param("iissss", $student_id, $org_id, $contact_number, $age, $year_section, $portfolio_path);
 
 if ($stmt->execute()) {
-    // Update user's org_id in the users table
-    $updateStmt = $conn->prepare("UPDATE users SET org_id = ? WHERE ID = ?");
-    if ($updateStmt) {
-        $updateStmt->bind_param("ii", $org_id, $student_id);
-        $updateStmt->execute();
-        $updateStmt->close();
+
+    // Fetch organization name and admin_id
+    $org_name = '';
+    $admin_id = null;
+    $org_stmt = $conn->prepare("SELECT name, id FROM organizations WHERE id = ?");
+    $org_stmt->bind_param("i", $org_id);
+    $org_stmt->execute();
+    $org_result = $org_stmt->get_result();
+    if ($org_result->num_rows > 0) {
+        $org_row = $org_result->fetch_assoc();
+        $org_name = $org_row['name'];
+        $admin_id = $org_row['id'];
+    }
+    $org_stmt->close();
+
+    // Fetch student full name
+    $student_name = '';
+    $user_stmt = $conn->prepare("SELECT fullName FROM users WHERE ID = ?");
+    $user_stmt->bind_param("i", $student_id);
+    $user_stmt->execute();
+    $user_result = $user_stmt->get_result();
+    if ($user_result->num_rows > 0) {
+        $student_name = $user_result->fetch_assoc()['fullName'];
+    }
+    $user_stmt->close();
+
+    // Notify student
+    $student_message = "Your application to join '$org_name' is under review. Please wait for atleast 1 week to see the results.";
+    $notif_stmt = $conn->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+    $notif_stmt->bind_param("is", $student_id, $student_message);
+    $notif_stmt->execute();
+    $notif_stmt->close();
+
+    // Notify admin with student's name
+    if ($admin_id) {
+        $admin_message = "A new application has been submitted by $student_name to your organization '$org_name'.";
+        $admin_notif_stmt = $conn->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+        $admin_notif_stmt->bind_param("is", $admin_id, $admin_message);
+        $admin_notif_stmt->execute();
+        $admin_notif_stmt->close();
     }
 
     echo "✅ Application submitted successfully!";
-    header("refresh:2 ../students/dashboard.php");
+    header("refresh:2;url=../students/dashboard.php");
+
 } else {
     echo "❌ Error saving application: " . $stmt->error;
 }

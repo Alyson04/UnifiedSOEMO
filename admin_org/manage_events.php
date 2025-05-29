@@ -87,6 +87,5 @@ include '../includes/navbar.php';
         </div>
     </div>
 </div>
-
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
