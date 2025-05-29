@@ -58,6 +58,7 @@ if (isset($_SESSION['user_id'])) {
         <ul class="nav-list">
             <li><a href="dashboard.php">HOME</a></li>
             <li><a href="organizations.php">ORGANIZATIONS</a></li>
+            <li><a href="new-post.php">POSTS</a></li>
             <li><a href="events.php">EVENTS</a></li>
             <li><a href="about_us.php">ABOUT US</a></li>
         </ul>

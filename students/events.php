@@ -3,7 +3,8 @@ require '../api/auth.php';
 $student_id = $_SESSION['user_id'] ?? null;
 $student_name = '';
 require '../config/db_conn.php';
-// Fetch admin's full name from database
+
+// Fetch student name
 if ($student_id) {
     $sql_student = "SELECT fullName FROM users WHERE ID = ?";
     $stmt = $conn->prepare($sql_student);
@@ -16,6 +17,30 @@ if ($student_id) {
     $stmt->close();
 }
 
+// Fetch all events for current year ordered by event_date ascending
+$year = date('Y');
+$sql_events = "SELECT id, title, description, event_date, org_id, created_at 
+               FROM events 
+               WHERE YEAR(event_date) = ? 
+               ORDER BY event_date ASC";
+$stmt = $conn->prepare($sql_events);
+$stmt->bind_param("i", $year);
+$stmt->execute();
+$result_events = $stmt->get_result();
+
+$upcoming_events = [];
+$past_events = [];
+$today = date('Y-m-d');
+
+while ($row = $result_events->fetch_assoc()) {
+    if ($row['event_date'] >= $today) {
+        $upcoming_events[] = $row;
+    } else {
+        $past_events[] = $row;
+    }
+}
+
+$stmt->close();
 $conn->close();
 
 $title = "Events"; 
@@ -23,105 +48,173 @@ $style = "events_styles.css";
 include '../includes/header.php'; 
 include '../includes/navbar.php';
 ?>
-        <div class="blue-section">
-        <img src="../assets/pictures/ribbons.png" alt="ribbon" class="section-image">
-    </div>
-    <div class="text-section">
-        <p>
-            The UNIFIED SOEMO at the Main Campus brings together student organizations to promote collaboration, engagement, and growth. Explore 
-            opportunities to join organizations, participate in campus-wide events, and make meaningful connections within the vibrant university community!
-        </p>
-    </div>
-    <div class="calendar-section">
-        <div class="calendar">
-            <!-- Month and Year -->
-            <div class="calendar-header">
-                <span class="month-year">January 2025</span>
-            </div>
-        
-            <!-- Weekdays -->
-            <div class="calendar-weekdays">
-                <span>Sun</span>
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-            </div>
-        
-            <!-- Days of the Month (Starting on Wednesday, Jan 1, 2025) -->
-            <div class="calendar-days">
-                <span class="empty"></span> <!-- Sunday -->
-                <span class="empty"></span> <!-- Monday -->
-                <span class="empty"></span> <!-- Tuesday -->
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span>6</span>
-                <span>7</span>
-                <span>8</span>
-                <span>9</span>
-                <span>10</span>
-                <span>11</span>
-                <span>12</span>
-                <span>13</span>
-                <span>14</span>
-                <span>15</span>
-                <span>16</span>
-                <span>17</span>
-                <span>18</span>
-                <span>19</span>
-                <span>20</span>
-                <span>21</span>
-                <span>22</span>
-                <span>23</span>
-                <span>24</span>
-                <span>25</span>
-                <span>26</span>
-                <span>27</span>
-                <span>28</span>
-                <span>29</span>
-                <span>30</span>
-                <span>31</span>
-                <!-- Continue for all days -->
-            </div>
-            
+
+<div class="blue-section">
+    <img src="../assets/pictures/ribbons.png" alt="ribbon" class="section-image">
+</div>
+
+<div class="text-section">
+    <p>
+        The UNIFIED SOEMO at the Main Campus brings together student organizations to promote collaboration, engagement, and growth. Explore 
+        opportunities to join organizations, participate in campus-wide events, and make meaningful connections within the vibrant university community!
+    </p>
+</div>
+
+<div class="calendar-section">
+    <div class="calendar">
+        <div class="calendar-header">
+            <button id="prevMonthBtn" aria-label="Previous Month">&#8592;</button>
+            <span class="month-year" id="monthYear"></span>
+            <button id="nextMonthBtn" aria-label="Next Month">&#8594;</button>
         </div>
-        
-    
-        <div class="events-section">
-            <div class="upcoming-events">
-                <h2>UPCOMING EVENTS</h2>
-                <a href="#">
-                    <img src="../assets/pictures/pupcet.png" alt="PUPCET 2025">
-                    <p><strong>#PUPCET2025</strong><br>January 12, 2025<br>View Details</p>
-                </a>
-                <a href="#">
-                    <img src="../assets/pictures/exam.png" alt="Final Examination">
-                    <p><strong>Final Examination</strong><br>January 12, 2025<br>View Details</p>
-                </a>
-                <a href="#">
-                    <img src="../assets/pictures/exam.png" alt="Final Examination">
-                    <p><strong>Final Examination</strong><br>January 12, 2025<br>View Details</p>
-                </a>
-            </div>
-    
-            <div class="past-events">
-                <h2>PAST EVENT HIGHLIGHTS</h2>
-                <a href="#">
-                    <img src="../assets/pictures/sucaa.png" alt="SUCAA 2024">
-                    <p><strong>#SUCAA2024</strong><br>January 12, 2025<br>View Details</p>
-                </a>
-                <a href="#">
-                    <img src="../assets/pictures/iskolaris.png" alt="Iskolaris 2025">
-                    <p><strong>Iskolaris 2025</strong><br>January 12, 2025<br>View Details</p>
-                </a>
-            </div>
+
+        <div class="calendar-weekdays">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
         </div>
+
+        <div class="calendar-days" id="calendarDays"></div>
     </div>
 
+    <div class="events-section">
+        <div class="upcoming-events">
+            <h2>UPCOMING EVENTS</h2>
+            <?php if (count($upcoming_events) > 0): ?>
+                <?php foreach ($upcoming_events as $event): ?>
+                    <a href="#">
+                        <!-- No image available, so just text -->
+                        <p><strong><?= htmlspecialchars($event['title']) ?></strong><br>
+                        <?= date('F j, Y', strtotime($event['event_date'])) ?><br>
+                        View Details</p>
+                    </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No upcoming events.</p>
+            <?php endif; ?>
+        </div>
+
+        <div class="past-events">
+            <h2>PAST EVENT HIGHLIGHTS</h2>
+            <?php if (count($past_events) > 0): ?>
+                <?php foreach ($past_events as $event): ?>
+                    <a href="#">
+                        <p><strong><?= htmlspecialchars($event['title']) ?></strong><br>
+                        <?= date('F j, Y', strtotime($event['event_date'])) ?><br>
+                        View Details</p>
+                    </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No past events.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
 <script src="../assets/scripts/notif_script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const monthYearElement = document.getElementById('monthYear');
+    const calendarDaysElement = document.getElementById('calendarDays');
+    const prevMonthBtn = document.getElementById('prevMonthBtn');
+    const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Collect all event dates for highlight in calendar
+    const eventDatesPHP = <?php
+        $all_event_dates = array_map(fn($e) => $e['event_date'], array_merge($upcoming_events, $past_events));
+        echo json_encode($all_event_dates);
+    ?>;
+
+    const eventDateSet = new Set(eventDatesPHP);
+
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+
+    function renderCalendar(year, month) {
+        monthYearElement.textContent = `${months[month]} ${year}`;
+        calendarDaysElement.innerHTML = '';
+
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        const totalDays = new Date(year, month + 1, 0).getDate();
+
+        for(let i = 0; i < firstDayIndex; i++) {
+            const blank = document.createElement('span');
+            blank.classList.add('empty');
+            calendarDaysElement.appendChild(blank);
+        }
+
+        for(let day = 1; day <= totalDays; day++) {
+            const daySpan = document.createElement('span');
+            daySpan.textContent = day;
+
+            const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+            if(eventDateSet.has(dateStr)) {
+                daySpan.classList.add('event-day');
+                daySpan.title = "Event day";
+            }
+
+            calendarDaysElement.appendChild(daySpan);
+        }
+    }
+
+    prevMonthBtn.addEventListener('click', () => {
+        currentMonth--;
+        if(currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar(currentYear, currentMonth);
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        currentMonth++;
+        if(currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar(currentYear, currentMonth);
+    });
+
+    renderCalendar(currentYear, currentMonth);
+});
+</script>
+
+<style>
+/* Styling for event days in calendar */
+.calendar-days span.event-day {
+    background-color: #ffcc00;
+    border-radius: 50%;
+    font-weight: bold;
+    cursor: pointer;
+    color: #000;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.calendar-header button {
+    cursor: pointer;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+.calendar-header button:hover {
+    color: #0056b3;
+}
+</style>
+
 <?php include '../includes/footer.php'; ?>
