@@ -20,73 +20,91 @@ if ($admin_id) {
     }
     $stmt->close();
 }
-$sql = "SELECT id, fullName, email, is_approved, created_at FROM users";
-$result = $conn->query($sql);
 
+// Handle optional role filter from query parameter
+$role_filter = $_GET['role'] ?? '';
+
+// Base SQL query
+$sql = "SELECT id, fullName, email, role, created_at FROM users WHERE role != 'admin'";
+
+if (!empty($role_filter)) {
+    $sql .= " AND role = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $role_filter);
+} else {
+    $stmt = $conn->prepare($sql);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Fetch users
+$users = [];
+while ($row = $result->fetch_assoc()) {
+    $users[] = $row;
+}
+
+$stmt->close();
 $conn->close();
-    
+
 $title = "Unified SOEMO Dashboard";
 $style = "new-manage_user.css";
 include '../includes/header.php';
 include '../includes/sidebar.php';
 ?>
 
-  <!-- Main Panel -->
+<!-- Main Panel -->
 <main class="main-content">
-<?php
-include '../includes/navbar.php';
-?>
+<?php include '../includes/navbar.php'; ?>
 
 <div class="content">
-        <h2 class="page-title">MANAGE USERS</h2>
+    <h2 class="page-title">MANAGE USERS</h2>
 
-        <div class="search-bar">
-            <input type="text" placeholder="Search Users...">
-            <button>
-                <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
-            </button>
-            </div>
+    <!-- Role Filter Dropdown -->
+    <form method="GET" class="status-filter-form">
+        <label for="role_filter">Filter by Role</label>
+        <select name="role" id="role_filter" onchange="this.form.submit()">
+            <option value="">All</option>
+            <option value="student" <?= $role_filter === 'student' ? 'selected' : '' ?>>Student</option>
+            <option value="org_admin" <?= $role_filter === 'org_admin' ? 'selected' : '' ?>>Org Admin</option>
+        </select>
+    </form>
 
-        <div class="top-actions">
-    <a href="create_org_admin.php" class="action-btn">+ Create Org Admin</a>
-    <a href="create_admin.php" class="action-btn">+ Create Admin</a>
-</div>
-
-
-        <!-- Users Table -->
-        <div class="user-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Date Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php while ($user = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($user['fullName']); ?></td>
-                        <td><?= htmlspecialchars($user['email']); ?></td>
-                        <td>
-                            <?php 
-                                if ($user['is_approved'] === "approved") {
-                                    echo "Approved";
-                                } elseif ($user['is_approved'] === "declined") {
-                                    echo "Declined";
-                                } else {
-                                    echo "Pending";
-                                }
-                            ?>
-                        </td>
-                        <td><?= htmlspecialchars($user['created_at']); ?></td>
-                    </tr>
-                <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
+    <div class="top-actions">
+        <a href="create_org_admin.php" class="action-btn">+ Create Org Admin</a>
+        <a href="create_admin.php" class="action-btn">+ Create Admin</a>
     </div>
+
+    <!-- Users Table -->
+    <div class="user-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Date Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (count($users) === 0): ?>
+                    <tr><td colspan="4">No users found.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($users as $user): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($user['fullName']); ?></td>
+                            <td><?= htmlspecialchars($user['email']); ?></td>
+                            <td>
+                            <?= $user['role'] === 'org_admin' ? 'Organization Admin' : ucfirst($user['role']); ?>
+                            </td>
+                            <td><?= htmlspecialchars($user['created_at']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
