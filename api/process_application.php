@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $status = 'approved';
         $message = "Your application to join '$org_name' has been accepted. Congratulations!";
     } elseif ($action == 'decline') {
-        $status = 'declined';
+        $status = 'rejected';
         $message = "Your application to join '$org_name' has been declined.";
     } else {
         die("Invalid action.");
