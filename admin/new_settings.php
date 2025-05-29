@@ -122,5 +122,5 @@ include '../includes/navbar.php';
               <!-- Section 4: Upload Logo / Media -->
           </div>
       </div>
-
+<script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

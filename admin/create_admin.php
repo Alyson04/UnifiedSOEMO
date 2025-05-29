@@ -27,7 +27,7 @@
             <!-- Add Record Form -->
             <div class="card mb-4">
                 <div class="card-header">
-                <a href="admin_dashboard.php" style="font-size:16px; padding: 10px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">
+                <a href="new-manage_users.php" style="font-size:16px; padding: 10px 15px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">
                 Back
                 </a>
                     <h3>Add a Record</h3>

@@ -144,6 +144,7 @@ include '../includes/header.php';
             <td><?= htmlspecialchars($user['fullName']) ?></td>
             <td><?= htmlspecialchars($user['email']) ?></td>
           </tr>
+<<<<<<< HEAD
         <?php endforeach; ?>
       <?php else : ?>
         <tr><td colspan="10">No recent signups found.</td></tr>
@@ -172,4 +173,20 @@ include '../includes/header.php';
 </script>
 </main>
 
+=======
+          <tr>
+            <td>Janna Mae Caballero</td>
+            <td>jannamaeccaballero@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+          <tr>
+            <td>Rica Mae Malgapo</td>
+            <td>ricamaemalgapo@iskolarnagbayan.pup.edu.ph</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    
+  </main>
+<script src="../assets/scripts/notif_script.js"></script>
+>>>>>>> 60a1c5dd1f7b2163e404a0ae8ac43e5a2c44e412
 <?php include '../includes/footer.php'; ?>
