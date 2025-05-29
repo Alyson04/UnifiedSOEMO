@@ -31,19 +31,28 @@ $recent_events = [];
 while ($row = $result_recent_events->fetch_assoc()) {
     $recent_events[] = $row;
 }
-// Get logged-in user's ID from session
+
+// Get logged-in admin's data
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
+$admin_email = '';
+$admin_profile_picture = '../assets/uploads_pfp/profile.png'; // default image
 
-// Fetch admin's full name from database
 if ($admin_id) {
-    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $sql_admin = "SELECT fullName, email, profile_picture FROM users WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
     $result_admin = $stmt->get_result();
     if ($result_admin->num_rows > 0) {
-        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+        $admin_data = $result_admin->fetch_assoc();
+        $admin_name = ucwords(strtolower($admin_data['fullName']));
+        $admin_email = strtolower($admin_data['email']);
+        $pfp_filename = $admin_data['profile_picture'];
+        $pfp_path = "../assets/uploads_pfp/" . $pfp_filename;
+        if (!empty($pfp_filename) && file_exists($pfp_path)) {
+            $admin_profile_picture = $pfp_path;
+        }
     }
     $stmt->close();
 }
@@ -55,60 +64,135 @@ $style = "new-settings.css";
 include '../includes/header.php';
 ?>
 
+<?php include '../includes/sidebar.php'; ?>
 
-<?php
-include '../includes/sidebar.php';
-?>
-
-  <!-- Main Panel -->
+<!-- Main Panel -->
 <main class="main-content">
-<?php
-include '../includes/navbar.php';
-?>
-         <div class="outer-box">
-          <h2 class="section-title">EDIT PROFILE</h2>
-      
-          <div class="inner-card">
-                <div class="card-section upload-section">
-                  <h3>Organization Logo</h3>
-                  <form action="#" method="POST" enctype="multipart/form-data">
-                      <div class="upload-frame">
-                          <label for="logo-upload" class="upload-label">
-                              <img src="../fromOtherBranches/pics/logo.png" alt="Insert Logo Here" />
-                              <span class="upload-text">Upload Media</span>
-                          </label>
-                          <input type="file" id="logo-upload" name="logo" accept="image/*" />
-                      </div>
-                  </form>
-                </div>
+<?php include '../includes/navbar.php'; ?>
 
-               <div class="card-section">
-                    <h3>Account Settings</h3>
-                    <div class="card-row">
-                    <div class="card-label">Full Name   :</div>
-                    <div class="card-action">[Change Full Name] ✎</div>
-                </div>
-                <div class="card-row">
-                    <div class="card-label">Email    :</div>
-                    <div class="card-action">[Change Email] ✎</div>
-                </div>
-                <div class="card-row">
-                    <div class="card-label">Username    :</div>
-                    <div class="card-action">[Change Username] ✎</div>
-                </div>
-                <div class="card-row">
-                    <div class="card-label">Password    :</div>
-                    <div class="card-action">[Change Password] ✎</div>
-                </div>
+<div class="outer-box">
+    <h2 class="section-title">EDIT PROFILE</h2>
 
-                <!-- Save/Cancel Buttons -->
-                <div class="action-buttons">
-                    <button class="save-btn" type="submit">Save Changes</button>
-                    <button class="cancel-btn" type="button">Cancel</button>
-                </div>
-
-            </div>      
+<form action="../api/admin-setting.php" method="POST" enctype="multipart/form-data">
+    <div class="inner-card">
+      <div class="card-section upload-section">
+        <h3>Organization Logo</h3>
+        <div class="upload-frame">
+            <label for="logo-upload" class="upload-label">
+                <!-- Show organization logo from DB or default -->
+                <img src="<?= htmlspecialchars($admin_profile_picture) ?>" alt="Admin Profile Picture" />
+                <span class="upload-text">Upload Media</span>
+            </label>
+            <input type="file" id="logo-upload" name="logo" accept="image/*" />
         </div>
       </div>
+
+      <div class="card-section">
+        <h3>Account Settings</h3>
+
+        <!-- Full Name -->
+        <div class="card-row" data-field="fullName">
+          <div class="card-label">Full Name:</div>
+          <div class="card-value" id="display-fullName"><?= htmlspecialchars($admin_name) ?></div>
+          <textarea class="card-input d-none" id="input-fullName" name="fullName" rows="2"><?= htmlspecialchars($admin_name) ?></textarea>
+          <div class="card-action">
+            <span class="edit-text" onclick="startEdit('fullName')" role="button" tabindex="0">[Change Full Name] ✎</span>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="card-row" data-field="email">
+          <div class="card-label">Email:</div>
+          <div class="card-value" id="display-email"><?= htmlspecialchars($admin_email) ?></div>
+          <input type="email" class="card-input d-none" id="input-email" name="email" value="<?= htmlspecialchars($admin_email) ?>" />
+          <div class="card-action">
+            <span class="edit-text" onclick="startEdit('email')" role="button" tabindex="0">[Change Email] ✎</span>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="card-row" data-field="password">
+          <div class="card-label">Password:</div>
+          <div class="card-value" id="display-password">••••••••</div>
+          <input type="password" class="card-input d-none" id="input-password" name="password" placeholder="Enter new password" />
+          <div class="card-action">
+            <span class="edit-text" onclick="startEdit('password')" role="button" tabindex="0">[Change Password] ✎</span>
+          </div>
+        </div>
+
+      </div>      
+
+    </div>
+
+    <!-- Global Save/Cancel Buttons -->
+    <div class="action-buttons">
+      <button class="save-btn" type="submit">Save Changes</button>
+      <button class="cancel-btn" type="button" onclick="window.location.reload()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function elems(field) {
+    return {
+      display: document.getElementById('display-' + field),
+      input: document.getElementById('input-' + field),
+      editText: document.querySelector(`.card-row[data-field="${field}"] .edit-text`),
+    };
+  }
+
+  function startEdit(field) {
+    const { display, input, editText } = elems(field);
+    display.classList.add('d-none');
+    input.classList.remove('d-none');
+    editText.classList.add('d-none');
+    input.focus();
+  }
+</script>
+<style>
+  .d-none { display: none; }
+  .edit-text {
+    cursor: pointer;
+    color: #007bff;
+    user-select: none;
+    font-family: monospace;
+  }
+  .edit-text:hover, .edit-text:focus {
+    text-decoration: underline;
+    outline: none;
+  }
+  .card-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .card-label {
+    width: 120px;
+    font-weight: 600;
+  }
+  .card-value, .card-input {
+    flex: 1;
+  }
+  .card-input {
+    font-size: 1rem;
+    padding: 5px;
+    resize: vertical;
+  }
+  .card-action {
+    margin-left: 15px;
+    min-width: 160px;
+  }
+  .card-action button {
+    margin-right: 5px;
+  }
+  .action-buttons {
+    margin-top: 30px;
+  }
+  .action-buttons button {
+    padding: 10px 20px;
+    margin-right: 10px;
+  }
+</style>
+
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

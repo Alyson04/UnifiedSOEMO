@@ -9,8 +9,8 @@ if (isset($_SESSION['user_id'])) {
     include '../config/db_conn.php';
     $user_id = $_SESSION['user_id'];
 
-    // Fetch user info
-    $stmt = $conn->prepare("SELECT fullName, role, profile_picture FROM users WHERE id = ?");
+    // Fetch user info and role
+    $stmt = $conn->prepare("SELECT fullName, role, profile_picture, org_id FROM users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -18,23 +18,38 @@ if (isset($_SESSION['user_id'])) {
     if ($result && $row = $result->fetch_assoc()) {
         $display_name = ucwords(strtolower($row['fullName']));
         $role = $row['role'];
+        $org_id = $row['org_id'] ?? null;
         $role_label = $role === 'admin' ? 'Admin' : ($role === 'student' ? 'Student' : 'Org Admin');
 
-        // Use profile picture only if student and picture exists
-        if ($role === 'student' && !empty($row['profile_picture'])) {
+        // For admin and student, check if profile picture exists
+        if (!empty($row['profile_picture'])) {
             $uploaded_path = "../assets/uploads_pfp/" . $row['profile_picture'];
             if (file_exists($uploaded_path)) {
                 $profile_img = $uploaded_path;
             }
+        } elseif ($role === 'org_admin' && $org_id !== null) {
+            // Fetch organization's profile picture filename
+            $stmt_org = $conn->prepare("SELECT image_path FROM organizations WHERE id = ?");
+            $stmt_org->bind_param("i", $org_id);
+            $stmt_org->execute();
+            $result_org = $stmt_org->get_result();
+
+            if ($result_org && $org_row = $result_org->fetch_assoc()) {
+                $org_img_file = $org_row['image_path'];
+                $org_img_path = "../assets/uploads_organizations/" . $org_img_file;
+                if (!empty($org_img_file) && file_exists($org_img_path)) {
+                    $profile_img = $org_img_path;
+                }
+            }
+            $stmt_org->close();
         }
     }
-
     $stmt->close();
 }
 ?>
 
 <!-- Unified Header -->
-<header class="top-bar <?php if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'org_admin') echo 'admin-navbar'; ?>">
+<header class="top-bar <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'org_admin')) echo 'admin-navbar'; ?>">
 
     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
         <div class="logo">
@@ -59,7 +74,7 @@ if (isset($_SESSION['user_id'])) {
             <img src="<?= htmlspecialchars($profile_img); ?>" alt="profile picture" />
             <div class="profile-info">
                 <strong><?= htmlspecialchars($display_name); ?></strong>
-                <span><?= $role_label; ?></span>
+                <span><?= htmlspecialchars($role_label); ?></span>
             </div>
             <div class="dropdown-tray" id="profileDropdown" style="display: none;">
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
