@@ -91,29 +91,30 @@ include '../includes/navbar.php';
     </section>     
 
    
-    <section class="events-upcoming">
-    <div class="list-events">
-        <h3>Past Events</h3>
-        <?php if (!empty($past_events_list)) : ?>
-            <?php foreach ($past_events_list as $event) : ?>
-                <div><?= date("M d", strtotime($event['event_date'])) ?></div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <div>No past events found.</div>
-        <?php endif; ?>
-    </div>
+   <section class="events-upcoming">
+  <div class="events-column">
+    <h3>Past Event Dates</h3>
+    <?php if (!empty($past_events_list)) : ?>
+        <?php foreach ($past_events_list as $event) : ?>
+            <div class="event-item"><?= date("M d, Y", strtotime($event['event_date'])) ?></div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div>No past events found.</div>
+    <?php endif; ?>
+  </div>
 
-    <div class="list-events">
-        <h3>Events Name</h3>
-        <?php if (!empty($past_events_list)) : ?>
-            <?php foreach ($past_events_list as $event) : ?>
-                <div><?= htmlspecialchars($event['title']) ?></div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <div>No past events found.</div>
-        <?php endif; ?>
-    </div>
+  <div class="events-column">
+    <h3>Past Event Names</h3>
+    <?php if (!empty($past_events_list)) : ?>
+        <?php foreach ($past_events_list as $event) : ?>
+            <div class="event-item"><?= htmlspecialchars($event['title']) ?></div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div>No past events found.</div>
+    <?php endif; ?>
+  </div>
 </section>
+
       
   </main>
 <script src="../assets/scripts/notif_script.js"></script>
