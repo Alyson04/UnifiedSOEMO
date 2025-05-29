@@ -1,6 +1,5 @@
 <?php 
 require '../api/auth.php';
-
 require '../config/db_conn.php';
 
 $title = "Posts";
@@ -10,28 +9,39 @@ include '../includes/header.php';
 
 <!-- Main Panel -->
 <main class="main-content">
-<?php
-include '../includes/navbar.php';
-?>
+<?php include '../includes/navbar.php'; ?>
 
 <div id="postsWrapper">
   <div id="postsContainer">
     <?php
-    $query = "SELECT posts.*, users.fullName 
-              FROM posts
-              LEFT JOIN users ON posts.user_id = users.id
-              ORDER BY posts.created_at DESC";
+    // Query posts with user fullName and organization image_path
+    $query = "
+      SELECT posts.*, users.fullName, organizations.image_path AS org_image_path
+      FROM posts
+      LEFT JOIN users ON posts.user_id = users.id
+      LEFT JOIN organizations ON users.org_id = organizations.id
+      ORDER BY posts.created_at DESC
+    ";
     $result = mysqli_query($conn, $query);
 
     if ($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             $content = htmlspecialchars($row['content']);
-            $profile_img = '../assets/pictures/icon.png'; // Or fetch user profile picture if you have it
             $username = htmlspecialchars($row['fullName'] ?? 'Unknown');
+
+            $default_img = '../assets/pictures/icon.png';
+            $profile_img = $default_img;
+
+            if (!empty($row['org_image_path'])) {
+                $possible_path = '../assets/uploads_organizations/' . $row['org_image_path'];
+                if (file_exists($possible_path)) {
+                    $profile_img = $possible_path;
+                }
+            }
 
             echo "<div class='post-card'>
                     <div class='post-header'>
-                      <img src='{$profile_img}' alt='{$username}' />
+                      <img src='{$profile_img}' alt='Profile picture of {$username}' />
                       <span class='username'>{$username}</span>
                     </div>
                     <div class='post-content'>{$content}</div>";
@@ -55,7 +65,6 @@ include '../includes/navbar.php';
 <?php include '../includes/footer.php'; ?>
 
 <script>
-// Add the event listeners for confirm and cancel buttons only once
 document.addEventListener('DOMContentLoaded', function() {
     const confirmationModal = document.getElementById('confirmationModal');
     const confirmBtn = document.getElementById('confirmBtn');
@@ -66,16 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmationModal.style.display = 'none';
     }
 
-    // Handle form submission
     postForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent the form from submitting immediately
+        e.preventDefault();
         confirmationModal.style.display = 'flex';
     });
 
-    // Handle confirm button click
     confirmBtn.addEventListener('click', function() {
         const formData = new FormData(postForm);
-
         fetch('../api/submit_post.php', {
             method: 'POST',
             body: formData
@@ -83,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                location.reload(); // Reload the page to show new post
+                location.reload();
             } else {
                 alert(data.message || "Something went wrong.");
                 confirmationModal.style.display = 'none';
@@ -96,7 +102,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle cancel button click
     cancelBtn.addEventListener('click', function() {
         confirmationModal.style.display = 'none';
     });
@@ -108,17 +113,15 @@ const maxChars = 500;
 const maxWordLength = 20;
 
 function autoGrow(element) {
-  element.style.height = 'auto'; // reset height
-  element.style.height = element.scrollHeight + 'px'; // set height to scrollHeight
+  element.style.height = 'auto';
+  element.style.height = element.scrollHeight + 'px';
 }
 
 textarea.addEventListener('input', function () {
-  // Auto grow textarea height
   autoGrow(textarea);
 
   let value = textarea.value;
 
-  // Limit total characters
   if (value.length > maxChars) {
     value = value.substring(0, maxChars);
     warning.textContent = `Maximum character limit reached (${maxChars}).`;
@@ -126,7 +129,6 @@ textarea.addEventListener('input', function () {
     warning.textContent = "";
   }
 
-  // Check for long words and truncate them
   const words = value.trim().split(/\s+/);
   let modified = false;
   for (let i = 0; i < words.length; i++) {
@@ -141,12 +143,9 @@ textarea.addEventListener('input', function () {
     value = words.join(' ');
   }
 
-  // Update textarea value only if modified
   if (textarea.value !== value) {
     textarea.value = value;
   }
 });
 </script>
 <script src="../assets/scripts/notif_script.js"></script>
-
-
