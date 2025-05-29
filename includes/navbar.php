@@ -18,7 +18,7 @@ if (isset($_SESSION['user_id'])) {
     if ($result && $row = $result->fetch_assoc()) {
         $display_name = ucwords(strtolower($row['fullName']));
         $role = $row['role'];
-        $org_id = $row['org_id'] ?? null;
+        $user_org_id = $row['org_id'] ?? null;  // renamed here
         $role_label = $role === 'admin' ? 'Admin' : ($role === 'student' ? 'Student' : 'Org Admin');
 
         // For admin and student, check if profile picture exists
@@ -27,10 +27,10 @@ if (isset($_SESSION['user_id'])) {
             if (file_exists($uploaded_path)) {
                 $profile_img = $uploaded_path;
             }
-        } elseif ($role === 'org_admin' && $org_id !== null) {
+        } elseif ($role === 'org_admin' && $user_org_id !== null) {
             // Fetch organization's profile picture filename
             $stmt_org = $conn->prepare("SELECT image_path FROM organizations WHERE id = ?");
-            $stmt_org->bind_param("i", $org_id);
+            $stmt_org->bind_param("i", $user_org_id);  // use renamed variable here
             $stmt_org->execute();
             $result_org = $stmt_org->get_result();
 

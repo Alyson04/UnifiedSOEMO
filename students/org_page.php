@@ -1,4 +1,6 @@
 <?php 
+
+
 require '../api/auth.php';
 $student_id = $_SESSION['user_id'] ?? null;
 $student_name = '';
@@ -43,7 +45,7 @@ $conn->close();
 
 $title = "Organizations";
 $style = "orgpage_styles.css"; 
-include '../includes/header.php'; 
+include '../includes/header.php';
 include '../includes/navbar.php'; 
 ?>
 
@@ -54,6 +56,7 @@ include '../includes/navbar.php';
         <div class="corner-bottom-left"></div>
         
         <?php 
+        
         // Prepare image path: prepend folder path if image exists, else default
         if (!empty($org['image_path'])) {
             $imagePath = "../assets/uploads_organizations/" . htmlspecialchars($org['image_path']);
