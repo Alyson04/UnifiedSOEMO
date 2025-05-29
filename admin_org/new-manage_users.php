@@ -31,7 +31,7 @@ $sql = "
         u.fullName, 
         u.email, 
         a.application_status, 
-        a.applied_at
+        a.applied_at 
     FROM org_applications a
     JOIN users u ON a.student_id = u.id
     WHERE u.role = 'student' AND a.org_id = ?
@@ -46,10 +46,7 @@ if (!empty($status_filter)) {
     $stmt->bind_param("i", $org_id);
 }
 
-if (!$stmt->execute()) {
-    die("SQL Execution failed: " . $stmt->error);
-}
-
+$stmt->execute();
 $result = $stmt->get_result();
 
 // Fetch all rows into an array
@@ -80,7 +77,6 @@ include '../includes/sidebar.php';
             <img src="../fromOtherBranches/pics/search-icon.png" alt="Search" style="width: 20px; height: 20px;" />
         </button>
     </div>
-
     <!-- Status Filter -->
     <form method="GET" class="status-filter-form">
         <label for="status_filter">Filter</label>
