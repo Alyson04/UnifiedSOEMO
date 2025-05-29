@@ -59,39 +59,92 @@ if ($student_id) {
 </div>
 <?php endif; ?>
 
-<!-- Additional Content -->
 <section class="welcome">
-    <div class="text">
-        <h1>WELCOME TO UNIFIED SOEMO!</h1>
-        <p>Your ultimate gateway to connecting with student organizations and discovering tailored opportunities. Dive into a dynamic community, stay informed with announcements, and engage in events that spark your interests. Sign in to unlock a world of connections and start your journey with us today!</p>
-    </div>
-    <div class="image">
-        <img src="../assets/pictures/WelcomeIMG.png" alt="University Image">
+        <div class="text">
+            <h1>WELCOME TO UNIFIED SOEMO!</h1>
+            <p>Your ultimate gateway to connecting with student organizations and discovering tailored opportunities. Dive into a dynamic community, stay informed with announcements, and engage in events that spark your interests. Sign in to unlock a world of connections and start your journey with us today!</p>
+        </div>
+        <div class="image">
+            <img src="../assets/pictures/WelcomeIMG.png" alt="University Image">
+        </div>
+    </section>
+
+ <section class="organizations">
+        <h2>STUDENT ORGANIZATION</h2>
+        <div class="org-container" id="orgContainer">
+        </div>
+        <button class="discover-btn" onclick="window.location.href='organizations.php'">DISCOVER MORE</button>
+    </section>
+
+<section class="services">
+    <h2>OUR SERVICES</h2>
+    <div class="services-container">
+        <div class="services-image">
+            <img src="../assets/pictures/servicesimg.png" alt="Services Image">
+        </div>
+        <div class="services-text">
+            <p>
+                Our platform offers a centralized directory of student organizations, real-time updates on campus events, 
+                and tools to streamline communication and engagement. It helps students discover opportunities, 
+                connect with communities, and stay informed about activities that align with their interests.
+            </p>
+            <a href="../students/about_us.php" style="text-decoration: none" button class="learn-more-btn">LEARN MORE</button></a>
+        </div>
     </div>
 </section>
 
-<!-- Your other sections continue here -->
 <script>
-    // JavaScript logic for tutorial steps
-    function closeTutorial() {
-        document.getElementById("tutorial").style.display = "none";
+async function fetchOrgs() {
+    try {
+        const res = await fetch('../api/get_orgs.php');
+        const orgs = await res.json();
+        return orgs;
+    } catch (error) {
+        console.error("Failed to fetch orgs:", error);
+        return [];
     }
+}
 
-    function prevStep() {
-        // Logic for previous step
-    }
+function shuffle(array) {
+    return array.sort(() => 0.5 - Math.random());
+}
 
-    function nextStep() {
-        // Logic for next step
-    }
+function displayOrgs(orgs) {
+    const container = document.getElementById("orgContainer");
+    const imagePath = "../assets/uploads_organizations/";
+    container.innerHTML = "";
 
-    function neverShowAgain() {
-        // Logic to never show the tutorial again
-    }
+    const selected = shuffle([...orgs]).slice(0, 3);
+    selected.forEach(org => {
+        const card = document.createElement("div");
+        card.className = "org-card";
+        card.innerHTML = `
+            <div class="org-content">
+                <img src="${imagePath + org.img}" alt="${org.name}">
+                <h3>${org.name}</h3>
+                <p>${org.desc}</p>
+            </div>
+            <a class="join-btn" href="org_page.php?id=${encodeURIComponent(org.id)}">JOIN NOW</a>
+        `;
+        container.appendChild(card);
+    });
+}
+
+
+let cachedOrgs = [];
+
+async function initOrgs() {
+    cachedOrgs = await fetchOrgs();
+    displayOrgs(cachedOrgs);
+    setInterval(() => displayOrgs(cachedOrgs), 5000);
+}
+
+document.addEventListener("DOMContentLoaded", initOrgs);
 </script>
 
 <script src="../assets/scripts/studentdashboard_script.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
+
 
 <?php include '../includes/footer.php'; ?>
