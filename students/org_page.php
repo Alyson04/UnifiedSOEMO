@@ -47,7 +47,7 @@ include '../includes/header.php';
 include '../includes/navbar.php'; 
 ?>
 
-<div class="org-container">
+<div class="outer-container">
 <?php if ($org): ?>
     <div class="org-container">
         <?php if (!empty($org['image_path'])): ?>
@@ -98,6 +98,7 @@ include '../includes/navbar.php';
 <?php else: ?>
     <p>Organization not found.</p>
 <?php endif; ?>
+</div>
 
 <script src="../assets/scripts/notif_script.js"></script>
 
