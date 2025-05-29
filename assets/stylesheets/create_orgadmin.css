@@ -74,7 +74,7 @@ body {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  max-width: 480px;
+  max-width: 700px;
   margin: 15px auto;
   padding: 20px 30px;
   display: flex;
@@ -99,12 +99,13 @@ body {
 /* Form body */
 .card-body {
   width: 100%;
-  max-width: 400px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  font-size: 1rem;
+  gap: 16px;
+  padding-top: 5px;
 }
+
 
 /* Input Fields */
 .card-body input[type="text"],
@@ -150,7 +151,6 @@ body {
 }
 
 .btn-cancel {
-  margin-top: 12px;
   padding: 12px 0;
   font-weight: 700;
   font-size: 1rem;
@@ -173,12 +173,14 @@ body {
 .form-group {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  padding: 10px;
+  margin-bottom: 14px;
+  width: 100%;
 }
 
 .form-group label {
-  min-width: 100px;
+  width: 160px; /* adjust this width as needed */
   font-weight: 600;
   color: #2A4365;
   font-size: 0.95rem;
@@ -188,4 +190,14 @@ body {
 .form-group input[type="password"] {
   flex: 1;
   width: 100%;
+}
+
+.form-group input[type="file"] {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 14px;  
+  color: #2A4365;
+  font-weight: 600;
+  height: 40px;
+  font-size: 0.9rem;
 }
