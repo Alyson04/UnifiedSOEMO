@@ -1,13 +1,14 @@
-<?php
+<?php 
 require '../api/auth.php';
-checkUserRole('admin');
+checkUserRole('admin'); // Only allow admins
 
 require '../config/db_conn.php';
 
+// Get logged-in user's ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
-// Fetch admin name
+// Fetch admin's full name from database
 if ($admin_id) {
     $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
@@ -19,32 +20,45 @@ if ($admin_id) {
     }
     $stmt->close();
 }
+
+// Handle optional role filter from query parameter
+$role_filter = $_GET['role'] ?? '';
+
+// Base SQL query
+$sql = "SELECT id, fullName, email, role, created_at FROM users WHERE role != 'admin'";
+
+if (!empty($role_filter)) {
+    $sql .= " AND role = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $role_filter);
+} else {
+    $stmt = $conn->prepare($sql);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Fetch users
+$users = [];
+while ($row = $result->fetch_assoc()) {
+    $users[] = $row;
+}
+
+$stmt->close();
 $conn->close();
+
+$title = "Unified SOEMO Dashboard";
+$style = "create_orgadmin.css";
+include '../includes/header.php';
+include '../includes/sidebar.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create Organization Admin</title>
-  <link rel="stylesheet" href="../assets/stylesheets/create_orgadmin.css">
-</head>
-<body>
-<div class="container">
 
-  <div class="sidebar">
-    <h2>Admin Dashboard</h2>
-    <ul>
-      <li><a href="admin_dashboard.php">Manage Users</a></li>
-      <li><a href="#" class="active">Organizations</a></li>
-      <li><a href="#">Events</a></li>
-      <li><a href="#">Settings</a></li>
-      <li><a href="../functions/logout.php">Logout</a></li>
-    </ul>
-  </div>
+<!-- Main Panel -->
+<main class="main-content">
+<?php include '../includes/navbar.php'; ?>
 
-  <div class="main-content">
-    <div id="addRecordSection">
+
+      <div id="addRecordSection">
       <div class="card">
         <div class="card-header">
           <h3>Create an Organization Admin</h3>
@@ -104,9 +118,6 @@ $conn->close();
     </div>
   </div>
 
-</div>
 
 <script src="../assets/scripts/notif_script.js"></script>
-<script src="../assets/scripts/createorg_script.js"></script>
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>

@@ -1,27 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADD A RECORD</title>
-    <link rel="stylesheet" href="../assets/stylesheets/create_admin.css">
-</head>
-<body>
-    <div class="container">
-            
-        <div class="sidebar">
-            <h2>Admin Dashboard</h2>
-            <ul>
-                <!-- <li><a href="#" class="active">Create Admin Account</a></li> -->
-                <li><a href="admin_dashboard.php" class="active">Manage Users</a></li>
-                <li><a href="#">Organizations</a></li>
-                <li><a href="#">Events</a></li>
-                <li><a href="#">Settings</a></li>
-                <li><a href="../functions/logout.php">Logout</a></li>
-            </ul>
-        </div>
-        
-        <div class="main-content">
+<?php 
+require '../api/auth.php';
+checkUserRole('admin'); // Only allow admins
+
+require '../config/db_conn.php';
+
+// Get logged-in user's ID from session
+$admin_id = $_SESSION['user_id'] ?? null;
+$admin_name = '';
+
+// Fetch admin's full name from database
+if ($admin_id) {
+    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $stmt = $conn->prepare($sql_admin);
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result_admin = $stmt->get_result();
+    if ($result_admin->num_rows > 0) {
+        $admin_name = ucwords(strtolower($result_admin->fetch_assoc()['fullName']));
+    }
+    $stmt->close();
+}
+
+// Handle optional role filter from query parameter
+$role_filter = $_GET['role'] ?? '';
+
+// Base SQL query
+$sql = "SELECT id, fullName, email, role, created_at FROM users WHERE role != 'admin'";
+
+if (!empty($role_filter)) {
+    $sql .= " AND role = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $role_filter);
+} else {
+    $stmt = $conn->prepare($sql);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Fetch users
+$users = [];
+while ($row = $result->fetch_assoc()) {
+    $users[] = $row;
+}
+
+$stmt->close();
+$conn->close();
+
+$title = "Unified SOEMO Dashboard";
+$style = "create_admin.css";
+include '../includes/header.php';
+include '../includes/sidebar.php';
+?>
+
+<!-- Main Panel -->
+<main class="main-content">
+<?php include '../includes/navbar.php'; ?>
+
+
       <div id="addRecordSection">
         <div class="card mb-4">
           <div class="card-header">
@@ -40,11 +76,6 @@
               </div>
 
               <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required />
-              </div>
-
-              <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required />
               </div>
@@ -58,6 +89,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</body>
-</html>
+
+
+<script src="../assets/scripts/notif_script.js"></script>
+<?php include '../includes/footer.php'; ?>
