@@ -300,6 +300,35 @@ body {
   border-bottom: none;
 }
 
+.student-org-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    position: relative;
+    min-height: 200px;
+    padding: 0px;
+}
+
+.student-org-card {
+    width: 28%; /* or adjust to keep 3-per-row */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.no-org-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-size: 18px;
+    font-style: italic;
+    text-align: center;
+}
+
+
 /* Responsive tweaks */
 @media (max-width: 600px) {
   .student-org-container {

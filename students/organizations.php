@@ -25,49 +25,70 @@ include '../includes/navbar.php';
 
 <section class="background">
     <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search Organizations...">
+        <input type="text" class="search-bar" id="orgSearch" placeholder="Search Organizations...">
     </div>
 </section>
-
-<?php
-// Fetch all student organizations ordered by creation date
-$sql = "SELECT * FROM organizations ORDER BY created_at ASC";
-$result = $conn->query($sql);
-?>
 
 <section class="student-org">
     <h2 class="section-title">STUDENT ORGANIZATION</h2>
     <div class="student-org-wrapper">
-        <div class="student-org-container">
+        <div class="student-org-container" id="orgResults">
 
-        <?php if ($result && $result->num_rows > 0): ?>
-            <?php while ($row = $result->fetch_assoc()): 
+        <?php
+        // Initial organization display (all organizations)
+        $sql = "SELECT * FROM organizations ORDER BY created_at ASC";
+        $result = $conn->query($sql);
+
+        if ($result && $result->num_rows > 0):
+            while ($row = $result->fetch_assoc()):
                 $name = htmlspecialchars($row['name']);
                 $description = htmlspecialchars($row['description']);
-
-                // Prepare image path — prepend folder if image_path exists, else default image
-                if (!empty($row['image_path'])) {
-                    $imagePath = "../assets/uploads_organizations/" . htmlspecialchars($row['image_path']);
-                } else {
-                    $imagePath = "../assets/pictures/default.jpg";
-                }
-            ?>
+                $imagePath = !empty($row['image_path']) 
+                    ? "../assets/uploads_organizations/" . htmlspecialchars($row['image_path']) 
+                    : "../assets/pictures/default.jpg";
+        ?>
             <div class="student-org-card">
                 <img src="<?= $imagePath ?>" alt="<?= $name ?>">
                 <h4><?= $name ?></h4>
                 <p><?= $description ?></p>
                 <a href="org_page.php?id=<?= $row['id'] ?>" class="join-btn">LEARN MORE</a>
             </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p style="color: white;">No organizations found.</p>
-        <?php endif; ?>
+        <?php
+            endwhile;
+        else:
+            echo '<p style="color: white;">No organizations found with.</p>';
+        endif;
+        ?>
 
         </div>
     </div>
 </section>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("orgSearch");
+    const resultsContainer = document.getElementById("orgResults");
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `search_orgs.php?q=${encodeURIComponent(query)}`, true);
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                resultsContainer.innerHTML = xhr.responseText;
+            } else {
+                resultsContainer.innerHTML = "<p style='color: white;'>Something went wrong.</p>";
+            }
+        };
+
+        xhr.send();
+    });
+});
+</script>
 <script src="../assets/scripts/notif_script.js"></script>
+
 <?php 
 $conn->close();
 include '../includes/footer.php'; 
