@@ -80,6 +80,5 @@ document.getElementById("cancel-btn").addEventListener("click", function () {
     document.getElementById("edit-btn").style.display = "inline-block"; // Show Edit button again
 });
 </script>
-
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

@@ -96,5 +96,5 @@ function loadPosts() {
     });
 }
 </script>
-
+<script src="../assets/scripts/notif_script.js"></script>
 

@@ -49,18 +49,19 @@ include '../includes/sidebar.php';
     <?php endif; ?>
 
     <form method="POST" class="event-form">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title" required>
+    <label for="title">Event Title</label>
+    <input type="text" name="title" id="title" required>
 
-        <label for="description">Description</label>
-        <textarea name="description" id="description" rows="5" required></textarea>
+    <label for="description">Event Description</label>
+    <textarea name="description" id="description" rows="5" required></textarea>
 
-        <label for="event_date">Event Date</label>
-        <input type="date" name="event_date" id="event_date" required>
+    <label for="event_date">Event Date</label>
+    <input type="date" name="event_date" id="event_date" required>
 
-        <button type="submit">Create Event</button>
-        <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
-    </form>
+    <button type="submit">Create Event</button>
+    <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
+</form>
+
 </div>
 
 <script src="../assets/scripts/notif_script.js"></script>

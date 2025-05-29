@@ -146,6 +146,6 @@ include '../includes/navbar.php';
     </section>
     
   </main>
-
+<script src="../assets/scripts/notif_script.js"></script>
   <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

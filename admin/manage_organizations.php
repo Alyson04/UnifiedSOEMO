@@ -14,6 +14,7 @@ $organizations = [];
 while ($row = $result->fetch_assoc()) {
     $organizations[] = $row;
 }
+
 // Fetch admin's full name from database
 if ($admin_id) {
     $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
@@ -26,6 +27,7 @@ if ($admin_id) {
     }
     $stmt->close();
 }
+
 $conn->close();
 
 $title = "Manage Organizations"; 
@@ -36,49 +38,48 @@ include '../includes/navbar.php';
 
 <div class="main-layout">
     <!-- Sidebar -->
-    <?php
-    include '../includes/sidebar.php';
-    ?>
+    <?php include '../includes/sidebar.php'; ?>
 
     <!-- Main Content -->
-    <div class="main-content">
-        <h2 class="page-title">Manage Organizations</h2>
+    <main class="main-content">
+        <div class="content">
+            <h2 class="page-title">Manage Organizations</h2>
 
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" placeholder="Search Organizations...">
-            <button>🔍</button>
-        </div>
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" placeholder="Search Organizations...">
+                <button>🔍</button>
+            </div>
 
-        <!-- Organizations Table -->
-        <div class="org-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Date Created</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($organizations)) : ?>
-                        <?php foreach ($organizations as $org) : ?>
-                            <tr>
-                                <td><?= htmlspecialchars($org['name']) ?></td>
-                                <td><?= htmlspecialchars($org['description']) ?></td>
-                                <td><?= date("M d, Y", strtotime($org['created_at'])) ?></td>
-                                <td><button class="edit-btn">Edit</button></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <tr><td colspan="5">No organizations found.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+            <!-- Organizations Table -->
+            <div class="org-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Date Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($organizations)) : ?>
+                            <?php foreach ($organizations as $org) : ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($org['name']) ?></td>
+                                    <td><?= htmlspecialchars($org['description']) ?></td>
+                                    <td><?= date("M d, Y", strtotime($org['created_at'])) ?></td>
+                                    <td><button class="edit-btn">Edit</button></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <tr><td colspan="4">No organizations found.</td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </main>
 </div>
-
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

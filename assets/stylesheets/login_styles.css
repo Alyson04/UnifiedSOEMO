@@ -1,13 +1,15 @@
+/* Reset Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
+
 body {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: center; /* Centers the content horizontally */
+    align-items: center; /* Centers the content vertically */
     height: 100vh;
     background: #FFEDB7; 
     background-image: url('../pictures/background_login.jpg'); 
@@ -17,39 +19,46 @@ body {
     background-blend-mode: normal;
 }
 
+/* Centering the Login Form */
 .login-wrapper {
     width: 100%;
     height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center; /* Centers the content horizontally */
     background: rgba(250, 224, 190, 0.7);
 }
 
+/* Left Section - Login Form */
 .login-container {
-    background: rgba(173, 211, 204, 0.6);
+    background: rgba(173, 211, 204, 0.9);  /* Slight transparency */
     padding: 50px;
-    border-radius: 0;
+    border-radius: 8px;
     text-align: left;
-    height: 100vh;
-    width: 400px;
-    margin-left: 5%;
+    width: 100%;
+    max-width: 400px;  /* Limiting form width */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
+/* Title Styling */
 .title {
-    font-size: 28px;
+    font-size: 2rem;
     font-weight: bold;
-    color: #000;
-    margin-bottom: 5px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
+/* Subtitle Styling */
 .signup {
     font-size: 14px;
-    color: #000;
-    margin-bottom: 15px;
+    color: #444;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .signup a {
-    color: #475463;
+    color: #3277cc;
     text-decoration: none;
 }
 
@@ -57,16 +66,26 @@ body {
     text-decoration: underline;
 }
 
+/* Input Fields Styling */
 .input-field {
     width: 100%;
     padding: 12px;
     margin-top: 5px;
     margin-bottom: 15px;
-    border: 2px solid #000;
-    border-radius: 0;
-    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.input-field:focus {
+    border-color: #2f80ed;
+    box-shadow: 0 0 6px rgba(47, 128, 237, 0.2);
+    outline: none;
+}
+
+/* Remember Me Styling */
 .remember-me {
     display: flex;
     align-items: center;
@@ -79,23 +98,26 @@ body {
     margin-right: 5px;
 }
 
+/* Login Button Styling */
 .btn {
     width: 100%;
     padding: 12px;
     margin-top: 5px;
     border: none;
-    border-radius: 0;
+    border-radius: 6px;
     background: #4B8784;
     color: white;
     font-size: 16px;
     cursor: pointer;
     transition: background 0.3s;
+    font-weight: 600;
 }
 
 .btn:hover {
     background: #4f6659;
 }
 
+/* Forgot Password Styling */
 .forgot-password {
     margin-top: 10px;
     font-size: 12px;
@@ -111,6 +133,7 @@ body {
     text-decoration: underline;
 }
 
+/* Terms and Conditions Styling */
 .terms {
     font-size: 12px;
     margin-top: 20px;
@@ -126,6 +149,7 @@ body {
 .terms a:hover {
     text-decoration: underline;
 }
+
 footer {
     color: white;
     text-align: center;
