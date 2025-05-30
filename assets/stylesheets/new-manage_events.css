@@ -169,7 +169,9 @@
 .content {
     margin-left: 20px;
     max-width: 1200px;
-    padding: 35px 40px 50px;
+    min-height: 580px;
+    max-height: 580px;
+    padding: 20px;
     background: #f4f7fa; /* very light blue-gray */
     color: #2A4365; /* main text color */
     border-radius: 28px;
@@ -183,7 +185,7 @@
 .page-title {
     background: linear-gradient(135deg, #2A4365, #1f3554);
     color: #e1e8f0; /* lighter shade for contrast */
-    padding: 18px 0;
+    padding: 8px;
     width: 100%;
     border-radius: 20px;
     font-size: 24px;
@@ -192,13 +194,13 @@
     letter-spacing: 2px;
     box-shadow: 0 6px 22px rgba(42, 67, 101, 0.7);
     user-select: none;
-    margin-bottom: 28px;
+    margin-bottom: 10px;
 }
 
 /* Add Event Button */
 .btn-add-event {
     align-self: flex-start;
-    padding: 12px 32px;
+    padding: 6px 22px;
     background: linear-gradient(135deg, #36577d, #2A4365);
     color: #dbe2ef; /* soft blue-white */
     border-radius: 9999px;
@@ -220,11 +222,12 @@
 /* Event Table Container */
 .event-table {
     width: 100%;
+    height: 450px;
     overflow-x: auto;
     border-radius: 24px;
     box-shadow: 0 10px 40px rgba(42, 67, 101, 0.15);
     background: #f8fbff; /* soft very light blue */
-    padding: 30px 35px;
+    padding: 15px;
     border: 2px solid #4b658a; /* steel blue border */
 }
 
@@ -236,6 +239,7 @@ table {
     font-size: 0.95rem;
     color: #2A4365;
     min-width: 600px;
+  height: 370px;
 }
 
 /* Table Header */
@@ -250,7 +254,7 @@ thead {
 }
 
 thead th {
-    padding: 16px 20px;
+    padding: 8px 10px;
     text-align: center;
     border-right: 1px solid rgba(255, 255, 255, 0.3);
     user-select: none;
@@ -278,7 +282,7 @@ tbody tr:hover {
 
 /* Table Body Cells */
 tbody td {
-    padding: 16px 20px;
+    padding: 8px 10px;
     font-weight: 600;
     text-align: center;
     color: #2A4365;

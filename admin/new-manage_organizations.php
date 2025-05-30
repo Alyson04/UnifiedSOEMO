@@ -24,7 +24,7 @@ if ($admin_id) {
 $conn->close();
 
 $title = "Unified SOEMO Dashboard";
-$style = "new-manage_events.css"; // Reuse manage events style
+$style = "new-manage_organizations.css"; // Reuse manage events style
 include '../includes/header.php';
 include '../includes/sidebar.php';
 ?>
