@@ -8,7 +8,7 @@ require '../config/db_conn.php';
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
-// Fetch admin's full name from database
+// Fetch admin's full name
 if ($admin_id) {
     $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
@@ -21,12 +21,11 @@ if ($admin_id) {
     $stmt->close();
 }
 
-// Handle optional role filter from query parameter
+// Handle optional role filter
 $role_filter = $_GET['role'] ?? '';
 
-// Base SQL query
-$sql = "SELECT id, fullName, email, role, created_at FROM users WHERE role != 'admin'";
-
+// Get users (exclude admins, deleted)
+$sql = "SELECT id, fullName, email, role, created_at FROM users WHERE role != 'admin' AND status = 'active'";
 if (!empty($role_filter)) {
     $sql .= " AND role = ?";
     $stmt = $conn->prepare($sql);
@@ -34,16 +33,12 @@ if (!empty($role_filter)) {
 } else {
     $stmt = $conn->prepare($sql);
 }
-
 $stmt->execute();
 $result = $stmt->get_result();
-
-// Fetch users
 $users = [];
 while ($row = $result->fetch_assoc()) {
     $users[] = $row;
 }
-
 $stmt->close();
 $conn->close();
 
@@ -60,7 +55,7 @@ include '../includes/sidebar.php';
 <div class="content">
     <h2 class="page-title">MANAGE USERS</h2>
 
-    <!-- Role Filter Dropdown -->
+    <!-- Role Filter -->
     <form method="GET" class="status-filter-form">
         <label for="role_filter">Filter by Role</label>
         <select name="role" id="role_filter" onchange="this.form.submit()">
@@ -73,6 +68,7 @@ include '../includes/sidebar.php';
     <div class="top-actions">
         <a href="create_org_admin.php" class="action-btn">+ Create Org Admin</a>
         <a href="create_admin.php" class="action-btn">+ Create Admin</a>
+        <button class="action-btn" onclick="openDeleteModal()">Delete User</button>
     </div>
 
     <!-- Users Table -->
@@ -94,9 +90,7 @@ include '../includes/sidebar.php';
                         <tr>
                             <td><?= htmlspecialchars($user['fullName']); ?></td>
                             <td><?= htmlspecialchars($user['email']); ?></td>
-                            <td>
-                            <?= $user['role'] === 'org_admin' ? 'Organization Admin' : ucfirst($user['role']); ?>
-                            </td>
+                            <td><?= $user['role'] === 'org_admin' ? 'Organization Admin' : ucfirst($user['role']); ?></td>
                             <td><?= htmlspecialchars($user['created_at']); ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -105,6 +99,30 @@ include '../includes/sidebar.php';
         </table>
     </div>
 </div>
+
+<!-- Delete Modal -->
+<div id="deleteUserModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+        <h3>Delete User</h3>
+        <form action="delete_user.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+            <label for="user_fullname">Enter Full Name of User to Delete:</label>
+            <input type="text" name="fullName" id="user_fullname" required>
+            <div class="modal-actions">
+                <button type="submit" class="action-btn danger">Confirm Delete</button>
+                <button type="button" class="action-btn" onclick="closeDeleteModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openDeleteModal() {
+    document.getElementById('deleteUserModal').style.display = 'block';
+}
+function closeDeleteModal() {
+    document.getElementById('deleteUserModal').style.display = 'none';
+}
+</script>
 
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

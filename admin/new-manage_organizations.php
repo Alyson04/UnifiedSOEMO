@@ -9,7 +9,14 @@ $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
 // Fetch all organizations
-$sql = "SELECT name, description, created_at FROM organizations ORDER BY created_at ASC";
+$sql = "
+    SELECT o.name, o.description, o.created_at 
+    FROM organizations o
+    INNER JOIN users u ON o.id = u.ID
+    WHERE u.status != 'deleted'
+    ORDER BY o.created_at ASC
+";
+
 $result = $conn->query($sql);
 
 $organizations = [];

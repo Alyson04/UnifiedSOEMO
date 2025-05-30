@@ -9,10 +9,15 @@ $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
 // Fetch all events
-$sql = "SELECT events.id, events.title, events.event_date, organizations.name AS org_name, events.created_at
-        FROM events
-        LEFT JOIN organizations ON events.org_id = organizations.id
-        ORDER BY events.created_at DESC";
+$sql = "
+    SELECT e.id, e.title, e.event_date, o.name AS org_name, e.created_at
+    FROM events e
+    INNER JOIN organizations o ON e.org_id = o.id
+    INNER JOIN users u ON o.id = u.ID
+    WHERE u.status != 'deleted'
+    ORDER BY e.created_at DESC
+";
+
 $result = $conn->query($sql);
 
 $events = [];
