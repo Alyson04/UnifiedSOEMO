@@ -19,10 +19,13 @@ if ($student_id) {
 
 // Fetch all events for current year ordered by event_date ascending
 $year = date('Y');
-$sql_events = "SELECT id, title, description, event_date, org_id, created_at, thumbnail 
-               FROM events 
-               WHERE YEAR(event_date) = ? 
-               ORDER BY event_date ASC";
+$sql_events = "SELECT e.id, e.title, e.description, e.event_date, e.org_id, e.created_at, e.thumbnail 
+               FROM events e
+               INNER JOIN organizations o ON e.org_id = o.ID
+               INNER JOIN users u ON o.id = u.ID
+               WHERE YEAR(e.event_date) = ? AND u.status != 'deleted'
+               ORDER BY e.event_date ASC";
+
 $stmt = $conn->prepare($sql_events);
 $stmt->bind_param("i", $year);
 $stmt->execute();

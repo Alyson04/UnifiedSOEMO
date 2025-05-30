@@ -35,8 +35,14 @@ include '../includes/navbar.php';
         <div class="student-org-container" id="orgResults">
 
         <?php
-        // Initial organization display (all organizations)
-        $sql = "SELECT * FROM organizations ORDER BY created_at ASC";
+        // Fetch organizations whose owners are NOT deleted
+        $sql = "
+            SELECT organizations.*
+            FROM organizations
+            INNER JOIN users ON organizations.id = users.ID
+            WHERE users.status != 'deleted'
+            ORDER BY organizations.created_at ASC
+        ";
         $result = $conn->query($sql);
 
         if ($result && $result->num_rows > 0):
@@ -56,7 +62,7 @@ include '../includes/navbar.php';
         <?php
             endwhile;
         else:
-            echo '<p style="color: white;">No organizations found with.</p>';
+            echo '<p style="color: white;">No organizations found.</p>';
         endif;
         ?>
 
@@ -69,11 +75,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("orgSearch");
     const resultsContainer = document.getElementById("orgResults");
 
-    searchInput.addEventListener("input", () => {
-        const query = searchInput.value.trim();
+    function fetchOrgs(query) {
+        let url = 'search_orgs.php';
+        if (query.trim() !== '') {
+            url += '?q=' + encodeURIComponent(query.trim());
+        }
 
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", `search_orgs.php?q=${encodeURIComponent(query)}`, true);
+        xhr.open("GET", url, true);
 
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -84,8 +93,16 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         xhr.send();
+    }
+
+    // Initially load all organizations
+    fetchOrgs('');
+
+    searchInput.addEventListener("input", () => {
+        fetchOrgs(searchInput.value);
     });
 });
+
 </script>
 <script src="../assets/scripts/notif_script.js"></script>
 
