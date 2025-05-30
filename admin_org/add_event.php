@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Handle thumbnail upload
         if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
-            $upload_dir = '../uploads/events/';
+            $upload_dir = '../assets/uploads_highlights/';
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true);
             }

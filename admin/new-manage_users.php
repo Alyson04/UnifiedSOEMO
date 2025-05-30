@@ -78,8 +78,8 @@ include '../includes/sidebar.php';
             <label for="user_fullname">Enter Full Name of User to Delete:</label>
             <input type="text" name="fullName" id="user_fullname" required>
             <div class="modal-actions">
-                <button type="submit" class="action-btn danger">Confirm Delete</button>
-                <button type="button" class="action-btn" onclick="closeDeleteModal()">Cancel</button>
+                <button type="submit" class="action-btn danger" style="border:none;">Confirm Delete</button>
+                <button type="button" class="action-btn" style="border:none;" onclick="closeDeleteModal()">Cancel</button>
             </div>
         </form>
     </div>
