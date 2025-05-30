@@ -80,22 +80,29 @@ include '../includes/sidebar.php';
             <div class="alert success"><?= htmlspecialchars($success) ?></div>
         <?php endif; ?>
 
-        <form method="POST" class="event-form" enctype="multipart/form-data">
-            <label for="title">Event Title</label>
-            <input type="text" name="title" id="title" required>
+        <form method="POST" class="event-form" enctype="multipart/form-data" onsubmit="return confirmCreateEvent()">
+          <label for="title">Event Title</label>
+    <input type="text" name="title" id="title" required>
 
-            <label for="description">Event Description</label>
-            <textarea name="description" id="description" rows="5" required></textarea>
+    <label for="description">Event Description</label>
+    <textarea name="description" id="description" rows="5" required></textarea>
 
-            <label for="event_date">Event Date</label>
-            <input type="date" name="event_date" id="event_date" required>
+    <label for="event_date">Event Date</label>
+    <input type="date" name="event_date" id="event_date" required>
 
-            <label for="thumbnail">Event Thumbnail</label>
-            <input type="file" name="thumbnail" id="thumbnail" accept="image/*">
+    <label for="thumbnail">Event Thumbnail</label>
+    <input type="file" name="thumbnail" id="thumbnail" accept="image/*">
 
-            <button type="submit">Create Event</button>
-            <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
-        </form>
+    <button type="submit">Create Event</button>
+    <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
+</form>
+
+<script>
+function confirmCreateEvent() {
+    return confirm("Are you sure you want to create this event?");
+}
+</script>
+
     </div>
 </main>
 

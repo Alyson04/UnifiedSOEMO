@@ -79,9 +79,6 @@ include '../includes/navbar.php';
       <a href="dashboard.php" class="card stat-card ">
       <h2><?= $total_users ?></h2><p>Total Users</p>
       </a>
-      <a href="Active_org.php" class="card stat-card ">
-      <h2><?= $total_organizations ?></h2><p>Active Organizations</p>
-      </a>
       <a href="upcoming.php" class="card stat-card ">
       <h2><?= $total_events ?></h2><p>Upcoming Events</p>
       </a>
