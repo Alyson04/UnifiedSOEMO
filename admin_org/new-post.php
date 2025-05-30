@@ -65,12 +65,14 @@ include '../includes/sidebar.php';
     <?php
     // Query with LEFT JOIN to get user info and their organization's image path
     $query = "
-      SELECT posts.*, users.fullName, organizations.image_path AS org_image_path
-      FROM posts
-      LEFT JOIN users ON posts.user_id = users.id
-      LEFT JOIN organizations ON users.org_id = organizations.id
-      ORDER BY posts.created_at DESC
-    ";
+  SELECT posts.*, users.fullName, organizations.image_path AS org_image_path
+  FROM posts
+  LEFT JOIN users ON posts.user_id = users.id
+  LEFT JOIN organizations ON users.org_id = organizations.id
+  WHERE users.status != 'deleted'
+  ORDER BY posts.created_at DESC
+";
+
     $result = mysqli_query($conn, $query);
 
     if ($result && mysqli_num_rows($result) > 0) {
