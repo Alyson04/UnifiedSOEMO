@@ -21,27 +21,6 @@ if ($admin_id) {
     $stmt->close();
 }
 
-// Handle optional role filter
-$role_filter = $_GET['role'] ?? '';
-
-// Get users (exclude admins, deleted)
-$sql = "SELECT id, fullName, email, role, created_at FROM users WHERE role != 'admin' AND status = 'active'";
-if (!empty($role_filter)) {
-    $sql .= " AND role = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $role_filter);
-} else {
-    $stmt = $conn->prepare($sql);
-}
-$stmt->execute();
-$result = $stmt->get_result();
-$users = [];
-while ($row = $result->fetch_assoc()) {
-    $users[] = $row;
-}
-$stmt->close();
-$conn->close();
-
 $title = "Unified SOEMO Dashboard";
 $style = "new-manage_user.css";
 include '../includes/header.php';
@@ -56,19 +35,19 @@ include '../includes/sidebar.php';
     <h2 class="page-title">MANAGE USERS</h2>
 
     <!-- Role Filter -->
-    <form method="GET" class="status-filter-form">
+    <form method="GET" class="status-filter-form" onsubmit="return false;">
         <label for="role_filter">Filter by Role</label>
-        <select name="role" id="role_filter" onchange="this.form.submit()">
+        <select name="role" id="role_filter">
             <option value="">All</option>
-            <option value="student" <?= $role_filter === 'student' ? 'selected' : '' ?>>Student</option>
-            <option value="org_admin" <?= $role_filter === 'org_admin' ? 'selected' : '' ?>>Org Admin</option>
+            <option value="student">Student</option>
+            <option value="org_admin">Org Admin</option>
         </select>
     </form>
 
     <div class="top-actions">
         <a href="create_org_admin.php" class="action-btn">+ Create Org Admin</a>
         <a href="create_admin.php" class="action-btn">+ Create Admin</a>
-        <button class="action-btn" onclick="openDeleteModal()">Delete User</button>
+        <button class="action-btn" style="border: none;" onclick="openDeleteModal()">Delete User</button>
     </div>
 
     <!-- Users Table -->
@@ -82,22 +61,13 @@ include '../includes/sidebar.php';
                     <th>Date Created</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php if (count($users) === 0): ?>
-                    <tr><td colspan="4">No users found.</td></tr>
-                <?php else: ?>
-                    <?php foreach ($users as $user): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($user['fullName']); ?></td>
-                            <td><?= htmlspecialchars($user['email']); ?></td>
-                            <td><?= $user['role'] === 'org_admin' ? 'Organization Admin' : ucfirst($user['role']); ?></td>
-                            <td><?= htmlspecialchars($user['created_at']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+            <tbody id="userTableBody">
+                <!-- User rows injected here by JS -->
             </tbody>
         </table>
     </div>
+
+    <div id="paginationControls" class="pagination-controls"></div>
 </div>
 
 <!-- Delete Modal -->
@@ -123,6 +93,101 @@ function closeDeleteModal() {
     document.getElementById('deleteUserModal').style.display = 'none';
 }
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tableBody = document.getElementById('userTableBody');
+    const paginationControls = document.getElementById('paginationControls');
+    const roleFilter = document.getElementById('role_filter');
+    
+    let currentPage = 1;
+
+    function fetchUsers(page = 1) {
+        const role = roleFilter.value;
+        fetch(`get_users.php?page=${page}&role=${encodeURIComponent(role)}`)
+            .then(response => response.json())
+            .then(data => {
+                renderUsers(data.users);
+                renderPagination(data.total, data.perPage, page);
+            })
+            .catch(err => {
+                tableBody.innerHTML = '<tr><td colspan="4">Error loading users.</td></tr>';
+                paginationControls.innerHTML = '';
+                console.error(err);
+            });
+    }
+
+    function renderUsers(users) {
+        tableBody.innerHTML = '';
+        if (users.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4">No users found.</td></tr>';
+            return;
+        }
+
+        users.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${escapeHtml(user.fullName)}</td>
+                <td>${escapeHtml(user.email)}</td>
+                <td>${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}</td>
+                <td>${escapeHtml(user.created_at)}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function renderPagination(total, perPage, currentPage) {
+        const totalPages = Math.ceil(total / perPage);
+        paginationControls.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+            btn.onclick = () => {
+                fetchUsers(i);
+            };
+            paginationControls.appendChild(btn);
+        }
+    }
+
+    function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Basic escaping to avoid XSS
+    function escapeHtml(text) {
+        return text.replace(/[&<>"']/g, function(m) {
+            return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m];
+        });
+    }
+
+    roleFilter.addEventListener('change', () => {
+        fetchUsers(1);
+    });
+
+    fetchUsers();
+});
+</script>
+
+<style>
+.pagination-controls {
+    margin-top: 1em;
+}
+.pagination-controls button {
+    padding: 5px 10px;
+    margin: 0 2px;
+    border: none;
+    background: #ddd;
+    cursor: pointer;
+}
+.pagination-controls button.active {
+    background: #333;
+    color: #fff;
+}
+</style>
 
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

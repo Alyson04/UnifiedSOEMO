@@ -1,6 +1,6 @@
-<?php 
+<?php
 require '../api/auth.php';
-checkUserRole('org_admin'); // Only allow admins
+checkUserRole('org_admin'); // Only allow org_admins
 
 require '../config/db_conn.php';
 
@@ -22,43 +22,6 @@ if ($admin_id) {
     $stmt->close();
 }
 
-$status_filter = $_GET['status'] ?? '';
-
-// Build SQL
-$sql = "
-    SELECT 
-        u.id, 
-        u.fullName, 
-        u.email, 
-        a.application_status, 
-        a.applied_at
-    FROM org_applications a
-    JOIN users u ON a.student_id = u.id
-    WHERE u.role = 'student' AND a.org_id = ?
-";
-
-if (!empty($status_filter)) {
-    $sql .= " AND a.application_status = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $org_id, $status_filter);
-} else {
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $org_id);
-}
-
-if (!$stmt->execute()) {
-    die("SQL Execution failed: " . $stmt->error);
-}
-
-$result = $stmt->get_result();
-
-// Fetch all rows into an array
-$users = [];
-while ($row = $result->fetch_assoc()) {
-    $users[] = $row;
-}
-
-$stmt->close();
 $conn->close();
 
 $title = "Unified SOEMO Dashboard";
@@ -73,14 +36,15 @@ include '../includes/sidebar.php';
 
 <div class="content">
     <h2 class="page-title">MANAGE USERS</h2>
-<!-- Status Filter -->
-    <form method="GET" class="status-filter-form">
+
+    <!-- Status Filter -->
+    <form id="statusFilterForm" class="status-filter-form">
         <label for="status_filter">Filter</label>
-        <select name="status" id="status_filter" onchange="this.form.submit()">
+        <select name="status" id="status_filter">
             <option value="">All</option>
-            <option value="approved" <?= ($_GET['status'] ?? '') === 'approved' ? 'selected' : '' ?>>Approved</option>
-            <option value="rejected" <?= ($_GET['status'] ?? '') === 'rejected' ? 'selected' : '' ?>>Declined</option>
-            <option value="under review" <?= ($_GET['status'] ?? '') === 'under review' ? 'selected' : '' ?>>Under Review</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Declined</option>
+            <option value="under review">Under Review</option>
         </select>
     </form>
 
@@ -96,49 +60,119 @@ include '../includes/sidebar.php';
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php if (count($users) === 0): ?>
-                    <tr><td colspan="5">No users found for this organization.</td></tr>
-                <?php else: ?>
-                    <?php foreach ($users as $user): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($user['fullName']); ?></td>
-                            <td><?= htmlspecialchars($user['email']); ?></td>
-                            <td><?= ucfirst($user['application_status']) ?: 'Pending'; ?></td>
-                            <td><?= htmlspecialchars($user['applied_at']); ?></td>
-                            <td>
-                            <?php if (in_array($user['application_status'], ['approved', 'rejected'])): ?>
-                                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                        <input type="hidden" name="org_id" value="<?= $org_id; ?>">
-                                        <button type="submit" name="action" value="accept" disabled>Accept</button>
-                                    </form>
-                                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                        <input type="hidden" name="org_id" value="<?= $org_id; ?>">
-                                        <button type="submit" name="action" value="decline" disabled>Decline</button>
-                                    </form>
-                                <?php else: ?>
-                                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                        <input type="hidden" name="org_id" value="<?= $org_id; ?>">
-                                        <button type="submit" name="action" value="accept">Accept</button>
-                                    </form>
-                                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                        <input type="hidden" name="org_id" value="<?= $org_id; ?>">
-                                        <button type="submit" name="action" value="decline">Decline</button>
-                                    </form>
-                                <?php endif; ?>
-
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+            <tbody id="userTableBody">
+                <!-- Data will load here via AJAX -->
             </tbody>
         </table>
+
+        <!-- Pagination -->
+        <div id="paginationControls" class="pagination-controls"></div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.getElementById('userTableBody');
+    const paginationControls = document.getElementById('paginationControls');
+    const statusFilter = document.getElementById('status_filter');
+
+    function fetchUsers(page = 1) {
+        const status = statusFilter.value;
+        fetch(`get_users.php?page=${page}&status=${encodeURIComponent(status)}`)
+            .then(res => res.json())
+            .then(data => {
+                renderUsers(data.users);
+                renderPagination(data.total, data.perPage, page);
+            })
+            .catch(() => {
+                tableBody.innerHTML = '<tr><td colspan="5">Error loading users.</td></tr>';
+                paginationControls.innerHTML = '';
+            });
+    }
+
+    function renderUsers(users) {
+        if (users.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5">No users found for this organization.</td></tr>';
+            return;
+        }
+        tableBody.innerHTML = '';
+        users.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${escapeHtml(user.fullName)}</td>
+                <td>${escapeHtml(user.email)}</td>
+                <td>${capitalizeFirstLetter(user.application_status) || 'Pending'}</td>
+                <td>${escapeHtml(user.applied_at)}</td>
+                <td>
+                    ${['approved', 'rejected'].includes(user.application_status) ? `
+                        <button disabled>Accept</button>
+                        <button disabled>Decline</button>
+                    ` : `
+                        <form action="../api/process_application.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="user_id" value="${user.id}">
+                            <input type="hidden" name="org_id" value="${user.org_id}">
+                            <button type="submit" name="action" value="accept">Accept</button>
+                        </form>
+                        <form action="../api/process_application.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="user_id" value="${user.id}">
+                            <input type="hidden" name="org_id" value="${user.org_id}">
+                            <button type="submit" name="action" value="decline">Decline</button>
+                        </form>
+                    `}
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function renderPagination(total, perPage, current) {
+        const totalPages = Math.ceil(total / perPage);
+        paginationControls.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'pagination-btn' + (i === current ? ' active' : '');
+            btn.onclick = () => fetchUsers(i);
+            paginationControls.appendChild(btn);
+        }
+    }
+
+    function escapeHtml(text) {
+        return text.replace(/[&<>"']/g, function(m) {
+            return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m];
+        });
+    }
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    statusFilter.addEventListener('change', () => fetchUsers());
+
+    fetchUsers();
+});
+</script>
+
+<style>
+.pagination-controls {
+    margin-top: 1em;
+}
+.pagination-controls button {
+    padding: 5px 10px;
+    margin: 0 3px;
+    border: none;
+    background: #ddd;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.pagination-controls button.active {
+    background: #333;
+    color: #fff;
+}
+</style>
 
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>

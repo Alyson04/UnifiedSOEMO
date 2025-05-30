@@ -24,10 +24,10 @@ if ($admin_id) {
     $stmt->close();
 }
 
-// Get total users with role 'student' and same org_id
+// Get total users with role 'student' and same org_id AND status != 'deleted'
 $total_users = 0;
 if ($org_id !== null) {
-    $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role = 'student' AND org_id = ?";
+    $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role = 'student' AND org_id = ? AND status != 'deleted'";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
@@ -36,8 +36,12 @@ if ($org_id !== null) {
     $stmt->close();
 }
 
-// Get upcoming events for this org
-$sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE org_id = ? AND event_date >= CURDATE()";
+// Get upcoming events for this org where user who created event is not deleted
+$sql_events = "
+    SELECT COUNT(*) AS total_events 
+    FROM events e
+    JOIN users u ON e.org_id = u.ID
+    WHERE e.org_id = ? AND e.event_date >= CURDATE() AND u.status != 'deleted'";
 $stmt_events = $conn->prepare($sql_events);
 $stmt_events->bind_param("i", $org_id);
 $stmt_events->execute();
@@ -45,8 +49,12 @@ $result_events = $stmt_events->get_result();
 $total_events = $result_events->fetch_assoc()['total_events'];
 $stmt_events->close();
 
-// Get past events for this org
-$sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE org_id = ? AND event_date < CURDATE()";
+// Get past events for this org where user who created event is not deleted
+$sql_past = "
+    SELECT COUNT(*) AS past_events 
+    FROM events e
+    JOIN users u ON e.org_id = u.ID
+    WHERE e.org_id = ? AND e.event_date < CURDATE() AND u.status != 'deleted'";
 $stmt_past = $conn->prepare($sql_past);
 $stmt_past->bind_param("i", $org_id);
 $stmt_past->execute();
@@ -55,21 +63,31 @@ $past_events = $result_past->fetch_assoc()['past_events'];
 $stmt_past->close();
 
 
-// Get recent events
-$sql_recent_events = "SELECT title, event_date FROM events ORDER BY event_date DESC LIMIT 5";
-$result_recent_events = $conn->query($sql_recent_events);
+// Get recent events (latest 5) where user is not deleted
+$sql_recent_events = "
+    SELECT e.title, e.event_date 
+    FROM events e
+    JOIN users u ON e.org_id = u.ID
+    WHERE e.org_id = ? AND u.status != 'deleted'
+    ORDER BY e.event_date DESC
+    LIMIT 5";
+$stmt_recent_events = $conn->prepare($sql_recent_events);
+$stmt_recent_events->bind_param("i", $org_id);
+$stmt_recent_events->execute();
+$result_recent_events = $stmt_recent_events->get_result();
 
 $recent_events = [];
 while ($row = $result_recent_events->fetch_assoc()) {
     $recent_events[] = $row;
 }
+$stmt_recent_events->close();
 
 
-// Get monthly signups for the organization
+// Get monthly signups for the organization where user status != 'deleted'
 $sql_monthly_signups = "
     SELECT MONTH(created_at) AS month, COUNT(*) AS signups 
     FROM users 
-    WHERE role = 'student' AND org_id = ? 
+    WHERE role = 'student' AND org_id = ? AND status != 'deleted'
     GROUP BY MONTH(created_at) 
     ORDER BY MONTH(created_at)
 ";
@@ -84,8 +102,13 @@ while ($row = $result_monthly->fetch_assoc()) {
 }
 $stmt->close();
 
-// Get recent users (last 5 signups)
-$sql_recent_signups = "SELECT fullName, email FROM users WHERE org_id = ? ORDER BY created_at DESC LIMIT 5";
+// Get recent users (last 5 signups) where status != 'deleted'
+$sql_recent_signups = "
+    SELECT fullName, email 
+    FROM users 
+    WHERE org_id = ? AND status != 'deleted' 
+    ORDER BY created_at DESC 
+    LIMIT 5";
 $stmt = $conn->prepare($sql_recent_signups);
 $stmt->bind_param("i", $org_id);
 $stmt->execute();
@@ -96,6 +119,7 @@ while ($row = $result_recent_signups->fetch_assoc()) {
     $recent_signups[] = $row;
 }
 $stmt->close();
+
 $conn->close();
 
 $title = "Unified SOEMO Dashboard";
@@ -193,6 +217,3 @@ include '../includes/header.php';
 
 <script src="../assets/scripts/notif_script.js"></script>
 <?php include '../includes/footer.php'; ?>
-
-
-

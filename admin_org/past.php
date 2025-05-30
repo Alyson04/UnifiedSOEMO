@@ -21,9 +21,9 @@ if ($admin_id) {
     $stmt->close();
 }
 
-// Count students in the same org
+// Count students in the same org AND not deleted
 if ($org_id !== null) {
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'student' AND org_id = ?");
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'student' AND org_id = ? AND status != 'deleted'");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $stmt->bind_result($total_users);
@@ -33,9 +33,16 @@ if ($org_id !== null) {
     $total_users = 0;
 }
 
-// Get upcoming events count filtered by org_id
+// Get upcoming events count filtered by org_id AND excluding deleted users
 if ($org_id !== null) {
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM events WHERE event_date >= CURDATE() AND org_id = ?");
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) 
+        FROM events e 
+        INNER JOIN users u ON e.org_id = u.ID 
+        WHERE e.event_date >= CURDATE() 
+          AND e.org_id = ? 
+          AND u.status != 'deleted'
+    ");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $stmt->bind_result($total_events);
@@ -45,9 +52,16 @@ if ($org_id !== null) {
     $total_events = 0;
 }
 
-// Get past events count filtered by org_id
+// Get past events count filtered by org_id AND excluding deleted users
 if ($org_id !== null) {
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM events WHERE event_date < CURDATE() AND org_id = ?");
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) 
+        FROM events e 
+        INNER JOIN users u ON e.org_id = u.ID 
+        WHERE e.event_date < CURDATE() 
+          AND e.org_id = ? 
+          AND u.status != 'deleted'
+    ");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $stmt->bind_result($past_events);
@@ -57,9 +71,17 @@ if ($org_id !== null) {
     $past_events = 0;
 }
 
-// Get past events list filtered by org_id
+// Get past events list filtered by org_id AND excluding deleted users
 if ($org_id !== null) {
-    $stmt = $conn->prepare("SELECT title, event_date FROM events WHERE event_date < CURDATE() AND org_id = ? ORDER BY event_date DESC");
+    $stmt = $conn->prepare("
+        SELECT e.title, e.event_date 
+        FROM events e 
+        INNER JOIN users u ON e.org_id = u.ID 
+        WHERE e.event_date < CURDATE() 
+          AND e.org_id = ? 
+          AND u.status != 'deleted' 
+        ORDER BY e.event_date DESC
+    ");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -72,9 +94,17 @@ if ($org_id !== null) {
     $past_events_list = [];
 }
 
-// Get recent events list filtered by org_id
+// Get recent events list filtered by org_id AND excluding deleted users
 if ($org_id !== null) {
-    $stmt = $conn->prepare("SELECT title, event_date FROM events WHERE org_id = ? ORDER BY event_date DESC LIMIT 5");
+    $stmt = $conn->prepare("
+        SELECT e.title, e.event_date 
+        FROM events e 
+        INNER JOIN users u ON e.org_id = u.ID 
+        WHERE e.org_id = ? 
+          AND u.status != 'deleted' 
+        ORDER BY e.event_date DESC 
+        LIMIT 5
+    ");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $result = $stmt->get_result();

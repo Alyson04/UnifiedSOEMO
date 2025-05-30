@@ -24,10 +24,10 @@ if ($admin_id) {
     $stmt->close();
 }
 
-// Get total users (students) with same org_id
+// Get total users (students) with same org_id and not deleted
 $total_users = 0;
 if ($org_id !== null) {
-    $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role = 'student' AND org_id = ?";
+    $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role = 'student' AND org_id = ? AND status != 'deleted'";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
@@ -36,10 +36,17 @@ if ($org_id !== null) {
     $stmt->close();
 }
 
-// Get upcoming events count for the org
+// Get upcoming events count for the org excluding deleted users
 $total_events = 0;
 if ($org_id !== null) {
-    $sql_events = "SELECT COUNT(*) AS total_events FROM events WHERE event_date >= CURDATE() AND org_id = ?";
+    $sql_events = "
+        SELECT COUNT(*) AS total_events 
+        FROM events e
+        INNER JOIN users u ON e.org_id = u.ID
+        WHERE e.event_date >= CURDATE() 
+          AND e.org_id = ? 
+          AND u.status != 'deleted'
+    ";
     $stmt_events = $conn->prepare($sql_events);
     $stmt_events->bind_param("i", $org_id);
     $stmt_events->execute();
@@ -48,10 +55,17 @@ if ($org_id !== null) {
     $stmt_events->close();
 }
 
-// Get past events count for the org
+// Get past events count excluding deleted users
 $past_events = 0;
 if ($org_id !== null) {
-    $sql_past = "SELECT COUNT(*) AS past_events FROM events WHERE event_date < CURDATE() AND org_id = ?";
+    $sql_past = "
+        SELECT COUNT(*) AS past_events 
+        FROM events e
+        INNER JOIN users u ON e.org_id = u.ID
+        WHERE e.event_date < CURDATE() 
+          AND e.org_id = ? 
+          AND u.status != 'deleted'
+    ";
     $stmt_past = $conn->prepare($sql_past);
     $stmt_past->bind_param("i", $org_id);
     $stmt_past->execute();
@@ -60,10 +74,18 @@ if ($org_id !== null) {
     $stmt_past->close();
 }
 
-// Upcoming events list filtered by org_id
+// Upcoming events list excluding deleted users
 $upcoming_events = [];
 if ($org_id !== null) {
-    $sql_upcoming_events = "SELECT title, event_date FROM events WHERE event_date >= CURDATE() AND org_id = ? ORDER BY event_date ASC";
+    $sql_upcoming_events = "
+        SELECT e.title, e.event_date 
+        FROM events e
+        INNER JOIN users u ON e.org_id = u.ID
+        WHERE e.event_date >= CURDATE() 
+          AND e.org_id = ? 
+          AND u.status != 'deleted'
+        ORDER BY e.event_date ASC
+    ";
     $stmt_upcoming = $conn->prepare($sql_upcoming_events);
     $stmt_upcoming->bind_param("i", $org_id);
     $stmt_upcoming->execute();
@@ -74,10 +96,18 @@ if ($org_id !== null) {
     $stmt_upcoming->close();
 }
 
-// Recent events list filtered by org_id
+// Recent events list excluding deleted users
 $recent_events = [];
 if ($org_id !== null) {
-    $sql_recent_events = "SELECT title, event_date FROM events WHERE org_id = ? ORDER BY event_date DESC LIMIT 5";
+    $sql_recent_events = "
+        SELECT e.title, e.event_date 
+        FROM events e
+        INNER JOIN users u ON e.org_id = u.ID
+        WHERE e.org_id = ? 
+          AND u.status != 'deleted'
+        ORDER BY e.event_date DESC 
+        LIMIT 5
+    ";
     $stmt_recent = $conn->prepare($sql_recent_events);
     $stmt_recent->bind_param("i", $org_id);
     $stmt_recent->execute();
