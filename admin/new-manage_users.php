@@ -43,6 +43,7 @@ include '../includes/sidebar.php';
 <div class="content">
     <h2 class="page-title">MANAGE USERS</h2>
 
+    <div class="top-bars">
     <!-- Role Filter -->
     <form method="GET" class="status-filter-form" onsubmit="return false;">
         <label for="role_filter">Filter by Role</label>
@@ -57,6 +58,7 @@ include '../includes/sidebar.php';
         <a href="create_org_admin.php" class="action-btn">+ Create Org Admin</a>
         <a href="create_admin.php" class="action-btn">+ Create Admin</a>
         <button class="action-btn" style="border: none;" onclick="openDeleteModal()">Delete User</button>
+    </div>
     </div>
 
     <!-- Users Table -->
@@ -128,23 +130,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderUsers(users) {
-        tableBody.innerHTML = '';
-        if (users.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="4">No users found.</td></tr>';
-            return;
-        }
+    tableBody.innerHTML = '';
 
-        users.forEach(user => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${escapeHtml(user.fullName)}</td>
-                <td>${escapeHtml(user.email)}</td>
-                <td>${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}</td>
-                <td>${escapeHtml(user.created_at)}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
+    if (users.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4">No users found.</td></tr>';
+        return;
     }
+
+    users.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(user.fullName)}</td>
+            <td>${escapeHtml(user.email)}</td>
+            <td>${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}</td>
+            <td>${escapeHtml(user.created_at)}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    // Add invisible rows to maintain height
+    const maxRows = 5;
+    const emptyRows = maxRows - users.length;
+    for (let i = 0; i < emptyRows; i++) {
+        const emptyTr = document.createElement('tr');
+        emptyTr.innerHTML = `
+            <td colspan="4" style="height: 50px; visibility: hidden;">&nbsp;</td>
+        `;
+        tableBody.appendChild(emptyTr);
+    }
+}
+
 
     function renderPagination(total, perPage, currentPage) {
         const totalPages = Math.ceil(total / perPage);
@@ -198,10 +213,11 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 .pagination-controls button {
     padding: 5px 10px;
-    margin: 0 2px;
+    margin: 0 3px;
     border: none;
     background: #ddd;
     cursor: pointer;
+    border-radius: 3px;
 }
 .pagination-controls button.active {
     background: #333;
