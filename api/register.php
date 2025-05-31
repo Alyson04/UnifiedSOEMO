@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $conn->query($check_email);
  
     if ($result->num_rows > 0) {
+        $_SESSION['error'] = "Email taken!";
         header("Location: ../public/register.php?error=Email already registered");
         exit();
     }
@@ -23,10 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_id'] = $conn->insert_id;
         $_SESSION['fullName'] = $fullName;
         $_SESSION['role'] = $role;
-        
+        $_SESSION['success'] = "Registration Success!";
         header("Location: ../public/login.php?success=Registration success");
         exit();
     } else {
+        $_SESSION['error'] = "Registration failed!";
         header("Location: ../public/register.php?error=Registration failed");
         exit();
     }

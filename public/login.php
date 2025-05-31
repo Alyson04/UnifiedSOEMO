@@ -21,11 +21,6 @@ $title = "Login"; $style = "login_styles.css"; include '../includes/header.php';
                 <label>Password:</label>
                 <input type="password" class="input-field" name="password" placeholder="Enter your password"required>
                 
-                <div class="remember-me">
-                    <input type="checkbox" id="remember">
-                    <label for="remember">Remember Me</label>
-                </div>
-                
                 <button type="submit" class="btn">Log In</button>
                 
                 <p class="forgot-password"><a href="#">Forgot Password?</a></p>
