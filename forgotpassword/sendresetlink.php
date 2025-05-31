@@ -15,7 +15,7 @@ $email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL);
 
 if (!$email) {
     $_SESSION['error'] = "Invalid email address.";
-    header("Location: ../public/forgotpass.php");
+    header("Location: ../public/login.php");
     exit;
 }
 
@@ -26,7 +26,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 if ($result->num_rows === 0) {
     $_SESSION['error'] = "Email not found.";
-    header("Location: ../forgotpassword/forgotpass.php");
+    header("Location: ../public/login.php");
     exit;
 }
 
@@ -66,6 +66,6 @@ try {
     exit;
 } catch (Exception $e) {
     $_SESSION['error'] = "Mailer Error: " . $mail->ErrorInfo;
-    header("Location: ../forgotpassword/forgotpass.php");
+    header("Location: ../public/login.php");
     exit;
 }
