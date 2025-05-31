@@ -8,7 +8,8 @@ session_start();
 $admin_id = $_SESSION['user_id'] ?? null;
 
 if (!$admin_id) {
-    die('Unauthorized access.');
+    // die('Unauthorized access.');
+    header("Location: ../public/login.php");
 }
 
 // Get POST data safely
@@ -18,6 +19,7 @@ $password = $_POST['password'] ?? '';
 
 // Validate basic fields (You can add more validation if needed)
 if (empty($fullName) || empty($email)) {
+    $_SESSION['error'] = "Missing fields!";
     header("Location: ../admin/new_settings.php?error=missing_fields");
     exit;
 }
@@ -46,11 +48,13 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
     // Only allow image types
     $allowed_types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     if (!in_array($ext, $allowed_types)) {
+        $_SESSION['error'] = "Invalid file type!";
         header("Location: ../admin/new_settings.php?error=invalid_filetype");
         exit;
     }
 
     if (!move_uploaded_file($tmp_name, $target_file)) {
+        $_SESSION['error'] = "Upload failed!";
         header("Location: ../admin/new_settings.php?error=upload_failed");
         exit;
     }
@@ -84,8 +88,10 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param($types, ...$params);
 
 if ($stmt->execute()) {
+    $_SESSION['success'] = "Profile updated successfully!";
     header("Location: ../admin/new_settings.php?success=1");
 } else {
+    $_SESSION['error'] = "Profile update failed!";
     header("Location: ../admin/new_settings.php?error=db_error");
 }
 

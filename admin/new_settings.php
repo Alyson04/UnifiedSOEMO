@@ -1,5 +1,6 @@
 <?php 
 require '../api/auth.php';
+
 checkUserRole('admin'); // Only allow admins
 
 require '../config/db_conn.php';
@@ -69,6 +70,14 @@ include '../includes/header.php';
 <!-- Main Panel -->
 <main class="main-content">
 <?php include '../includes/navbar.php'; ?>
+
+<?php if (!empty($_SESSION['error'])): ?>
+    <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
+    <?php unset($_SESSION['error']); ?>
+<?php elseif (!empty($_SESSION['success'])): ?>
+    <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
 
 <div class="outer-box">
     <h2 class="section-title">EDIT PROFILE</h2>
@@ -148,6 +157,15 @@ include '../includes/header.php';
     editText.classList.add('d-none');
     input.focus();
   }
+
+  const alertBox = document.querySelector('.session-alert');
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.transition = 'opacity 0.5s ease';
+            alertBox.style.opacity = '0';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 4000);
+    }
 </script>
 <style>
   .d-none { display: none; }
@@ -192,6 +210,37 @@ include '../includes/header.php';
     padding: 10px 20px;
     margin-right: 10px;
   }
+  .session-alert {
+    position: fixed;
+    top: 20px;
+    left: 55%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green by default for success */
+    color: white;
+    padding: 14px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 500;
+    max-width: 80%;
+    text-align: center;
+    animation: fadeInSlideDown 0.4s ease-in-out;
+}
+
+.session-alert.error {
+    background-color: #f44336; /* Red for error */
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
 </style>
 
 <script src="../assets/scripts/notif_script.js"></script>
