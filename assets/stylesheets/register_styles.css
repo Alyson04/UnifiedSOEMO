@@ -116,7 +116,7 @@ label {
 .google-btn {
     width: 100%;
     padding: 12px;
-    background-color: #DB4437;
+    background: linear-gradient(135deg, #36577d, #2A4365);
     color: white;
     border-radius: 6px;
     margin-top: 10px;
@@ -125,6 +125,7 @@ label {
     justify-content: center;
     cursor: pointer;
     font-weight: bold;
+    border:none;
 }
 
 .google-btn .google-icon {
