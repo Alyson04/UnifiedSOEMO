@@ -87,21 +87,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderEvents(events) {
-        if (events.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="3">No events found.</td></tr>';
-            return;
+    const minRows = 5; // You can change this to control table height
+    tableBody.innerHTML = '';
+
+    if (events.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="3">No events found.</td></tr>';
+        for (let i = 1; i < minRows; i++) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = '<td colspan="3" style="height: 50px;"></td>';
+            tableBody.appendChild(emptyRow);
         }
-        tableBody.innerHTML = '';
-        events.forEach(event => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${escapeHtml(event.title)}</td>
-                <td>${formatDate(event.event_date)}</td>
-                <td>${formatDate(event.created_at)}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
+        return;
     }
+
+    events.forEach(event => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(event.title)}</td>
+            <td>${formatDate(event.event_date)}</td>
+            <td>${formatDate(event.created_at)}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    // Fill in empty rows if events are fewer than the minimum
+    for (let i = events.length; i < minRows; i++) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = '<td colspan="3" style="height: 50px;"></td>';
+        tableBody.appendChild(emptyRow);
+    }
+}
+
 
     function renderPagination(total, perPage, current) {
         const totalPages = Math.ceil(total / perPage);

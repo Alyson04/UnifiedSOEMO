@@ -91,39 +91,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderUsers(users) {
-        if (users.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5">No users found for this organization.</td></tr>';
-            return;
+    const minRows = 5; // Number of rows to maintain consistent height
+    tableBody.innerHTML = '';
+
+    if (users.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5">No users found for this organization.</td></tr>';
+        // Add empty rows to preserve height
+        for (let i = 1; i < minRows; i++) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = '<td colspan="5" style="height: 50px;"></td>';
+            tableBody.appendChild(emptyRow);
         }
-        tableBody.innerHTML = '';
-        users.forEach(user => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${escapeHtml(user.fullName)}</td>
-                <td>${escapeHtml(user.email)}</td>
-                <td>${capitalizeFirstLetter(user.application_status) || 'Pending'}</td>
-                <td>${escapeHtml(user.applied_at)}</td>
-                <td>
-                    ${['approved', 'rejected'].includes(user.application_status) ? `
-                        <button disabled>Accept</button>
-                        <button disabled>Decline</button>
-                    ` : `
-                        <form action="../api/process_application.php" method="POST" style="display:inline;">
-                            <input type="hidden" name="user_id" value="${user.id}">
-                            <input type="hidden" name="org_id" value="${user.org_id}">
-                            <button type="submit" name="action" value="accept">Accept</button>
-                        </form>
-                        <form action="../api/process_application.php" method="POST" style="display:inline;">
-                            <input type="hidden" name="user_id" value="${user.id}">
-                            <input type="hidden" name="org_id" value="${user.org_id}">
-                            <button type="submit" name="action" value="decline">Decline</button>
-                        </form>
-                    `}
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
+        return;
     }
+
+    users.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(user.fullName)}</td>
+            <td>${escapeHtml(user.email)}</td>
+            <td>${capitalizeFirstLetter(user.application_status) || 'Pending'}</td>
+            <td>${escapeHtml(user.applied_at)}</td>
+            <td>
+                ${['approved', 'rejected'].includes(user.application_status) ? `
+                    <button disabled>Accept</button>
+                    <button disabled>Decline</button>
+                ` : `
+                    <form action="../api/process_application.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="user_id" value="${user.id}">
+                        <input type="hidden" name="org_id" value="${user.org_id}">
+                        <button type="submit" name="action" value="accept">Accept</button>
+                    </form>
+                    <form action="../api/process_application.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="user_id" value="${user.id}">
+                        <input type="hidden" name="org_id" value="${user.org_id}">
+                        <button type="submit" name="action" value="decline">Decline</button>
+                    </form>
+                `}
+            </td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    // Add extra empty rows to maintain fixed height
+    for (let i = users.length; i < minRows; i++) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = '<td colspan="5" style="height: 50px;"></td>';
+        tableBody.appendChild(emptyRow);
+    }
+}
+
 
     function renderPagination(total, perPage, current) {
         const totalPages = Math.ceil(total / perPage);
@@ -171,6 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
 .pagination-controls button.active {
     background: #333;
     color: #fff;
+}
+.status-filter-form{
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 </style>
 
