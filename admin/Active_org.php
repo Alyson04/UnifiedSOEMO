@@ -124,5 +124,6 @@ include '../includes/navbar.php';
       
   </main>
 <script src="../assets/scripts/notif_script.js"></script>
+<script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>
 

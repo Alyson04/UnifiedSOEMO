@@ -105,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </script>
 <script src="../assets/scripts/notif_script.js"></script>
+<script src="../assets/scripts/inactive.js"></script>
 
 <?php 
 $conn->close();

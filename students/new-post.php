@@ -64,4 +64,6 @@ include '../includes/header.php';
   </div>
 </div>
 
+<script src="../assets/scripts/inactive.js"></script>
+
 <?php include '../includes/footer.php'; ?>

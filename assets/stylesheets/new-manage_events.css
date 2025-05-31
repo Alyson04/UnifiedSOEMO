@@ -239,7 +239,8 @@ table {
     font-size: 0.95rem;
     color: #2A4365;
     min-width: 600px;
-  height: 370px;
+    table-layout: fixed; /* 👈 Add this line */
+    height: 370px;
 }
 
 /* Table Header */

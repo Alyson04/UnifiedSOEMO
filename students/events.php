@@ -226,5 +226,6 @@ document.addEventListener("DOMContentLoaded", function () {
     color: #0056b3;
 }
 </style>
+<script src="../assets/scripts/inactive.js"></script>
 
 <?php include '../includes/footer.php'; ?>

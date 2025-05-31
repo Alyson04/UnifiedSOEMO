@@ -50,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmt->execute()) {
                 $success = "Event added successfully!";
+                header("Location: new-manage_events.php");
+                exit;
             } else {
                 $error = "Failed to add event. Please try again.";
             }
@@ -60,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $conn->close();
 
-// Page metadata
 $title = "Add New Event";
 $style = "add_event.css";
 
@@ -80,8 +81,74 @@ include '../includes/sidebar.php';
             <div class="alert success"><?= htmlspecialchars($success) ?></div>
         <?php endif; ?>
 
-        <form method="POST" class="event-form" enctype="multipart/form-data" onsubmit="return confirmCreateEvent()">
-          <label for="title">Event Title</label>
+        <!-- Internal Modal Styles -->
+        <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .modal button {
+            margin: 10px 5px 0;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal .confirm {
+            background: linear-gradient(135deg, #36577d, #2A4365);
+            color: white;
+        }
+
+        .modal .cancel {
+            background: linear-gradient(135deg, #36577d, #2A4365);
+            color: white;
+        }
+        .floating-alert {
+            position: fixed;
+            top: 50px;
+            right: 30%;
+            transform: translateX(-50%);
+            background-color: #f44336;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 2000;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        </style>
+<!-- Custom Alert Message -->
+<div id="formError" class="floating-alert" style="display: none;"></div>
+
+<!-- Event Form -->
+<form id="eventForm" method="POST" class="event-form" enctype="multipart/form-data">
+    <label for="title">Event Title</label>
     <input type="text" name="title" id="title" required>
 
     <label for="description">Event Description</label>
@@ -91,20 +158,67 @@ include '../includes/sidebar.php';
     <input type="date" name="event_date" id="event_date" required>
 
     <label for="thumbnail">Event Thumbnail</label>
-    <input type="file" name="thumbnail" id="thumbnail" accept="image/*">
+    <input type="file" name="thumbnail" id="thumbnail" accept="image/*" required>
 
-    <button type="submit">Create Event</button>
+    <!-- Changed onclick to validateFormAndShowModal() -->
+    <button type="button" onclick="validateFormAndShowModal()">Create Event</button>
     <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
 </form>
 
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+        <p>Are you sure you want to create this event?</p>
+        <button class="confirm" onclick="submitForm()">Yes</button>
+        <button class="cancel" onclick="hideConfirmModal()">No</button>
+    </div>
+</div>
+
+<!-- Modal Script -->
 <script>
-function confirmCreateEvent() {
-    return confirm("Are you sure you want to create this event?");
+function validateFormAndShowModal() {
+    const errorBox = document.getElementById('formError');
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const eventDate = document.getElementById('event_date').value;
+    const thumbnail = document.getElementById('thumbnail').files.length;
+
+    // Reset alert
+    errorBox.style.display = 'none';
+    errorBox.innerText = '';
+
+    if (!title || !description || !eventDate || thumbnail === 0) {
+        errorBox.innerText = 'All fields are required.';
+        errorBox.style.display = 'block';
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            errorBox.style.display = 'none';
+        }, 5000);
+        return;
+    }
+
+    showConfirmModal(); // All fields are valid
+}
+
+function showConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'block';
+}
+
+function hideConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'none';
+}
+
+function submitForm() {
+    document.getElementById('eventForm').submit();
 }
 </script>
+
+
 
     </div>
 </main>
 
 <script src="../assets/scripts/notif_script.js"></script>
+<script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>
