@@ -156,3 +156,27 @@ footer {
     padding: 2px 5px;
     margin-top: auto; /* Pushes footer to the bottom */
 }
+
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #DB4437;
+    color: white;
+    border-radius: 6px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.google-btn .google-icon {
+    width: 30px;  /* Increased size */
+    height: 25px; /* Increased size */
+    margin-right: 10px;
+}
+
+.google-btn:hover {
+    background-color: #C1351D;
+}

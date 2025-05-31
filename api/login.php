@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Check if user status is deleted
         if ($user['status'] === 'deleted') {
+            $_SESSION['error'] = "Account Deactivated";
             header("Location: ../public/login.php?error=Your account has been deactivated.");
             exit();
         }
@@ -32,18 +33,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Redirect based on role
             if ($user['role'] === 'admin') {
+                $_SESSION['success'] = "Log In Success";
                 header("Location: ../admin/dashboard.php");
             } else if ($user['role'] === 'student') {
+                $_SESSION['success'] = "Log In Success";
                 header("Location: ../students/dashboard.php");
             } else {
+                $_SESSION['success'] = "Log In Success";
                 header("Location: ../admin_org/dashboard.php");
             }
             exit();
         } else {
+            $_SESSION['error'] = "Invalid Password";
             header("Location: ../public/login.php?error=Invalid password");
             exit();
         }
     } else {
+        $_SESSION['error'] = "Invalid Email";
         header("Location: ../public/login.php?error=User not found");
         exit();
     }
