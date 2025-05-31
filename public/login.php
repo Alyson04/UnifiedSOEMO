@@ -23,7 +23,7 @@ $title = "Login"; $style = "login_styles.css"; include '../includes/header.php';
                 
                 <button type="submit" class="btn">Log In</button>
                 
-                <p class="forgot-password"><a href="#">Forgot Password?</a></p>
+                <p class="forgot-password"><a href="../forgotpassword/forgotpass.php">Forgot Password?</a></p>
             </form>
             <button class="google-btn" onclick="window.location.href='../api/google_login.php'">
             <img src="../assets/pictures/google_icons.png" alt="Google Login" class="google-icon">
