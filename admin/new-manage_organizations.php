@@ -50,9 +50,10 @@ include '../includes/sidebar.php';
                 <!-- Data will load here via AJAX -->
             </tbody>
         </table>
+        
     </div>
-
-    <div id="paginationControls" class="pagination-controls"></div>
+<div id="paginationControls" class="pagination-controls"></div>
+    
 </div>
 
 <script>
@@ -134,6 +135,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </style>
 
 <script src="../assets/scripts/notif_script.js"></script>
-<script src="../assets/scripts/inactive.js"></script>
-
+<script src="../assets/scripts/inactive.js"></script><script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

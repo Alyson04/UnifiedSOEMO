@@ -204,6 +204,7 @@ body {
 }
 
 /* Input Fields */
+.card-body input[type="email"],
 .card-body input[type="text"],
 .card-body input[type="password"] {
   padding: 10px 16px;
@@ -283,6 +284,7 @@ body {
 }
 
 .form-group input[type="text"],
+.form-group input[type="email"],
 .form-group input[type="password"] {
   flex: 1;
   width: 100%;

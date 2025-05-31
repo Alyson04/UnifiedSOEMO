@@ -8,7 +8,7 @@ require '../config/db_conn.php';
 $user_id = $_SESSION['user_id'] ?? null;
 if (!$user_id) {
     // Not logged in, redirect to login page or show error
-    header('Location: ../login.php');
+    header('Location: ../public/login.php');
     exit;
 }
 
@@ -23,18 +23,21 @@ $password = $_POST['password'] ?? ''; // Don't trim password to keep spaces if a
 
 // Validate inputs (basic example, expand as needed)
 if (empty($fullName)) {
-    $errors[] = "Full Name cannot be empty.";
+    // $errors[] = "Full Name cannot be empty.";
+    $_SESSION['error'] = "Full Name cannot be empty!";
 }
 
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors[] = "Please enter a valid email address.";
+    // $errors[] = "Please enter a valid email address.";
+    $_SESSION['error'] = "Enter valid email address!";
 }
 
 // Password is optional (only update if not empty)
 $updatePassword = false;
 if (!empty($password)) {
     if (strlen($password) < 6) {
-        $errors[] = "Password must be at least 6 characters.";
+        // $errors[] = "Password must be at least 6 characters.";
+        $_SESSION['error'] = "Password must be at least 6 characters!";
     } else {
         $updatePassword = true;
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -51,7 +54,8 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!in_array($fileType, $allowedTypes)) {
-        $errors[] = "Only JPG, PNG, and GIF files are allowed for the logo.";
+        // $errors[] = "Only JPG, PNG, and GIF files are allowed for the logo.";
+        $_SESSION['error'] = "Only JPG, PNG, and GIF files are allowed for the logo!";
     } else {
         $uploadDir = '../assets/uploads_organizations/';
         if (!is_dir($uploadDir)) {
@@ -65,7 +69,8 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         if (move_uploaded_file($fileTmpPath, $destPath)) {
             $logoPath = $newFileName; // store filename, not full path
         } else {
-            $errors[] = "There was an error uploading the logo.";
+            // $errors[] = "There was an error uploading the logo.";
+            $_SESSION['error'] = "There was an error uploading the logo!";
         }
     }
 }
@@ -128,9 +133,12 @@ $conn->close();
 
 // Redirect back with success or error messages
 if ($success) {
-    $_SESSION['success_message'] = "Profile updated successfully.";
+    // $_SESSION['success_message'] = "Profile updated successfully.";
+    $_SESSION['success'] = "Profile updated successfully!";
+
 } else {
     $_SESSION['error_message'] = implode(' ', $errors);
+    $_SESSION['error'] = implode(' ', $errors);
 }
 
 header('Location: ../admin_org/new_settings.php'); // or your settings page path

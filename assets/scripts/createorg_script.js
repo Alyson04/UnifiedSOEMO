@@ -13,7 +13,7 @@ function submitAllForms() {
     .then(res => res.text())
     .then(data => {
         console.log(data);
-        alert("Submitted successfully!");
+        window.location.href = 'new-manage_users.php';
     })
     .catch(err => {
         console.error(err);

@@ -222,7 +222,7 @@
 /* Event Table Container */
 .event-table {
     width: 100%;
-    height: 450px;
+    height: 410px;
     overflow-x: auto;
     border-radius: 24px;
     box-shadow: 0 10px 40px rgba(42, 67, 101, 0.15);

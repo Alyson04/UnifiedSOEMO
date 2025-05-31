@@ -49,11 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("sssis", $title, $description, $event_date, $org_id, $thumbnail_filename);
 
             if ($stmt->execute()) {
-                $success = "Event added successfully!";
+                // $success = "Event added successfully!";\
+                $_SESSION['success'] = "Event added successfully!";
                 header("Location: new-manage_events.php");
                 exit;
             } else {
-                $error = "Failed to add event. Please try again.";
+                $_SESSION['error'] = "Event adding failed!";
             }
             $stmt->close();
         }

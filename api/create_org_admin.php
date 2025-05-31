@@ -1,5 +1,6 @@
 <?php
 include '../config/db_conn.php';
+require 'auth.php';
 
 $orgId = null;
 
@@ -64,8 +65,5 @@ if (isset($_POST['objectives'], $_POST['skills'], $_POST['requirements'])) {
     $stmt3->execute();
     $stmt3->close();
 }
-?>
 
-
-<script src="../assets/scripts/notif_script.js"></script>
-<?php include '../includes/footer.php'; ?>
+$_SESSION['success'] = "Org Admin and Organization created successfully!";

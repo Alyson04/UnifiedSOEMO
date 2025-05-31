@@ -65,9 +65,9 @@ include '../includes/sidebar.php';
             </tbody>
         </table>
 
+    </div>
         <!-- Pagination -->
         <div id="paginationControls" class="pagination-controls"></div>
-    </div>
 </div>
 
 <script>

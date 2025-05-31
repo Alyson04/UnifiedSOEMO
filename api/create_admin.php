@@ -1,5 +1,6 @@
 <?php
 include '../config/db_conn.php';
+require 'auth.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fullName = $_POST['fullName'];
@@ -18,8 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt->execute()) {
         echo "<script>console.log('success')</script>";
         $_SESSION['success'] = "Record added successfully";
-        echo "created successfully";
-        header("refresh:3, ../admin/dashboard.php");
+        // echo "created successfully";
+        header("Location: ../admin/new-manage_users.php");
     } else {
         $_SESSION['error'] = "Error adding record: " . $stmt->error;
     }

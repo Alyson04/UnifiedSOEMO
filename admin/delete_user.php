@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fullName = trim($_POST['fullName'] ?? '');
 
     if (empty($fullName)) {
-        $_SESSION['notif'] = "Full name is required.";
+        $_SESSION['error'] = "Full name is required.";
         header("Location: new-manage_users.php");
         exit;
     }
@@ -19,12 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         if ($stmt->affected_rows > 0) {
-            $_SESSION['notif'] = "User '$fullName' has been soft-deleted.";
+            $_SESSION['success'] = "User '$fullName' has been soft-deleted.";
         } else {
-            $_SESSION['notif'] = "No matching user found or user is an admin.";
+            $_SESSION['error'] = "No '$fullName' has been found";
         }
     } else {
-        $_SESSION['notif'] = "Error: " . $stmt->error;
+        $_SESSION['error'] = "Error: " . $stmt->error;
     }
 
     $stmt->close();

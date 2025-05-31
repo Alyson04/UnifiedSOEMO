@@ -1,33 +1,53 @@
 <?php
 require 'auth.php';
-
 require '../config/db_conn.php';
 
 $admin_id = $_SESSION['user_id'] ?? null;
 $org_id = $_SESSION['org_id'] ?? null;
 
-$content = $_POST['content'] ?? '';
-
-// Debug
-// file_put_contents('../log.txt', "POST:\n" . print_r($_POST, true), FILE_APPEND);
-// file_put_contents('../log.txt', "SESSION:\n" . print_r($_SESSION, true), FILE_APPEND);
+$content = trim($_POST['content'] ?? '');
 
 if (!$content || !$admin_id /* || !$org_id */) {
+    $_SESSION['error'] = "Posting failed!";
     echo json_encode(['success' => false, 'message' => 'Missing content, user, or org.']);
     exit;
 }
 
-// Continue saving to database...
+// Handle file upload
 $imagePath = '';
-if (!empty($_FILES['image']['name'])) {
+if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $targetDir = "../assets/uploads/";
-    $imagePath = $targetDir . basename($_FILES['image']['name']);
-    move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
+    $fileName = basename($_FILES['image']['name']);
+    $imagePath = $targetDir . $fileName;
+
+    // Optional: Generate unique filename to prevent overwrite
+    $imagePath = $targetDir . uniqid() . "_" . $fileName;
+
+    if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
+        $_SESSION['error'] = "Image upload failed!";
+        echo json_encode(['success' => false, 'message' => 'Failed to upload image.']);
+        exit;
+    }
 }
 
+// Insert post into database
 $stmt = $conn->prepare("INSERT INTO posts (user_id, content, image_path, org_id) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("isss", $admin_id, $content, $imagePath, $org_id);
-$stmt->execute();
+if ($stmt === false) {
+    $_SESSION['error'] = "Database error!";
+    echo json_encode(['success' => false, 'message' => 'Database preparation failed.']);
+    exit;
+}
 
-echo json_encode(['success' => true]);
+$stmt->bind_param("isss", $admin_id, $content, $imagePath, $org_id);
+
+if ($stmt->execute()) {
+    $_SESSION['success'] = "Posted successfully!";
+    echo json_encode(['success' => true]);
+} else {
+    $_SESSION['error'] = "Posting failed!";
+    echo json_encode(['success' => false, 'message' => 'Database execution failed.']);
+}
+
+$stmt->close();
+$conn->close();
 ?>

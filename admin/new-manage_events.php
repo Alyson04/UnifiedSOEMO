@@ -24,7 +24,7 @@ if ($admin_id) {
 $conn->close();
 
 $title = "Unified SOEMO Dashboard";
-$style = "new-manage_events.css";
+$style = "new-manage_events2.css";
 include '../includes/header.php';
 include '../includes/sidebar.php';
 ?>
@@ -52,10 +52,10 @@ include '../includes/sidebar.php';
                 <!-- Events data will be loaded here -->
             </tbody>
         </table>
+            
     </div>
-
-    <!-- Pagination Controls -->
-    <div id="paginationControls" class="pagination-controls"></div>
+<!-- Pagination Controls -->
+            <div id="paginationControls" class="pagination-controls"></div>
 </div>
 
 <style>
