@@ -17,10 +17,12 @@ $errors = [];
 
 if (empty($fullName)) {
     $errors[] = "Full name is required.";
+    $_SESSION['error'] = "Full name is required!";
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Invalid email address.";
+    $_SESSION['error'] = "Invalid email address!";
 }
 
 if (!empty($errors)) {
@@ -41,6 +43,7 @@ if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_
         $profile_picture_name = $new_file_name;
     } else {
         $errors[] = "Failed to upload profile picture.";
+        $_SESSION['error'] = "Failed to upload profile picture!";
     }
 }
 
@@ -74,7 +77,7 @@ if (!empty($password) && !empty($profile_picture_name)) {
 }
 
 if ($stmt->execute()) {
-    $_SESSION['success_message'] = "Profile updated successfully.";
+    $_SESSION['success'] = "Profile updated successfully.";
     header("Location: ../students/edit_profile.php");
     exit();
 } else {

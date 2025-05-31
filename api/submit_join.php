@@ -10,7 +10,8 @@ $year_section = trim($_POST['year_section'] ?? '');
 
 // Validate required fields
 if (!$student_id || !$org_id || !$contact_number || !$age || !$year_section) {
-    die("Missing required fields.");
+    // die("Missing required fields.");
+    $_SESSION['error'] = "Missing required fields!";
 }
 
 $portfolio_path = null;
@@ -30,13 +31,17 @@ if (isset($_FILES['portfolio_file']) && $_FILES['portfolio_file']['error'] === U
 
     $allowed_types = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
     if (!in_array($file_type, $allowed_types)) {
-        die("Invalid file type. Allowed types: PDF, DOC, DOCX, JPG, JPEG, PNG.");
+        // die("Invalid file type. Allowed types: PDF, DOC, DOCX, JPG, JPEG, PNG.");
+        $_SESSION['error'] = "Invalid file type. Allowed types: PDF, DOC, DOCX, JPG, JPEG, PNG.";
+
     }
 
     if (move_uploaded_file($portfolio['tmp_name'], $target_file)) {
         $portfolio_path = $target_file;
     } else {
-        die("❌ Failed to upload file.");
+        // die("❌ Failed to upload file.");
+        $_SESSION['error'] = "Uploading failed!";
+
     }
 }
 
@@ -96,11 +101,13 @@ if ($stmt->execute()) {
         $admin_notif_stmt->close();
     }
 
-    echo "✅ Application submitted successfully!";
-    header("refresh:2;url=../students/dashboard.php");
+    // echo "✅ Application submitted successfully!";
+    $_SESSION['success'] = "Application submitted successfully!";
+    header("Location: ../students/organizations.php");
 
 } else {
-    echo "❌ Error saving application: " . $stmt->error;
+    // echo "❌ Error saving application: " . $stmt->error;
+    $_SESSION['error'] = "Saving application failed!";
 }
 
 $stmt->close();

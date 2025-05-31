@@ -40,6 +40,13 @@ include '../includes/navbar.php';
 ?>
 
 <div class="main-layout">
+<?php if (!empty($_SESSION['error'])): ?>
+    <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
+    <?php unset($_SESSION['error']); ?>
+<?php elseif (!empty($_SESSION['success'])): ?>
+    <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -70,6 +77,40 @@ include '../includes/navbar.php';
     </div>
 </div>
 
+<style>
+    .session-alert {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green by default for success */
+    color: white;
+    padding: 14px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 500;
+    max-width: 80%;
+    text-align: center;
+    animation: fadeInSlideDown 0.4s ease-in-out;
+}
+
+.session-alert.error {
+    background-color: #f44336; /* Red for error */
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+</style>
+
 <script>
 document.getElementById("edit-btn").addEventListener("click", function () {
     document.getElementById("profile_pic").disabled = false;
@@ -90,6 +131,15 @@ document.getElementById("cancel-btn").addEventListener("click", function () {
     document.getElementById("cancel-btn").disabled = true;
     document.getElementById("edit-btn").style.display = "block"; // Show Edit button again
 });
+
+const alertBox = document.querySelector('.session-alert');
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.transition = 'opacity 0.5s ease';
+            alertBox.style.opacity = '0';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 4000);
+    }
 </script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/editprofile_script.js"></script>

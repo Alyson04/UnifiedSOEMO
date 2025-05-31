@@ -23,6 +23,14 @@ include '../includes/header.php';
 include '../includes/navbar.php'; 
 ?>
 
+<?php if (!empty($_SESSION['error'])): ?>
+    <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
+    <?php unset($_SESSION['error']); ?>
+<?php elseif (!empty($_SESSION['success'])): ?>
+    <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
 <section class="background">
     <div class="search-container">
         <input type="text" class="search-bar" id="orgSearch" placeholder="Search Organizations...">
@@ -33,7 +41,7 @@ include '../includes/navbar.php';
     <h2 class="section-title">STUDENT ORGANIZATION</h2>
     <div class="student-org-wrapper">
         <div class="student-org-container" id="orgResults">
-
+        
         <?php
         // Fetch organizations whose owners are NOT deleted
         $sql = "
@@ -70,6 +78,40 @@ include '../includes/navbar.php';
     </div>
 </section>
 
+<style>
+    .session-alert {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green by default for success */
+    color: white;
+    padding: 14px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 500;
+    max-width: 80%;
+    text-align: center;
+    animation: fadeInSlideDown 0.4s ease-in-out;
+}
+
+.session-alert.error {
+    background-color: #f44336; /* Red for error */
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+</style>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("orgSearch");
@@ -101,6 +143,15 @@ document.addEventListener("DOMContentLoaded", () => {
     searchInput.addEventListener("input", () => {
         fetchOrgs(searchInput.value);
     });
+
+    const alertBox = document.querySelector('.session-alert');
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.transition = 'opacity 0.5s ease';
+            alertBox.style.opacity = '0';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 4000);
+    }
 });
 
 </script>
