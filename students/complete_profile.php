@@ -1,7 +1,7 @@
 <?php 
 require '../api/auth.php'; 
 ?>
-<?php $title = "Complete Information"; include '../includes/header.php'; ?>
+<?php $title = "Complete Information"; $style = "complete_profile.css"; include '../includes/header.php'; ?>
 <?php include '../includes/navbar.php'; ?>
 
 <div class="register-container">
