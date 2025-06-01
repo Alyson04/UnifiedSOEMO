@@ -17,38 +17,87 @@ if ($student_id) {
     $stmt->close();
 }
 
-// Fetch all events for current year ordered by event_date ascending
 $year = date('Y');
-$sql_events = "SELECT e.id, e.title, e.description, e.event_date, e.org_id, e.created_at, e.thumbnail 
-               FROM events e
-               INNER JOIN organizations o ON e.org_id = o.ID
-               INNER JOIN users u ON o.id = u.ID
-               WHERE YEAR(e.event_date) = ? AND u.status != 'deleted'
-               ORDER BY e.event_date ASC";
-
-$stmt = $conn->prepare($sql_events);
-$stmt->bind_param("i", $year);
-$stmt->execute();
-$result_events = $stmt->get_result();
-
-$upcoming_events = [];
-$past_events = [];
 $today = date('Y-m-d');
+$limit = 5;
 
-while ($row = $result_events->fetch_assoc()) {
-    if ($row['event_date'] >= $today) {
-        $upcoming_events[] = $row;
-    } else {
-        $past_events[] = $row;
-    }
-}
+// UPCOMING EVENTS PAGINATION
+$upage = isset($_GET['upage']) && is_numeric($_GET['upage']) ? (int)$_GET['upage'] : 1;
+$up_offset = ($upage - 1) * $limit;
 
+// Count upcoming events
+$sql = "SELECT COUNT(*) as total FROM events e 
+INNER JOIN organizations o ON e.org_id = o.ID 
+WHERE e.event_date >= ? 
+AND YEAR(e.event_date) = ? 
+AND EXISTS (SELECT 1 FROM users u WHERE u.org_id = o.id AND u.status != 'deleted')";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("si", $today, $year);
+$stmt->execute();
+$result = $stmt->get_result();
+$up_total = $result->fetch_assoc()['total'] ?? 0;
 $stmt->close();
+$up_total_pages = ceil($up_total / $limit);
+
+// Fetch upcoming events
+$sql = "SELECT * FROM events e 
+WHERE e.event_date >= ? 
+AND YEAR(e.event_date) = ? 
+ORDER BY e.event_date ASC 
+LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("siii", $today, $year, $limit, $up_offset);
+$stmt->execute();
+$upcoming_events = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
+// PAST EVENTS PAGINATION
+$ppage = isset($_GET['ppage']) && is_numeric($_GET['ppage']) ? (int)$_GET['ppage'] : 1;
+$past_offset = ($ppage - 1) * $limit;
+
+// Count past events
+$sql = "SELECT COUNT(*) as total FROM events e 
+INNER JOIN organizations o ON e.org_id = o.ID 
+WHERE e.event_date < ? 
+AND YEAR(e.event_date) = ? 
+AND EXISTS (SELECT 1 FROM users u WHERE u.org_id = o.id AND u.status != 'deleted')";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("si", $today, $year);
+$stmt->execute();
+$result = $stmt->get_result();
+$past_total = $result->fetch_assoc()['total'] ?? 0;
+$stmt->close();
+$past_total_pages = ceil($past_total / $limit);
+
+// Fetch past events
+$sql = "SELECT * FROM events e 
+WHERE e.event_date < ? 
+AND YEAR(e.event_date) = ? 
+ORDER BY e.event_date DESC 
+LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("siii", $today, $year, $limit, $past_offset);
+$stmt->execute();
+$past_events = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
 $conn->close();
 
-$title = "Events"; 
-$style = "events_styles.css"; 
-include '../includes/header.php'; 
+function pagination_links($current_page, $total_pages, $param_name) {
+    echo '<div class="pagination">';
+    if ($current_page > 1) {
+        echo '<a href="?' . $param_name . '=' . ($current_page - 1) . '">&laquo; Prev</a>';
+    }
+    echo "<span> Page $current_page of $total_pages </span>";
+    if ($current_page < $total_pages) {
+        echo '<a href="?' . $param_name . '=' . ($current_page + 1) . '">Next &raquo;</a>';
+    }
+    echo '</div>';
+}
+
+$title = "Events";
+$style = "events_styles.css";
+include '../includes/header.php';
 include '../includes/navbar.php';
 ?>
 
@@ -79,51 +128,48 @@ include '../includes/navbar.php';
     </div>
 
     <div class="events-section">
-        <div class="upcoming-events">
-            <h2>UPCOMING EVENTS</h2>
-            <?php if (count($upcoming_events) > 0): ?>
-                <?php foreach ($upcoming_events as $event): ?>
-                    <?php
-                        $thumb = !empty($event['thumbnail']) ? "../assets/uploads_highlights/" . htmlspecialchars($event['thumbnail']) : "../assets/default-thumbnail.jpg";
-                    ?>
-                    <a href="#" style="text-decoration: none; color: inherit;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            <img src="<?= $thumb ?>" alt="Event Thumbnail" style="width: 180px; height: 80px; object-fit: cover; border-radius: 5px;">
-                            <div>
-                                <strong><?= htmlspecialchars($event['title']) ?></strong><br>
-                                <?= date('F j, Y', strtotime($event['event_date'])) ?>
-                            </div>
+    <div class="upcoming-events">
+        <h2>UPCOMING EVENTS</h2>
+        <?php if (count($upcoming_events) > 0): ?>
+            <?php foreach ($upcoming_events as $event): ?>
+                <a href="#">
+                    <div class="event-item">
+                        <img src="<?= !empty($event['thumbnail']) ? "../assets/uploads_highlights/" . htmlspecialchars($event['thumbnail']) : '../assets/default-thumbnail.jpg' ?>" alt="Thumbnail">
+                        <div>
+                            <strong><?= htmlspecialchars($event['title']) ?></strong><br>
+                            <?= date('F j, Y', strtotime($event['event_date'])) ?>
                         </div>
-                    </a>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>No upcoming events.</p>
-            <?php endif; ?>
-        </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+            <?php pagination_links($upage, $up_total_pages, 'upage'); ?>
+        <?php else: ?>
+            <p>No upcoming events.</p>
+        <?php endif; ?>
+    </div>
 
-        <div class="past-events">
-            <h2>PAST EVENTS</h2>
-            <?php if (count($past_events) > 0): ?>
-                <?php foreach ($past_events as $event): ?>
-                    <?php
-                        $highlight = !empty($event['thumbnail']) ? "../assets/uploads_highlights/" . htmlspecialchars($event['thumbnail']) : "../assets/uploads_highlights/default-highlight.jpg";
-                    ?>
-                    <a href="#" style="text-decoration: none; color: inherit;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                            <img src="<?= $highlight ?>" alt="Event Highlight" style="width: 180px; height: 80px; object-fit: cover; border-radius: 5px;">
-                            <div>
-                                <strong><?= htmlspecialchars($event['title']) ?></strong><br>
-                                <?= date('F j, Y', strtotime($event['event_date'])) ?>
-                            </div>
+    <div class="past-events">
+        <h2>PAST EVENTS</h2>
+        <?php if (count($past_events) > 0): ?>
+            <?php foreach ($past_events as $event): ?>
+                <a href="#">
+                    <div class="event-item">
+                        <img src="<?= !empty($event['thumbnail']) ? "../assets/uploads_highlights/" . htmlspecialchars($event['thumbnail']) : '../assets/default-thumbnail.jpg' ?>" alt="Highlight">
+                        <div>
+                            <strong><?= htmlspecialchars($event['title']) ?></strong><br>
+                            <?= date('F j, Y', strtotime($event['event_date'])) ?>
                         </div>
-                    </a>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>No past events.</p>
-            <?php endif; ?>
-        </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+            <?php pagination_links($ppage, $past_total_pages, 'ppage'); ?>
+        <?php else: ?>
+            <p>No past events.</p>
+        <?php endif; ?>
     </div>
 </div>
+
+
 
 <script src="../assets/scripts/notif_script.js"></script>
 
@@ -224,6 +270,29 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 .calendar-header button:hover {
     color: #0056b3;
+}
+.event-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    text-decoration: none;
+    color: inherit;
+}
+.event-item img {
+    width: 180px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.pagination {
+    margin-top: 15px;
+    font-weight: bold;
+}
+.pagination a {
+    text-decoration: none;
+    margin: 0 10px;
+    color: #0077cc;
 }
 </style>
 <script src="../assets/scripts/inactive.js"></script>
