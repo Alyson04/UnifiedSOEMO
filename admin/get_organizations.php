@@ -11,10 +11,10 @@ $offset = ($page - 1) * $perPage;
 
 // Get total number of organizations (excluding deleted users)
 $sqlCount = "
-    SELECT COUNT(*) AS total 
-    FROM organizations o
-    INNER JOIN users u ON o.id = u.ID
-    WHERE u.status != 'deleted'
+    SELECT COUNT(*) AS total
+    FROM users u
+    INNER JOIN organizations o ON u.org_id = o.id
+    WHERE u.status = 'active' AND u.role = 'org_admin';
 ";
 $resultCount = $conn->query($sqlCount);
 $total = 0;
@@ -25,9 +25,9 @@ if ($resultCount) {
 
 // Get paginated organizations
 $sql = "
-    SELECT o.name, o.description, o.created_at
+    SELECT DISTINCT o.name, o.description, o.created_at
     FROM organizations o
-    INNER JOIN users u ON o.id = u.ID
+    INNER JOIN users u ON u.org_id = o.ID
     WHERE u.status != 'deleted'
     ORDER BY o.created_at ASC
     LIMIT ?, ?
