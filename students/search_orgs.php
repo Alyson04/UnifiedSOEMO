@@ -6,42 +6,37 @@ $query = $_GET['q'] ?? '';
 $query = trim($query);
 
 if ($query === '') {
-    // Return all organizations (with user status != deleted)
+    // Return all organizations with active users
     $sql = "
-        SELECT organizations.*
-        FROM organizations
-        INNER JOIN users ON organizations.id = users.ID
-        WHERE users.status != 'deleted'
-        ORDER BY organizations.created_at ASC
+        SELECT DISTINCT o.id, o.name, o.description, o.image_path, o.created_at
+        FROM organizations o
+        INNER JOIN users u ON u.org_id = o.id
+        WHERE u.status != 'deleted'
+        ORDER BY o.created_at ASC
     ";
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo '<p style="color: black;">Database error: ' . htmlspecialchars($conn->error) . '</p>';
-        exit;
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
-
 } else {
-    // Search organizations with query
+    // Search organizations based on name or description
     $sql = "
-        SELECT organizations.*
-        FROM organizations
-        INNER JOIN users ON organizations.id = users.ID
-        WHERE users.status != 'deleted'
-        AND (organizations.name LIKE ? OR organizations.description LIKE ?)
-        ORDER BY organizations.created_at ASC
+        SELECT DISTINCT o.id, o.name, o.description, o.image_path, o.created_at
+        FROM organizations o
+        INNER JOIN users u ON u.org_id = o.id
+        WHERE u.status != 'deleted'
+        AND (o.name LIKE ? OR o.description LIKE ?)
+        ORDER BY o.created_at ASC
     ";
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo '<p style="color: black;">Database error: ' . htmlspecialchars($conn->error) . '</p>';
-        exit;
-    }
     $likeQuery = '%' . $query . '%';
     $stmt->bind_param("ss", $likeQuery, $likeQuery);
-    $stmt->execute();
-    $result = $stmt->get_result();
 }
+
+if (!$stmt) {
+    echo '<p style="color: black;">Database error: ' . htmlspecialchars($conn->error) . '</p>';
+    exit;
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -64,4 +59,3 @@ if ($result && $result->num_rows > 0) {
 
 $stmt->close();
 $conn->close();
-?>

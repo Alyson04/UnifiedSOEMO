@@ -4,10 +4,14 @@ checkUserRole('org_admin'); // Only allow org_admins
 
 require '../config/db_conn.php';
 
-$total_users = 0;
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 $org_id = null;
+$total_users = 0;
+$total_events = 0;
+$past_events = 0;
+$past_events_list = [];
+$recent_events = [];
 
 // Get org_id and admin's name
 if ($admin_id) {
@@ -22,99 +26,69 @@ if ($admin_id) {
 }
 
 // Count students in the same org AND not deleted
-if ($org_id !== null) {
+if ($org_id) {
     $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'student' AND org_id = ? AND status != 'deleted'");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $stmt->bind_result($total_users);
     $stmt->fetch();
     $stmt->close();
-} else {
-    $total_users = 0;
 }
 
-// Get upcoming events count filtered by org_id AND excluding deleted users
-if ($org_id !== null) {
-    $stmt = $conn->prepare("
-        SELECT COUNT(*) 
-        FROM events e 
-        INNER JOIN users u ON e.org_id = u.ID 
-        WHERE e.event_date >= CURDATE() 
-          AND e.org_id = ? 
-          AND u.status != 'deleted'
-    ");
+// Count upcoming events
+if ($org_id) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM events WHERE event_date >= CURDATE() AND org_id = ?");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $stmt->bind_result($total_events);
     $stmt->fetch();
     $stmt->close();
-} else {
-    $total_events = 0;
 }
 
-// Get past events count filtered by org_id AND excluding deleted users
-if ($org_id !== null) {
-    $stmt = $conn->prepare("
-        SELECT COUNT(*) 
-        FROM events e 
-        INNER JOIN users u ON e.org_id = u.ID 
-        WHERE e.event_date < CURDATE() 
-          AND e.org_id = ? 
-          AND u.status != 'deleted'
-    ");
+// Count past events
+if ($org_id) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM events WHERE event_date < CURDATE() AND org_id = ?");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $stmt->bind_result($past_events);
     $stmt->fetch();
     $stmt->close();
-} else {
-    $past_events = 0;
 }
 
-// Get past events list filtered by org_id AND excluding deleted users
-if ($org_id !== null) {
+// Get past events list
+if ($org_id) {
     $stmt = $conn->prepare("
-        SELECT e.title, e.event_date 
-        FROM events e 
-        INNER JOIN users u ON e.org_id = u.ID 
-        WHERE e.event_date < CURDATE() 
-          AND e.org_id = ? 
-          AND u.status != 'deleted' 
-        ORDER BY e.event_date DESC
+        SELECT title, event_date 
+        FROM events 
+        WHERE event_date < CURDATE() 
+        AND org_id = ? 
+        ORDER BY event_date DESC
     ");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $past_events_list = [];
     while ($row = $result->fetch_assoc()) {
         $past_events_list[] = $row;
     }
     $stmt->close();
-} else {
-    $past_events_list = [];
 }
 
-// Get recent events list filtered by org_id AND excluding deleted users
-if ($org_id !== null) {
+// Get recent events (latest 5)
+if ($org_id) {
     $stmt = $conn->prepare("
-        SELECT e.title, e.event_date 
-        FROM events e 
-        INNER JOIN users u ON e.org_id = u.ID 
-        WHERE e.org_id = ? 
-          AND u.status != 'deleted' 
-        ORDER BY e.event_date DESC 
+        SELECT title, event_date 
+        FROM events 
+        WHERE org_id = ? 
+        ORDER BY event_date DESC 
         LIMIT 5
     ");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $recent_events = [];
     while ($row = $result->fetch_assoc()) {
         $recent_events[] = $row;
     }
     $stmt->close();
-} else {
-    $recent_events = [];
 }
 
 $conn->close();
@@ -122,9 +96,8 @@ $conn->close();
 $title = "Unified SOEMO Dashboard";
 $style = "past.css";
 include '../includes/header.php';
+include '../includes/sidebar.php';
 ?>
-
-<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">
@@ -143,6 +116,7 @@ include '../includes/header.php';
   </a>
 </section>     
 
+<!-- Past Events Section -->
 <section class="events-upcoming">
   <div class="events-column">
     <h3>Past Event Dates</h3>
@@ -168,6 +142,8 @@ include '../includes/header.php';
 </section>
 
 </main>
+
+<!-- Scripts -->
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

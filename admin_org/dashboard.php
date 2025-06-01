@@ -40,8 +40,12 @@ if ($org_id !== null) {
 $sql_events = "
     SELECT COUNT(*) AS total_events 
     FROM events e
-    JOIN users u ON e.org_id = u.ID
-    WHERE e.org_id = ? AND e.event_date >= CURDATE() AND u.status != 'deleted'";
+    JOIN users u ON e.org_id = u.org_id
+    WHERE e.org_id = ? 
+      AND e.event_date >= CURDATE() 
+      AND u.status != 'deleted'
+      AND u.role = 'org_admin'
+      ";
 $stmt_events = $conn->prepare($sql_events);
 $stmt_events->bind_param("i", $org_id);
 $stmt_events->execute();
@@ -51,10 +55,15 @@ $stmt_events->close();
 
 // Get past events for this org where user who created event is not deleted
 $sql_past = "
-    SELECT COUNT(*) AS past_events 
+    SELECT COUNT(DISTINCT e.ID) AS past_events 
     FROM events e
-    JOIN users u ON e.org_id = u.ID
-    WHERE e.org_id = ? AND e.event_date < CURDATE() AND u.status != 'deleted'";
+    JOIN users u ON e.org_id = u.org_id
+    WHERE e.org_id = ? 
+      AND e.event_date < CURDATE() 
+      AND u.status != 'deleted'
+      AND u.role = 'org_admin'
+";
+
 $stmt_past = $conn->prepare($sql_past);
 $stmt_past->bind_param("i", $org_id);
 $stmt_past->execute();

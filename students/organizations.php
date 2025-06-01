@@ -45,14 +45,15 @@ include '../includes/navbar.php';
         <?php
         // Fetch organizations whose owners are NOT deleted
         $sql = "
-            SELECT organizations.*
-            FROM organizations
-            INNER JOIN users ON organizations.id = users.ID
-            WHERE users.status != 'deleted'
-            ORDER BY organizations.created_at ASC
-        ";
-        $result = $conn->query($sql);
+    SELECT DISTINCT o.id, o.name, o.description, o.image_path, o.created_at
+    FROM organizations o
+    INNER JOIN users u ON u.org_id = o.id
+    WHERE u.status != 'deleted'
+    ORDER BY o.created_at ASC
+";
 
+        $result = $conn->query($sql);
+        
         if ($result && $result->num_rows > 0):
             while ($row = $result->fetch_assoc()):
                 $name = htmlspecialchars($row['name']);
@@ -72,6 +73,7 @@ include '../includes/navbar.php';
         else:
             echo '<p style="color: white;">No organizations found.</p>';
         endif;
+
         ?>
 
         </div>

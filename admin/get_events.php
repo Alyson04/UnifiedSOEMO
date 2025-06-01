@@ -9,12 +9,12 @@ $perPage = 5; // events per page
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 
-// Get total count of events (for pagination)
+// Get total count of unique events (for pagination)
 $sqlCount = "
-    SELECT COUNT(*) as total
+    SELECT COUNT(DISTINCT e.id) AS total
     FROM events e
     INNER JOIN organizations o ON e.org_id = o.id
-    INNER JOIN users u ON o.id = u.ID
+    INNER JOIN users u ON o.id = u.org_id
     WHERE u.status != 'deleted'
 ";
 $countResult = $conn->query($sqlCount);
@@ -23,12 +23,12 @@ if ($countResult) {
     $total = $countResult->fetch_assoc()['total'] ?? 0;
 }
 
-// Fetch paginated events
+// Fetch paginated distinct events
 $sql = "
-    SELECT e.id, e.title, e.event_date, o.name AS org_name, e.created_at
+    SELECT DISTINCT e.id, e.title, e.event_date, o.name AS org_name, e.created_at
     FROM events e
     INNER JOIN organizations o ON e.org_id = o.id
-    INNER JOIN users u ON o.id = u.ID
+    INNER JOIN users u ON o.id = u.org_id
     WHERE u.status != 'deleted'
     ORDER BY e.created_at DESC
     LIMIT ? OFFSET ?

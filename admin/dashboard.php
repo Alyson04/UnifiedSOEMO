@@ -22,8 +22,10 @@ $total_organizations = $result_orgs->fetch_assoc()['total_organizations'];
 $sql_events = "
   SELECT COUNT(*) AS total_events 
   FROM events e
-  JOIN users u ON e.org_id = u.ID
-  WHERE e.event_date >= CURDATE() AND u.status != 'deleted'";
+  WHERE event_date >= CURRENT_DATE 
+             AND org_id IN (
+                 SELECT org_id FROM users WHERE status != 'deleted'
+             )";
 $result_events = $conn->query($sql_events);
 $total_events = $result_events->fetch_assoc()['total_events'];
 
@@ -31,8 +33,10 @@ $total_events = $result_events->fetch_assoc()['total_events'];
 $sql_past = "
   SELECT COUNT(*) AS past_events 
   FROM events e
-  JOIN users u ON e.org_id = u.ID
-  WHERE e.event_date < CURDATE() AND u.status != 'deleted'";
+  WHERE event_date < CURRENT_DATE 
+             AND org_id IN (
+                 SELECT org_id FROM users WHERE status != 'deleted'
+             )";
 $result_past = $conn->query($sql_past);
 $past_events = $result_past->fetch_assoc()['past_events'];
 

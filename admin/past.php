@@ -10,39 +10,50 @@ $result = $conn->query($sql);
 $total_users = $result->fetch_assoc()['total_users'];
 
 // Get total organizations (exclude those where the organization owner's account is deleted)
+// Assuming organization owner is a user with role 'org_admin' linked via org_id = organizations.id
 $sql_orgs = "
-    SELECT COUNT(*) AS total_organizations 
+    SELECT COUNT(DISTINCT o.id) AS total_organizations 
     FROM organizations o 
-    JOIN users u ON o.id = u.ID 
-    WHERE u.status != 'deleted'";
+    JOIN users u ON u.org_id = o.id 
+    WHERE u.status != 'deleted' AND u.role = 'org_admin'
+";
 $result_orgs = $conn->query($sql_orgs);
 $total_organizations = $result_orgs->fetch_assoc()['total_organizations'];
 
-// Get upcoming events (exclude events where the organizer's account is deleted)
+// Get upcoming events (exclude events where the organizer's account is deleted and not org_admin)
 $sql_events = "
-    SELECT COUNT(*) AS total_events 
+    SELECT COUNT(DISTINCT e.ID) AS total_events 
     FROM events e 
-    JOIN users u ON e.org_id = u.ID 
-    WHERE e.event_date >= CURDATE() AND u.status != 'deleted'";
+    JOIN users u ON u.org_id = e.org_id 
+    WHERE e.event_date >= CURDATE() 
+      AND u.status != 'deleted' 
+      AND u.role = 'org_admin'
+";
 $result_events = $conn->query($sql_events);
 $total_events = $result_events->fetch_assoc()['total_events'];
 
-// Get past events (exclude events by deleted users)
+// Get past events (exclude events by deleted users and non-org_admin)
 $sql_past = "
-    SELECT COUNT(*) AS past_events 
+    SELECT COUNT(DISTINCT e.ID) AS past_events 
     FROM events e 
-    JOIN users u ON e.org_id = u.ID 
-    WHERE e.event_date < CURDATE() AND u.status != 'deleted'";
+    JOIN users u ON u.org_id = e.org_id 
+    WHERE e.event_date < CURDATE() 
+      AND u.status != 'deleted' 
+      AND u.role = 'org_admin'
+";
 $result_past = $conn->query($sql_past);
 $past_events = $result_past->fetch_assoc()['past_events'];
 
-// Fetch past event details
+// Fetch past event details (same filters)
 $sql_past_events = "
     SELECT e.title, e.event_date 
     FROM events e 
-    JOIN users u ON e.org_id = u.ID 
-    WHERE e.event_date < CURDATE() AND u.status != 'deleted' 
-    ORDER BY e.event_date DESC";
+    JOIN users u ON u.org_id = e.org_id 
+    WHERE e.event_date < CURDATE() 
+      AND u.status != 'deleted' 
+      AND u.role = 'org_admin'
+    ORDER BY e.event_date DESC
+";
 $result_past_events = $conn->query($sql_past_events);
 
 $past_events_list = [];
@@ -50,14 +61,16 @@ while ($row = $result_past_events->fetch_assoc()) {
     $past_events_list[] = $row;
 }
 
-// Get recent events (still filtered by active users only)
+// Get recent events (still filtered by active org_admin users only)
 $sql_recent_events = "
     SELECT e.title, e.event_date 
     FROM events e 
-    JOIN users u ON e.org_id = u.ID 
+    JOIN users u ON u.org_id = e.org_id 
     WHERE u.status != 'deleted' 
+      AND u.role = 'org_admin'
     ORDER BY e.event_date DESC 
-    LIMIT 5";
+    LIMIT 5
+";
 $result_recent_events = $conn->query($sql_recent_events);
 
 $recent_events = [];
@@ -88,6 +101,8 @@ $style = "past.css";
 include '../includes/header.php';
 include '../includes/sidebar.php';
 ?>
+<!-- rest of your HTML unchanged -->
+
 
 <main class="main-content">
 <?php include '../includes/navbar.php'; ?>
