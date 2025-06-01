@@ -379,3 +379,12 @@ form input {
 .notification-list p:last-child {
   border-bottom: none;
 }
+
+.no-post {
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */
+  font-size: 20px;
+  color: #666;
+  font-weight: 600;
+}

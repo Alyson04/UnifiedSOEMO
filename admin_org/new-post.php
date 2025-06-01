@@ -116,7 +116,7 @@ include '../includes/sidebar.php';
             echo "</div>";
         }
     } else {
-        echo "<p>No posts available.</p>";
+        echo "<p class='no-post'>No posts available.</p>";
     }
     ?>
   </div>
