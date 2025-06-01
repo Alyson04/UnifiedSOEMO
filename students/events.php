@@ -19,7 +19,7 @@ if ($student_id) {
 
 $year = date('Y');
 $today = date('Y-m-d');
-$limit = 5;
+$limit = 3;
 
 // UPCOMING EVENTS PAGINATION
 $upage = isset($_GET['upage']) && is_numeric($_GET['upage']) ? (int)$_GET['upage'] : 1;
