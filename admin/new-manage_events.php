@@ -99,22 +99,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderEvents(events) {
-        if (events.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="4">No events found.</td></tr>';
-            return;
-        }
-        tableBody.innerHTML = '';
-        events.forEach(event => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${escapeHtml(event.title)}</td>
-                <td>${new Date(event.event_date).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}</td>
-                <td>${escapeHtml(event.org_name || 'N/A')}</td>
-                <td>${new Date(event.created_at).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
+    tableBody.innerHTML = '';
+
+    if (events.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4">No events found.</td></tr>';
+        return;
     }
+
+    events.forEach(event => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(event.title)}</td>
+            <td>${new Date(event.event_date).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}</td>
+            <td>${escapeHtml(event.org_name || 'N/A')}</td>
+            <td>${new Date(event.created_at).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    // Pad table with empty rows if fewer than 5
+    const minRows = 5;
+    const emptyRows = minRows - events.length;
+    for (let i = 0; i < emptyRows; i++) {
+        const emptyTr = document.createElement('tr');
+        emptyTr.innerHTML = `
+            <td colspan="4" style="height: 50px; visibility: hidden;">&nbsp;</td>
+        `;
+        tableBody.appendChild(emptyTr);
+    }
+}
+
 
     function renderPagination(total, perPage, current) {
         const totalPages = Math.ceil(total / perPage);

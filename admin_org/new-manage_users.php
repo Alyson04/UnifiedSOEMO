@@ -136,7 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add extra empty rows to maintain fixed height
     for (let i = users.length; i < minRows; i++) {
         const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="5" style="height: 50px;"></td>';
+        emptyRow.innerHTML = `
+            <td colspan="5" style="height: 50px; visibility: hidden;">&nbsp;</td>
+        `;
         tableBody.appendChild(emptyRow);
     }
 }

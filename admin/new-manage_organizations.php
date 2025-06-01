@@ -97,7 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const emptyRows = minRows - orgs.length;
     for (let i = 0; i < emptyRows; i++) {
         const emptyTr = document.createElement('tr');
-        emptyTr.innerHTML = '<td>&nbsp;</td><td></td><td></td>';
+        emptyTr.innerHTML = `
+            <td colspan="3" style="height: 50px; visibility: hidden;">&nbsp;</td>
+        `;
         tableBody.appendChild(emptyTr);
     }
 }

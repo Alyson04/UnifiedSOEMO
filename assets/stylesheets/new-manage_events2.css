@@ -240,7 +240,7 @@ table {
     color: #2A4365;
     min-width: 600px;
     table-layout: fixed; /* 👈 Add this line */
-    height: 370px;
+    height: 410px;
 }
 
 /* Table Header */
@@ -309,6 +309,11 @@ tbody tr td:last-child {
     border-top-right-radius: 16px;
     border-bottom-right-radius: 16px;
 }
+
+.event-table table tbody tr {
+    height: 50px; /* Fixed row height */
+}
+
 .notification-modal {
   position: absolute;
   top: 40px;

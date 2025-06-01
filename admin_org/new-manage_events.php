@@ -113,7 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fill in empty rows if events are fewer than the minimum
     for (let i = events.length; i < minRows; i++) {
         const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="3" style="height: 50px;"></td>';
+        emptyRow.innerHTML = `
+            <td colspan="3" style="height: 50px; visibility: hidden;">&nbsp;</td>
+        `;
         tableBody.appendChild(emptyRow);
     }
 }
