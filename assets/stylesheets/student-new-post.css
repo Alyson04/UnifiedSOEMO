@@ -195,3 +195,13 @@
 .notification-list p:last-child {
   border-bottom: none;
 }
+
+.no-post {
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */
+  height: 100vh;            /* full viewport height */
+  font-size: 20px;
+  color: #666;
+  font-weight: 600;
+}
