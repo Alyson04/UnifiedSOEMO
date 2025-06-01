@@ -119,7 +119,6 @@ include '../includes/header.php';
 /* Basic form elements */
 input[type="email"] {
   width: 100%;
-  padding: 8px;
   margin-top: 10px;
   box-sizing: border-box;
 }

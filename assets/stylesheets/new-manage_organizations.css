@@ -239,7 +239,8 @@ table {
     font-size: 0.95rem;
     color: #2A4365;
     min-width: 600px;
-  height: 360px;
+  height: 380px;
+  table-layout: fixed;
 }
 
 /* Table Header */
@@ -308,6 +309,27 @@ tbody tr td:last-child {
     border-top-right-radius: 16px;
     border-bottom-right-radius: 16px;
 }
+
+/* Set custom widths */
+.event-table th:nth-child(1),
+.event-table td:nth-child(1) {
+    width: 20%;
+}
+
+.event-table th:nth-child(2),
+.event-table td:nth-child(2) {
+    width: 65%; /* Make description wider */
+}
+
+.event-table th:nth-child(3),
+.event-table td:nth-child(3) {
+    width: 15%;
+}
+
+.event-table table tbody tr {
+    height: 50px; /* Fixed row height */
+}
+
 .notification-modal {
   position: absolute;
   top: 40px;

@@ -75,21 +75,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderOrganizations(orgs) {
-        if (orgs.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="3">No organizations found.</td></tr>';
-            return;
-        }
-        tableBody.innerHTML = '';
-        orgs.forEach(org => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${escapeHtml(org.name)}</td>
-                <td>${escapeHtml(org.description)}</td>
-                <td>${new Date(org.created_at).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
+    tableBody.innerHTML = '';
+
+    if (orgs.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="3">No organizations found.</td></tr>';
+        return;
     }
+
+    orgs.forEach(org => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${escapeHtml(org.name)}</td>
+            <td>${escapeHtml(org.description)}</td>
+            <td>${new Date(org.created_at).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    // Pad table with empty rows if fewer than 5
+    const minRows = 5;
+    const emptyRows = minRows - orgs.length;
+    for (let i = 0; i < emptyRows; i++) {
+        const emptyTr = document.createElement('tr');
+        emptyTr.innerHTML = '<td>&nbsp;</td><td></td><td></td>';
+        tableBody.appendChild(emptyTr);
+    }
+}
+
 
     function renderPagination(total, perPage, current) {
         const totalPages = Math.ceil(total / perPage);
@@ -118,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <style>
 .pagination-controls {
-    margin-top: 1em;
+    margin-top: .7em;
 }
 .pagination-controls button {
     padding: 5px 10px;
