@@ -7,17 +7,35 @@
 }
 
 body {
+    position: relative;
     display: flex;
-    justify-content: center; /* Centers the content horizontally */
-    align-items: center; /* Centers the content vertically */
+    justify-content: center;
+    align-items: center;
     height: 100vh;
-    background: #FFEDB7; 
-    background-image: url('../pictures/background_login.jpg'); 
+    background: #FFEDB7;
+    overflow: hidden;
+}
+
+/* Background image layer */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('../pictures/background_login.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 98%;
     background-blend-mode: normal;
+    opacity: 0.3; /* Default opacity */
+    z-index: 0;
 }
+
+/* Ensure content stays above the background */
+body > * {
+    position: relative;
+    z-index: 1;
+}
+
 
 /* Centering the Login Form */
 .login-wrapper {
@@ -85,19 +103,6 @@ body {
     outline: none;
 }
 
-/* Remember Me Styling */
-.remember-me {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.remember-me input {
-    width: 16px;
-    height: 16px;
-    margin-right: 5px;
-}
-
 /* Login Button Styling */
 .btn {
     width: 100%;
@@ -150,13 +155,6 @@ body {
     text-decoration: underline;
 }
 
-footer {
-    color: white;
-    text-align: center;
-    padding: 2px 5px;
-    margin-top: auto; /* Pushes footer to the bottom */
-}
-
 .google-btn {
     width: 100%;
     padding: 12px;
@@ -179,4 +177,47 @@ footer {
 
 .google-btn:hover {
     background-color: #C1351D;
+}
+
+@media only screen and (max-width: 600px){
+     body::before {
+        background-size: 98% 98%;
+        opacity: 0.5; /* Almost invisible on small screens */
+    }
+    .login-container{
+        width: 90%;
+    }
+    .title{
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+    .signup{
+        margin-bottom: 10px;
+    }
+    label{
+        font-size: 14px;
+    }
+    .input-field{
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+    .btn{
+        font-size: 12px;
+        padding: 10px;
+    }
+    .forgot-password{
+        margin-top: 5px;
+    }
+    .terms{
+        font-size: 10px;
+        margin-top: 10px;
+    }
+    .google-btn{
+        padding: 10px;
+        font-size: 12px;
+    }
+    .google-btn .google-icon{
+        height: 15px;
+        width: 15px;        
+    }
 }

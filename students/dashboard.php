@@ -64,6 +64,22 @@ if ($student_id) {
     </div>
 </div>
 <?php endif; ?>
+<!-- Hamburger Icon for Mobile -->
+<div class="hamburger" onclick="toggleSidebar()">
+    &#9776;
+</div>
+
+<!-- Sidebar for Mobile -->
+<div class="mobile-sidebar" id="mobileSidebar">
+    <ul class="sidebar-list">
+        <li><a href="#">Home</a></li>
+        <li><a href="organizations.php">Organizations</a></li>
+        <li><a href="new-post.php">Posts</a></li>
+        <li><a href="events.php">Events</a></li>
+        <li><a href="about_us.php">About Us</a></li>
+        <li><a href="../api/logout.php">Logout</a></li>
+    </ul>
+</div>
 
 <section class="welcome">
         <div class="text">

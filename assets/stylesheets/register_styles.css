@@ -8,19 +8,33 @@
 
 /* Main Layout */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #FFEDB7; 
-    background-image: url('../pictures/background_login.jpg'); 
+    background: #FFEDB7;
+    overflow: hidden;
+}
+
+/* Background image layer */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('../pictures/background_login.jpg');
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: 97%;
-    background-blend-mode: normal; 
+    background-size: 98%;
+    background-blend-mode: normal;
+    opacity: 0.3; /* Default opacity */
+    z-index: 0;
+}
+
+/* Ensure content stays above the background */
+body > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* Left Section - Signup Form */
@@ -154,22 +168,49 @@ label {
     text-decoration: underline;
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
-    .left-container {
-        padding: 30px;
-        width: 100%;
+@media only screen and (max-width: 600px){
+     body::before {
+        background-size: 98% 98%;
+        opacity: 0.5; /* Almost invisible on small screens */
     }
-
-    .title {
-        font-size: 1.8rem;
+    .left-container{
+        width: 90%;
     }
-
-    .input-field {
-        font-size: 15px;
+    .title{
+        font-size: 1.5rem;
+        margin-bottom: 10px;
     }
-
-    .btn {
-        font-size: 15px;
+    .subtitle{
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+    .signup{
+        margin-bottom: 10px;
+    }
+    label{
+        font-size: 14px;
+    }
+    .input-field{
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+    .btn{
+        font-size: 12px;
+        padding: 10px;
+    }
+    .forgot-password{
+        margin-top: 5px;
+    }
+    .terms{
+        font-size: 10px;
+        margin-top: 10px;
+    }
+    .google-btn{
+        padding: 10px;
+        font-size: 12px;
+    }
+    .google-btn .google-icon{
+        height: 15px;
+        width: 15px;        
     }
 }
