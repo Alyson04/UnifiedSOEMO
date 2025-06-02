@@ -26,8 +26,19 @@ $conn->close();
 $title = "Unified SOEMO Dashboard";
 $style = "new-manage_organizations.css"; // Reuse manage events style
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
+
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">
@@ -149,5 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </style>
 
 <script src="../assets/scripts/notif_script.js"></script>
-<script src="../assets/scripts/inactive.js"></script><script src="../assets/scripts/inactive.js"></script>
+<script src="../assets/scripts/inactive.js"></script>
+<script src="../assets/scripts/hamburger.js"></script>
 <?php include '../includes/footer.php'; ?>

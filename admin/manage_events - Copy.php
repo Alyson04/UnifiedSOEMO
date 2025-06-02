@@ -1,18 +1,14 @@
 <?php 
 require '../api/auth.php';
-checkUserRole('org_admin'); // Ensure only admins can access this page
+checkUserRole('admin'); // Ensure only admins can access this page
 
 require '../config/db_conn.php';
 
 $admin_id = $_SESSION['user_id'] ?? null;
-$org_id = $_SESSION['org_id'] ?? null;
 
 // Fetch all events
-$sql = "SELECT id, title, event_date, org_id, created_at FROM events WHERE org_id = ? ORDER BY created_at DESC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $org_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$sql = "SELECT id, title, event_date, org_id, created_at FROM events ORDER BY created_at DESC";
+$result = $conn->query($sql);
 
 $events = [];
 while ($row = $result->fetch_assoc()) {
@@ -88,5 +84,4 @@ include '../includes/navbar.php';
     </div>
 </div>
 <script src="../assets/scripts/notif_script.js"></script>
-<script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

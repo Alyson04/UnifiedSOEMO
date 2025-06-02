@@ -18,7 +18,7 @@ if (isset($_SESSION['user_id'])) {
     if ($result && $row = $result->fetch_assoc()) {
         $display_name = ucwords(strtolower($row['fullName']));
         $role = $row['role'];
-        $user_org_id = $row['org_id'] ?? null;  // renamed here
+        $user_org_id = $row['org_id'] ?? null;
         $role_label = $role === 'admin' ? 'Admin' : ($role === 'student' ? 'Student' : 'Org Admin');
 
         // For admin and student, check if profile picture exists
@@ -30,7 +30,7 @@ if (isset($_SESSION['user_id'])) {
         } elseif ($role === 'org_admin' && $user_org_id !== null) {
             // Fetch organization's profile picture filename
             $stmt_org = $conn->prepare("SELECT image_path FROM organizations WHERE id = ?");
-            $stmt_org->bind_param("i", $user_org_id);  // use renamed variable here
+            $stmt_org->bind_param("i", $user_org_id);
             $stmt_org->execute();
             $result_org = $stmt_org->get_result();
 
@@ -50,7 +50,6 @@ if (isset($_SESSION['user_id'])) {
 
 <!-- Unified Header -->
 <header class="top-bar <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'org_admin')) echo 'admin-navbar'; ?>">
-
     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
         <div class="logo">
             <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo">
@@ -77,10 +76,8 @@ if (isset($_SESSION['user_id'])) {
                 <strong><?= htmlspecialchars($display_name); ?></strong>
                 <span><?= htmlspecialchars($role_label); ?></span>
             </div>
-            <div class="dropdown-tray" id="profileDropdown" style="display: none;">
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
-                    <a href="../students/edit_profile.php">Edit Profile</a>
-                <?php endif; ?>
+            <!-- Profile Dropdown -->
+            <div class="dropdown-tray" id="profileDropdown">
                 <a href="../api/logout.php">Logout</a>
             </div>
         </div>

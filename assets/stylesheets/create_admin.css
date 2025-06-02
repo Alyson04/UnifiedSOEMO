@@ -184,6 +184,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   transition: box-shadow 0.3s ease;
 }
 
@@ -198,6 +199,7 @@ body {
   font-weight: 700;
   margin-bottom: 20px;
   text-align: center;
+  width: 100%;
 }
 
 /* Form body */
@@ -206,8 +208,10 @@ body {
   max-width: 400px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 14px;
   font-size: 1rem;
+  text-align: center;
 }
 
 /* Input Fields */
@@ -276,20 +280,269 @@ body {
 /* Form group layout */
 .form-group {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 12px;
   padding: 10px;
+  width: 100%;
+  text-align: center;
 }
 
 .form-group label {
-  min-width: 100px;
+  width: 100%;
   font-weight: 600;
   color: #2A4365;
   font-size: 0.95rem;
+  text-align: center;
 }
 
 .form-group input[type="text"],
-.form-group input[type="password"] {
-  flex: 1;
+.form-group input[type="password"],
+.form-group select {
   width: 100%;
+  text-align: center;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 2px solid #a3b2d1;
+  background-color: #eef4fb;
+  color: #2A4365;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-group input::placeholder {
+  text-align: center;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 25px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  margin-left: 20px;
+  max-width: 1200px;
+  padding: 20px;
+  background: #f4f7fa;
+  color: #2A4365;
+  border-radius: 28px;
+  box-shadow: 0 8px 25px rgba(42, 67, 101, 0.15);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Create Admin Form */
+.create-admin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.btn-create,
+.btn-cancel,
+.btn.btn-success {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin: 5px 0;
+}
+
+/* Hamburger Menu - Base Style */
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+}
+
+.hamburger-menu span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #1B2A47;
+  margin: 5px 0;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 600px) {
+  /* Show hamburger menu */
+  .hamburger-menu {
+    display: block;
+  }
+
+  /* Hamburger Menu Animation */
+  .hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+    background-color: #ffffff;
+  }
+
+  .hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+    background-color: #ffffff;
+  }
+
+  /* Sidebar Mobile */
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    height: 100vh;
+    z-index: 999;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.active {
+    transform: translateX(250px);
+  }
+
+  /* Main Content */
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+    padding-top: 60px;
+  }
+
+  /* Content Area */
+  .content {
+    margin-left: 0;
+    padding: 15px;
+  }
+
+  /* Create Admin Form */
+  .create-admin-form {
+    padding: 10px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; /* Better for mobile touch */
+  }
+
+  .btn-create {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+  }
+
+  /* Profile Section */
+  .profile {
+    padding: 2px;
+    gap: 8px;
+  }
+
+  .profile img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .profile-info {
+    display: none;
+  }
+
+  /* Form Error Message */
+  .floating-alert {
+    right: 50%;
+    transform: translateX(50%);
+    width: 90%;
+    max-width: none;
+    font-size: 14px;
+    top: 70px;
+  }
+
+  .card {
+    padding: 15px;
+    width: calc(100% - 20px);
+    margin: 10px;
+    text-align: center;
+  }
+
+  .card-header {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .card-body {
+    align-items: center;
+    text-align: center;
+  }
+
+  .form-group {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form-group label {
+    width: 100%;
+    text-align: center;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group input[type="text"],
+  .form-group input[type="password"] {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form-group input::placeholder {
+    text-align: center;
+  }
+
+  .btn-create,
+  .btn-cancel,
+  .btn.btn-success {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+  }
+
+  .create-admin-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 }

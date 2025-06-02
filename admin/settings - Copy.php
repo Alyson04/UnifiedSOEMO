@@ -1,13 +1,13 @@
 <?php 
 require '../api/auth.php';
-checkUserRole('org_admin'); // Only allow admins
+checkUserRole('admin'); // Only allow admins
 
 require '../config/db_conn.php';
 
 $admin_id = $_SESSION['user_id'] ?? null;
 
 if (!$admin_id) {
-    header("Location: ../login.php");
+    header("Location: ../public/login.php");
     exit();
 }
 

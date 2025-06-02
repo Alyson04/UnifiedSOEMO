@@ -24,8 +24,19 @@ if ($admin_id) {
 $title = "Unified SOEMO Dashboard";
 $style = "new-manage_user.css";
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
+
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">
@@ -140,10 +151,10 @@ document.addEventListener('DOMContentLoaded', function () {
     users.forEach(user => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${escapeHtml(user.fullName)}</td>
-            <td>${escapeHtml(user.email)}</td>
-            <td>${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}</td>
-            <td>${escapeHtml(user.created_at)}</td>
+            <td title="${escapeHtml(user.fullName)}">${escapeHtml(user.fullName)}</td>
+            <td title="${escapeHtml(user.email)}">${escapeHtml(user.email)}</td>
+            <td title="${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}">${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}</td>
+            <td title="${escapeHtml(user.created_at)}">${escapeHtml(user.created_at)}</td>
         `;
         tableBody.appendChild(tr);
     });
@@ -256,6 +267,8 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 </style>
 
+<script src="../assets/scripts/profile_dropdown.js"></script>
+<script src="../assets/scripts/sidebar.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

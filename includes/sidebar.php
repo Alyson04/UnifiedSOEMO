@@ -4,11 +4,17 @@ $user_role = $_SESSION['role'] ?? null;
 ?>
 
 <aside class="sidebar">
+  <button class="hamburger-menu" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
   <div class="logo-container">
-  <a href="dashboard.php">
-    <img src="../fromOtherBranches/pics/logo.png" alt="Logo" class="logo"/>
-  </a>
+    <a href="dashboard.php">
+      <img src="../fromOtherBranches/pics/logo.png" alt="Logo" class="logo"/>
+    </a>
   </div>
+
   <nav class="nav-menu">
     <a href="dashboard.php" class="nav-item <?= $current_page === 'dashboard.php' || $current_page === 'Active_org.php' || $current_page === 'past.php' || $current_page === 'upcoming.php'  ? 'active' : '' ?>">
       <img src="../fromOtherBranches/pics/dashboard-icon.png" alt="Dashboard Icon" />

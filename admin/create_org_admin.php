@@ -47,8 +47,19 @@ $conn->close();
 $title = "Unified SOEMO Dashboard";
 $style = "create_orgadmin.css";
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
+
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">

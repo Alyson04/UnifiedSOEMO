@@ -1,16 +1,12 @@
 <?php 
 require '../config/db_conn.php';
 require '../api/auth.php';
-checkUserRole('org_admin'); // Only allow admins
+checkUserRole('admin'); // Only allow admins
 
 $admin_id = $_SESSION['user_id'] ?? null;
-$org_id = $_SESSION['org_id'] ?? null;
 
-$sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role = 'student' AND org_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $org_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$sql = "SELECT id, fullName, email, is_approved, created_at FROM users WHERE role = 'student' ORDER BY created_at ASC";
+$result = $conn->query($sql);
 // Fetch admin's full name from database
 if ($admin_id) {
     $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
@@ -43,7 +39,6 @@ include '../includes/navbar.php';
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
                     <th>Status</th>
@@ -54,7 +49,6 @@ include '../includes/navbar.php';
             <tbody>
                 <?php while ($user = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['id']); ?></td>
                         <td><?= htmlspecialchars($user['fullName']); ?></td>
                         <td><?= htmlspecialchars($user['email']); ?></td>
                         <td>
@@ -97,5 +91,4 @@ include '../includes/navbar.php';
     </div>
 </div>
 <script src="../assets/scripts/notif_script.js"></script>
-<script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

@@ -15,11 +15,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="../assets/stylesheets/footer_styles.css">
     <?php endif; ?>
 
-
     <?php if ($currentPage == 'new-post.php'): ?>
     <link rel="stylesheet" href="../assets/stylesheets/modals_styles.css">
     <?php endif; ?>
     
+    <script src="../assets/scripts/admin_org_shared.js" defer></script>
 </head>
 <body>
     <?php if ($currentPage !== 'login.php' && $currentPage !== 'register.php'): ?>

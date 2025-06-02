@@ -38,15 +38,15 @@ include '../includes/sidebar.php';
     <h2 class="page-title">MANAGE USERS</h2>
 
     <!-- Status Filter -->
-    <form id="statusFilterForm" class="status-filter-form">
+    <div class="filter-section">
         <label for="status_filter">Filter</label>
-        <select name="status" id="status_filter">
+        <select name="status" id="status_filter" class="filter-select">
             <option value="">All</option>
             <option value="approved">Approved</option>
             <option value="rejected">Declined</option>
             <option value="under review">Under Review</option>
         </select>
-    </form>
+    </div>
 
     <!-- Users Table -->
     <div class="user-table">
@@ -64,10 +64,10 @@ include '../includes/sidebar.php';
                 <!-- Data will load here via AJAX -->
             </tbody>
         </table>
-
     </div>
-        <!-- Pagination -->
-        <div id="paginationControls" class="pagination-controls"></div>
+
+    <!-- Pagination -->
+    <div id="paginationControls" class="pagination-controls"></div>
 </div>
 
 <script>
@@ -91,58 +91,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderUsers(users) {
-    const minRows = 5; // Number of rows to maintain consistent height
-    tableBody.innerHTML = '';
+        const minRows = 5; // Number of rows to maintain consistent height
+        tableBody.innerHTML = '';
 
-    if (users.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5">No users found for this organization.</td></tr>';
-        // Add empty rows to preserve height
-        for (let i = 1; i < minRows; i++) {
+        if (users.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5">No users found for this organization.</td></tr>';
+            // Add empty rows to preserve height
+            for (let i = 1; i < minRows; i++) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = '<td colspan="5" style="height: 50px;"></td>';
+                tableBody.appendChild(emptyRow);
+            }
+            return;
+        }
+
+        users.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${escapeHtml(user.fullName)}</td>
+                <td>${escapeHtml(user.email)}</td>
+                <td class="status-cell ${user.application_status || 'pending'}">${capitalizeFirstLetter(user.application_status) || 'Pending'}</td>
+                <td>${escapeHtml(user.applied_at)}</td>
+                <td class="action-cell">
+                    ${['approved', 'rejected'].includes(user.application_status) ? `
+                        <div class="action-status ${user.application_status}">
+                            <span class="status-icon"></span>
+                            ${capitalizeFirstLetter(user.application_status)}
+                        </div>
+                    ` : `
+                        <div class="action-buttons">
+                            <button type="button" class="btn-accept" onclick="handleAction('${user.id}', '${user.org_id}', 'accept')">
+                                <span class="btn-icon">✓</span>
+                                Accept
+                            </button>
+                            <button type="button" class="btn-decline" onclick="handleAction('${user.id}', '${user.org_id}', 'decline')">
+                                <span class="btn-icon">✕</span>
+                                Decline
+                            </button>
+                        </div>
+                    `}
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        // Add extra empty rows to maintain fixed height
+        for (let i = users.length; i < minRows; i++) {
             const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = '<td colspan="5" style="height: 50px;"></td>';
+            emptyRow.innerHTML = `
+                <td colspan="5" style="height: 50px; visibility: hidden;">&nbsp;</td>
+            `;
             tableBody.appendChild(emptyRow);
         }
-        return;
     }
-
-    users.forEach(user => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${escapeHtml(user.fullName)}</td>
-            <td>${escapeHtml(user.email)}</td>
-            <td>${capitalizeFirstLetter(user.application_status) || 'Pending'}</td>
-            <td>${escapeHtml(user.applied_at)}</td>
-            <td>
-                ${['approved', 'rejected'].includes(user.application_status) ? `
-                    <button disabled>Accept</button>
-                    <button disabled>Decline</button>
-                ` : `
-                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="user_id" value="${user.id}">
-                        <input type="hidden" name="org_id" value="${user.org_id}">
-                        <button type="submit" name="action" value="accept">Accept</button>
-                    </form>
-                    <form action="../api/process_application.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="user_id" value="${user.id}">
-                        <input type="hidden" name="org_id" value="${user.org_id}">
-                        <button type="submit" name="action" value="decline">Decline</button>
-                    </form>
-                `}
-            </td>
-        `;
-        tableBody.appendChild(tr);
-    });
-
-    // Add extra empty rows to maintain fixed height
-    for (let i = users.length; i < minRows; i++) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = `
-            <td colspan="5" style="height: 50px; visibility: hidden;">&nbsp;</td>
-        `;
-        tableBody.appendChild(emptyRow);
-    }
-}
-
 
     function renderPagination(total, perPage, current) {
         const totalPages = Math.ceil(total / perPage);
@@ -172,28 +173,376 @@ document.addEventListener('DOMContentLoaded', () => {
     statusFilter.addEventListener('change', () => fetchUsers());
 
     fetchUsers();
+
+    // Handle form submissions
+    document.addEventListener('submit', async (e) => {
+        if (e.target.classList.contains('action-form')) {
+            e.preventDefault();
+            
+            if (!confirm('Are you sure you want to perform this action?')) {
+                return;
+            }
+
+            try {
+                const form = e.target;
+                const formData = new FormData(form);
+                
+                const response = await fetch('../api/process_application.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Show success message
+                    const action = formData.get('action');
+                    const message = `User has been ${action}ed successfully`;
+                    showSuccessMessage(message);
+                    
+                    // Refresh the table
+                    fetchUsers();
+                } else {
+                    throw new Error('Failed to process action');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to process action. Please try again.');
+            }
+        }
+    });
+
+    function showSuccessMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'success-message';
+        messageDiv.textContent = message;
+        document.body.appendChild(messageDiv);
+
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            setTimeout(() => messageDiv.remove(), 300);
+        }, 3000);
+    }
+
+    // Add the handleAction function
+    function handleAction(userId, orgId, action) {
+        if (!confirm(`Are you sure you want to ${action} this user?`)) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('user_id', userId);
+        formData.append('org_id', orgId);
+        formData.append('action', action);
+
+        fetch('../api/process_application.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.text();
+        })
+        .then(() => {
+            showSuccessMessage(`User has been ${action}ed successfully`);
+            fetchUsers(); // Refresh the table
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to process action. Please try again.');
+        });
+    }
 });
 </script>
 
 <style>
-.pagination-controls {
-    margin-top: 1em;
+/* Content Styles */
+.content {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.pagination-controls button {
-    padding: 5px 10px;
-    margin: 0 3px;
-    border: none;
-    background: #ddd;
+
+.page-title {
+    color: #1B2A47;
+    font-size: 24px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Filter Section */
+.filter-section {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-section label {
+    font-weight: 500;
+    color: #1B2A47;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #1B2A47;
+    font-size: 14px;
     cursor: pointer;
-    border-radius: 3px;
 }
-.pagination-controls button.active {
-    background: #333;
-    color: #fff;
+
+/* Table Styles */
+.user-table {
+    overflow-x: auto;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.status-filter-form{
+
+.user-table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.user-table th {
+    background: #1B2A47;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 500;
+}
+
+.user-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.user-table tr:hover td {
+    background-color: #f8f9fa;
+}
+
+/* Status Cell */
+.status-cell {
+    font-weight: 500;
+    position: relative;
+    padding-left: 24px !important;
+}
+
+.status-cell::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-cell.approved {
+    color: #28a745;
+}
+
+.status-cell.approved::before {
+    background-color: #28a745;
+}
+
+.status-cell.rejected {
+    color: #dc3545;
+}
+
+.status-cell.rejected::before {
+    background-color: #dc3545;
+}
+
+.status-cell.pending {
+    color: #ffc107;
+}
+
+.status-cell.pending::before {
+    background-color: #ffc107;
+}
+
+/* Action Cell */
+.action-cell {
+    padding: 8px !important;
+    text-align: center;
+    min-width: 200px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-accept,
+.btn-decline {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    min-width: 90px;
+    justify-content: center;
+}
+
+.btn-icon {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.btn-accept {
+    background-color: #28a745;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+}
+
+.btn-accept:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3);
+}
+
+.btn-decline {
+    background-color: #dc3545;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.btn-decline:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(220, 53, 69, 0.3);
+}
+
+.action-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.action-status.approved {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.action-status.rejected {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.status-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.approved .status-icon {
+    background-color: #28a745;
+}
+
+.rejected .status-icon {
+    background-color: #dc3545;
+}
+
+/* Pagination Controls */
+.pagination-controls {
     margin-top: 20px;
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagination-controls button {
+    padding: 8px 12px;
+    border: none;
+    background: #1B2A47;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.pagination-controls button:hover {
+    background: #2c3e50;
+}
+
+.pagination-controls button.active {
+    background: #3498db;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .content {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .user-table {
+        margin: 10px 0;
+    }
+
+    .user-table th,
+    .user-table td {
+        padding: 10px;
+    }
+
+    .btn-accept,
+    .btn-decline {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Action Form Styles */
+.action-form {
+    display: inline-flex;
+    gap: 8px;
+}
+
+/* Success Message Styles */
+.success-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.success-message::before {
+    content: '✓';
+    font-weight: bold;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 </style>
 

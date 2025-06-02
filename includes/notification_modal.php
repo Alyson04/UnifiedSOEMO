@@ -49,6 +49,33 @@ $stmt->close();
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* Add mobile styles */
+@media screen and (max-width: 600px) {
+  .notification-modal {
+    width: 200px;
+    max-height: 200px;
+    top: 35px;
+    right: -10px;
+  }
+
+  .modal-header {
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+
+  .modal-body {
+    padding: 8px;
+    max-height: 150px;
+  }
+
+  .notification-item {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+    border-radius: 8px;
+  }
+}
+
 .modal-header {
   padding: 12px 16px;
   background-color: #2A4365;
