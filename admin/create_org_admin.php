@@ -253,29 +253,9 @@ function submitAllForms() {
 }
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarOverlay = document.querySelector('.sidebar-overlay');
-
-    function toggleMenu() {
-        hamburgerMenu.classList.toggle('active');
-        sidebar.classList.toggle('active');
-        sidebarOverlay.classList.toggle('active');
-    }
-
-    hamburgerMenu.addEventListener('click', toggleMenu);
-    sidebarOverlay.addEventListener('click', toggleMenu);
-});
-</script>
 
 <script src="../assets/scripts/createorg_script.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
+<script src="../assets/scripts/hamburger.js"></script>
 <?php include '../includes/footer.php'; ?>
-
-</main>
-</div>
-</body>
-</html>
