@@ -24,11 +24,25 @@ if ($admin_id) {
 
 $conn->close();
 
-$title = "Unified SOEMO Dashboard";
-$style = "new-manage_user.css";
+$title = "Manage Users";
+$style = "manage_users.css";
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
+
+<!-- Add shared CSS for admin_org section -->
+<link rel="stylesheet" href="../assets/stylesheets/admin_org_shared.css">
+
+<!-- Hamburger Menu Button -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">
@@ -544,8 +558,233 @@ document.addEventListener('DOMContentLoaded', () => {
         opacity: 1;
     }
 }
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 1200px) {
+    .content {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .main-content {
+        padding: 15px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .user-table {
+        overflow-x: auto;
+        margin: 10px 0;
+        padding: 10px;
+    }
+
+    .user-table table {
+        min-width: 600px;
+    }
+
+    .user-table th,
+    .user-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .filter-select {
+        width: 100%;
+        max-width: none;
+    }
+
+    .action-cell {
+        min-width: 160px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-accept,
+    .btn-decline {
+        width: 100%;
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .pagination-controls {
+        gap: 5px;
+    }
+
+    .pagination-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+        min-width: 35px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .content {
+        margin: 10px;
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    .page-title {
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .filter-section {
+        margin: 15px 0;
+    }
+
+    .filter-section label {
+        font-size: 14px;
+    }
+
+    .filter-select {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .user-table {
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+    .pagination-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .pagination-btn {
+        padding: 5px 8px;
+        font-size: 12px;
+        min-width: 30px;
+    }
+
+    .success-message {
+        padding: 10px 15px;
+        font-size: 13px;
+        right: 10px;
+    }
+}
+
+/* Hamburger Menu and Sidebar for Mobile */
+@media screen and (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1000;
+        background: none;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .hamburger-menu span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #1B2A47;
+        margin: 5px 0;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger-menu.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger-menu.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger-menu.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -250px;
+        top: 0;
+        height: 100vh;
+        transition: transform 0.3s ease;
+        z-index: 999;
+    }
+
+    .sidebar.active {
+        transform: translateX(250px);
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding-top: 60px;
+    }
+}
 </style>
 
+<script>
+// Add mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger-menu');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    const mainContent = document.querySelector('.main-content');
+
+    if (hamburger && sidebar && overlay) {
+        hamburger.addEventListener('click', function() {
+            this.classList.toggle('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            sidebar.classList.remove('active');
+            this.classList.remove('active');
+        });
+
+        // Close sidebar when clicking outside
+        mainContent.addEventListener('click', function() {
+            if (sidebar.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    }
+});
+</script>
+
+<!-- Add shared JavaScript for admin_org section -->
+<script src="../assets/scripts/admin_org_shared.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

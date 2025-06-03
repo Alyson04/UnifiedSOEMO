@@ -93,11 +93,25 @@ if ($org_id) {
 
 $conn->close();
 
-$title = "Unified SOEMO Dashboard";
-$style = "past.css";
+$title = "Past Events";
+$style = "past_events.css";
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
+
+<!-- Add shared CSS for admin_org section -->
+<link rel="stylesheet" href="../assets/stylesheets/admin_org_shared.css">
+
+<!-- Hamburger Menu Button -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">
@@ -143,7 +157,8 @@ include '../includes/sidebar.php';
 
 </main>
 
-<!-- Scripts -->
+<!-- Add shared JavaScript for admin_org section -->
+<script src="../assets/scripts/admin_org_shared.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

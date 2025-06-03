@@ -33,11 +33,25 @@ if (!$admin_id) {
   exit();
 }
 
-$title = "Unified SOEMO Dashboard";
-$style = "new-post.css";
+$title = "Create Post";
+$style = "new_post.css";
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
+
+<!-- Add shared CSS for admin_org section -->
+<link rel="stylesheet" href="../assets/stylesheets/admin_org_shared.css">
+
+<!-- Hamburger Menu Button -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">
@@ -156,6 +170,10 @@ include '../includes/sidebar.php';
 }
 </style>
 
+<!-- Add shared JavaScript for admin_org section -->
+<script src="../assets/scripts/admin_org_shared.js"></script>
+<script src="../assets/scripts/notif_script.js"></script>
+<script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>
 
 <script>
@@ -251,5 +269,3 @@ textarea.addEventListener('input', function () {
   }
 });
 </script>
-<script src="../assets/scripts/notif_script.js"></script>
-<script src="../assets/scripts/inactive.js"></script>
