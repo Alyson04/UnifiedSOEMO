@@ -24,4 +24,21 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 <body>
     <?php if ($currentPage !== 'login.php' && $currentPage !== 'register.php'): ?>
         <div class="page-container">
+            <!-- Mobile Header -->
+            <div class="top-bar">
+                <div class="logo">
+                    <h1>UNIFIED SOEMO</h1>
+                    <p>DISCOVER, JOIN, ENGAGE</p>
+                </div>
+                <div class="top-right">
+                    <img src="../assets/images/bell.png" alt="Notifications" class="bell">
+                    <div class="profile">
+                        <img src="../assets/images/default_profile.png" alt="Profile">
+                        <div class="profile-info">
+                            <strong>Admin</strong>
+                            <span>Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
     <?php endif; ?>
