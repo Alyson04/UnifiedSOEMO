@@ -83,7 +83,7 @@ body {
 .nav-item img {
     width: 22px;
     height: 22px;
-    margin-right: 12px;
+    margin-right: 10px;
     filter: brightness(1.2);
 }
 
@@ -497,24 +497,16 @@ textarea.card-input {
         height: 20px;
     }
 
-    .nav-item {
-        padding: 12px 15px;
-        font-size: 14px;
-    }
 
     .nav-item img {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
 
     .logo-container {
         margin-bottom: 30px;
     }
 
-    .logo {
-        width: 100px;
-        height: 100px;
-    }
 
     .outer-box {
         margin: 10px;
@@ -661,7 +653,7 @@ textarea.card-input {
 
     .hamburger-menu.active span:nth-child(1) {
         transform: rotate(45deg) translate(5px, 5px);
-        background-color: #1B2A47;
+        background-color: #ffffff;
     }
 
     .hamburger-menu.active span:nth-child(2) {
@@ -670,7 +662,7 @@ textarea.card-input {
 
     .hamburger-menu.active span:nth-child(3) {
         transform: rotate(-45deg) translate(7px, -7px);
-        background-color: #1B2A47;
+        background-color: #ffffff;
     }
 
     .main-content {
@@ -680,18 +672,11 @@ textarea.card-input {
         padding-top: 60px;
     }
 
-    .logo {
-        width: 80px;
-        height: 80px;
-    }
+    
 
-    .nav-item {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
 
     .nav-item img {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
 } 
