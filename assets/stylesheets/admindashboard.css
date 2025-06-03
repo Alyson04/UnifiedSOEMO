@@ -1024,7 +1024,11 @@
       }
 
       /* Mobile nav items */
-      
+      .nav-item {
+        padding: 12px 15px;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
 
       .nav-item img {
         width: 20px;
@@ -1038,8 +1042,8 @@
       }
 
       .logo {
-        width: 120px;
-        height: 120px;
+        width: 80px;
+        height: 80px;
       }
     }
 
