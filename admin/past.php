@@ -99,13 +99,30 @@ $conn->close();
 $title = "Unified SOEMO Dashboard";
 $style = "past.css";
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
-<!-- rest of your HTML unchanged -->
 
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <main class="main-content">
 <?php include '../includes/navbar.php'; ?>
+
+<?php if (!empty($_SESSION['error'])): ?>
+    <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
+    <?php unset($_SESSION['error']); ?>
+<?php elseif (!empty($_SESSION['success'])): ?>
+    <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
 
 <section class="stats">
   <a href="dashboard.php" class="card stat-card">
@@ -127,7 +144,7 @@ include '../includes/sidebar.php';
             <div class="event-item"><?= date("M d, Y", strtotime($event['event_date'])) ?></div>
         <?php endforeach; ?>
     <?php else : ?>
-        <div>No past events found.</div>
+        <div class="no-events">No past events found.</div>
     <?php endif; ?>
   </div>
 
@@ -138,12 +155,49 @@ include '../includes/sidebar.php';
             <div class="event-item"><?= htmlspecialchars($event['title']) ?></div>
         <?php endforeach; ?>
     <?php else : ?>
-        <div>No past events found.</div>
+        <div class="no-events">No past events found.</div>
     <?php endif; ?>
   </div>
 </section>
 
 </main>
+
+<style>
+  .session-alert {
+    position: fixed;
+    top: 20px;
+    left: 55%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 500;
+    max-width: 80%;
+    text-align: center;
+    animation: fadeInSlideDown 0.4s ease-in-out;
+  }
+
+  .session-alert.error {
+    background-color: #f44336;
+  }
+
+  @keyframes fadeInSlideDown {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -20px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+</style>
+
+<script src="../assets/scripts/profile_dropdown.js"></script>
+<script src="../assets/scripts/sidebar.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

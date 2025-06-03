@@ -7,13 +7,14 @@ $profile_img = '../assets/uploads_pfp/profile.png'; // Default profile pic
 // Check if hamburger menu has already been rendered
 if (!defined('HAMBURGER_RENDERED')):
     define('HAMBURGER_RENDERED', true);
-?>
- <!-- Add Mobile Sidebar CSS, Font Awesome and Sidebar JavaScript -->
-<link rel="stylesheet" href="../assets/stylesheets/mobile_sidebar.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="../assets/js/sidebar.js" defer></script>
+    ?>
+    <!-- Add Mobile Sidebar CSS, Font Awesome and Sidebar JavaScript -->
+    <link rel="stylesheet" href="../assets/stylesheets/mobile_sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../assets/js/sidebar.js" defer></script>
+    <?php
+endif;
 
-<?php
 // If user is logged in
 if (isset($_SESSION['user_id'])) {
     include '../config/db_conn.php';
@@ -56,42 +57,40 @@ if (isset($_SESSION['user_id'])) {
     }
     $stmt->close();
 }
-?>
 
-<!-- Mobile Menu Button -->
-<button class="hamburger" onclick="toggleSidebar()" type="button" aria-label="Menu">
-    <i class="fas fa-bars"></i>
-</button>
+// Show mobile menu and sidebar only for students
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
+    <!-- Mobile Menu Button -->
+    <button class="hamburger" onclick="toggleSidebar()" type="button" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+    </button>
 
-<!-- Mobile Sidebar -->
-<div class="mobile-sidebar" id="mobileSidebar">
-    <div class="sidebar-close" onclick="toggleSidebar()">
-        <i class="fas fa-times"></i>
-    </div>
-    <div class="sidebar-profile">
-        <img src="<?= htmlspecialchars($profile_img); ?>" alt="profile picture" />
-        <div class="sidebar-profile-info">
-            <strong><?= htmlspecialchars($display_name); ?></strong>
-            <span><?= htmlspecialchars($role_label); ?></span>
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-close" onclick="toggleSidebar()">
+            <i class="fas fa-times"></i>
         </div>
-    </div>
-    <ul class="sidebar-list">
-        <li><a href="dashboard.php">HOME</a></li>
-        <li><a href="organizations.php">ORGANIZATIONS</a></li>
-        <li><a href="new-post.php">POSTS</a></li>
-        <li><a href="events.php">EVENTS</a></li>
-        <li><a href="about_us.php">ABOUT US</a></li>
-        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
+        <div class="sidebar-profile">
+            <img src="<?= htmlspecialchars($profile_img); ?>" alt="profile picture" />
+            <div class="sidebar-profile-info">
+                <strong><?= htmlspecialchars($display_name); ?></strong>
+                <span><?= htmlspecialchars($role_label); ?></span>
+            </div>
+        </div>
+        <ul class="sidebar-list">
+            <li><a href="dashboard.php">HOME</a></li>
+            <li><a href="organizations.php">ORGANIZATIONS</a></li>
+            <li><a href="new-post.php">POSTS</a></li>
+            <li><a href="events.php">EVENTS</a></li>
+            <li><a href="about_us.php">ABOUT US</a></li>
             <li><a href="../students/edit_profile.php">Edit Profile</a></li>
-        <?php endif; ?>
-        <li><a href="../api/logout.php">Logout</a></li>
-    </ul>
-</div>
+            <li><a href="../api/logout.php">Logout</a></li>
+        </ul>
+    </div>
 <?php endif; ?>
 
 <!-- Unified Header -->
 <header class="top-bar <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'org_admin')) echo 'admin-navbar'; ?>">
-
     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
         <div class="logo">
             <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo">

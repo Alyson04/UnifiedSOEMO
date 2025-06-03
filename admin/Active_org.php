@@ -51,14 +51,21 @@ if ($admin_id) {
 $conn->close();
     
 $title = "Unified SOEMO Dashboard";
-$style = "Active_org.css";
+$style = "active_org.css";
 include '../includes/header.php';
 ?>
 
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
 
-<?php
-include '../includes/sidebar.php';
-?>
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
   <!-- Main Panel -->
 <main class="main-content">
@@ -125,5 +132,6 @@ include '../includes/navbar.php';
   </main>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
+<script src="../assets/scripts/hamburger.js"></script>
 <?php include '../includes/footer.php'; ?>
 

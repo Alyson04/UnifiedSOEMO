@@ -61,9 +61,19 @@ if ($admin_id) {
 $conn->close();
     
 $title = "Unified SOEMO Dashboard";
-$style = "new-settings.css";
+$style = "new_settings.css";
 include '../includes/header.php';
 ?>
+
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
 
 <?php include '../includes/sidebar.php'; ?>
 
@@ -142,22 +152,65 @@ include '../includes/header.php';
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to handle form elements
   function elems(field) {
     return {
       display: document.getElementById('display-' + field),
       input: document.getElementById('input-' + field),
-      editText: document.querySelector(`.card-row[data-field="${field}"] .edit-text`),
+            editText: document.querySelector(`.card-row[data-field="${field}"] .edit-text`)
+        };
+    }
+
+    // Function to start editing a field
+    window.startEdit = function(field) {
+        const elements = elems(field);
+        if (!elements.display || !elements.input || !elements.editText) return;
+
+        // Hide display value and edit button, show input
+        elements.display.classList.add('d-none');
+        elements.input.classList.remove('d-none');
+        elements.editText.classList.add('d-none');
+
+        // Set input value to current display value
+        if (elements.input.tagName.toLowerCase() === 'textarea') {
+            elements.input.value = elements.display.textContent.trim();
+            // Auto-adjust textarea height
+            elements.input.style.height = 'auto';
+            elements.input.style.height = elements.input.scrollHeight + 'px';
+        } else {
+            elements.input.value = elements.display.textContent.trim();
+        }
+
+        // Focus the input
+        elements.input.focus();
     };
-  }
 
-  function startEdit(field) {
-    const { display, input, editText } = elems(field);
-    display.classList.add('d-none');
-    input.classList.remove('d-none');
-    editText.classList.add('d-none');
-    input.focus();
-  }
+    // Handle file upload preview
+    const logoUpload = document.getElementById('logo-upload');
+    const previewImage = document.querySelector('.upload-label img');
 
+    if (logoUpload && previewImage) {
+        logoUpload.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+
+    // Auto-resize textareas on input
+    document.querySelectorAll('textarea.card-input').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    });
+
+    // Handle alert dismissal
   const alertBox = document.querySelector('.session-alert');
     if (alertBox) {
         setTimeout(() => {
@@ -166,6 +219,18 @@ include '../includes/header.php';
             setTimeout(() => alertBox.remove(), 500);
         }, 4000);
     }
+
+    // Make edit text spans keyboard accessible
+    document.querySelectorAll('.edit-text').forEach(span => {
+        span.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const field = this.closest('.card-row').dataset.field;
+                startEdit(field);
+            }
+        });
+    });
+});
 </script>
 <style>
   .d-none { display: none; }
@@ -245,4 +310,5 @@ include '../includes/header.php';
 
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
+<script src="../assets/scripts/hamburger.js"></script>
 <?php include '../includes/footer.php'; ?>

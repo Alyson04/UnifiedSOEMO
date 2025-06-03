@@ -107,6 +107,16 @@ $style = "admindashboard.css";
 include '../includes/header.php';
 ?>
 
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
 <?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
@@ -137,15 +147,15 @@ include '../includes/header.php';
 </section>
 
 <section class="charts">
-  <div class="chart-box" style="width: 100%;">
+  <div class="chart-box">
     <h3>User Growth (Jan–Dec)</h3>
-    <div class="line-chart" style="position: relative; height: 180px;">
+    <div class="line-chart">
       <div class="grid-lines"></div>
-      <svg viewBox="0 0 100 50" preserveAspectRatio="none" style="position: absolute; top: 10px; left: 10px; width: calc(100% - 10px); height: 150px;">
-        <polyline id="year-polyline" fill="none" stroke="#23406C" stroke-width="0.5" points="" />
+      <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+        <polyline id="year-polyline" fill="none" stroke="#23406C" stroke-width="0.5" />
       </svg>
     </div>
-    <div class="month-numbers" style="margin-top: 12px; font-weight: 600; color: #23406C; display: grid; grid-template-columns: repeat(12, 1fr); text-align: center; gap: 8px;">
+    <div class="month-numbers">
       <?php
       $month_names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       foreach ($month_names as $month) echo "<div>$month</div>";
@@ -176,17 +186,22 @@ include '../includes/header.php';
 
 <script>
   const monthlySignups = <?= $monthly_signups_json ?>;
+  
   function buildPoints(data) {
     const maxCount = Math.max(...data, 1);
-    return data.map((count, i) => {
-      const x = i * (100 / (data.length - 1));
-      const y = 50 - (count / maxCount) * 40;
+    const points = data.map((count, i) => {
+      const x = (i * (100 / (data.length - 1))).toFixed(2);
+      const y = (50 - (count / maxCount) * 45).toFixed(2); // Using 45 instead of 40 for better visibility
       return `${x},${y}`;
-    }).join(' ');
+    });
+    return points.join(' ');
   }
+
   document.addEventListener('DOMContentLoaded', () => {
     const yearPolyline = document.getElementById('year-polyline');
-    if (yearPolyline) yearPolyline.setAttribute('points', buildPoints(monthlySignups));
+    if (yearPolyline) {
+      yearPolyline.setAttribute('points', buildPoints(monthlySignups));
+    }
   });
 
   const alertBox = document.querySelector('.session-alert');
@@ -234,6 +249,8 @@ include '../includes/header.php';
 }
 </style>
 
+<script src="../assets/scripts/profile_dropdown.js"></script>
+<script src="../assets/scripts/sidebar.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

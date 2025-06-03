@@ -24,8 +24,19 @@ if ($admin_id) {
 $title = "Unified SOEMO Dashboard";
 $style = "new-manage_user.css";
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
+
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
 
 <!-- Main Panel -->
 <main class="main-content">
@@ -98,21 +109,18 @@ include '../includes/sidebar.php';
 </div>
 
 <script>
-function openDeleteModal() {
-    document.getElementById('deleteUserModal').style.display = 'block';
-}
-function closeDeleteModal() {
-    document.getElementById('deleteUserModal').style.display = 'none';
-}
-</script>
-
-<script>
 document.addEventListener('DOMContentLoaded', function () {
     const tableBody = document.getElementById('userTableBody');
     const paginationControls = document.getElementById('paginationControls');
     const roleFilter = document.getElementById('role_filter');
     
     let currentPage = 1;
+
+    // Initial fetch
+    fetchUsers(1);
+
+    // Add event listener for role filter
+    roleFilter.addEventListener('change', () => fetchUsers(1));
 
     function fetchUsers(page = 1) {
         const role = roleFilter.value;
@@ -130,36 +138,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderUsers(users) {
-    tableBody.innerHTML = '';
+        tableBody.innerHTML = '';
 
-    if (users.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4">No users found.</td></tr>';
-        return;
+        if (users.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4">No users found.</td></tr>';
+            return;
+        }
+
+        users.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td title="${escapeHtml(user.fullName)}">${escapeHtml(user.fullName)}</td>
+                <td title="${escapeHtml(user.email)}">${escapeHtml(user.email)}</td>
+                <td title="${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}">${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}</td>
+                <td title="${escapeHtml(user.created_at)}">${escapeHtml(user.created_at)}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        // Add invisible rows to maintain height
+        const maxRows = 5;
+        const emptyRows = maxRows - users.length;
+        for (let i = 0; i < emptyRows; i++) {
+            const emptyTr = document.createElement('tr');
+            emptyTr.innerHTML = `
+                <td colspan="4" style="height: 50px; visibility: hidden;">&nbsp;</td>
+            `;
+            tableBody.appendChild(emptyTr);
+        }
     }
-
-    users.forEach(user => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${escapeHtml(user.fullName)}</td>
-            <td>${escapeHtml(user.email)}</td>
-            <td>${user.role === 'org_admin' ? 'Organization Admin' : capitalize(user.role)}</td>
-            <td>${escapeHtml(user.created_at)}</td>
-        `;
-        tableBody.appendChild(tr);
-    });
-
-    // Add invisible rows to maintain height
-    const maxRows = 5;
-    const emptyRows = maxRows - users.length;
-    for (let i = 0; i < emptyRows; i++) {
-        const emptyTr = document.createElement('tr');
-        emptyTr.innerHTML = `
-            <td colspan="4" style="height: 50px; visibility: hidden;">&nbsp;</td>
-        `;
-        tableBody.appendChild(emptyTr);
-    }
-}
-
 
     function renderPagination(total, perPage, currentPage) {
         const totalPages = Math.ceil(total / perPage);
@@ -171,9 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const btn = document.createElement('button');
             btn.textContent = i;
             btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
-            btn.onclick = () => {
-                fetchUsers(i);
-            };
+            btn.onclick = () => fetchUsers(i);
             paginationControls.appendChild(btn);
         }
     }
@@ -182,19 +187,30 @@ document.addEventListener('DOMContentLoaded', function () {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    // Basic escaping to avoid XSS
     function escapeHtml(text) {
         return text.replace(/[&<>"']/g, function(m) {
             return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m];
         });
     }
 
-    roleFilter.addEventListener('change', () => {
-        fetchUsers(1);
-    });
+    // Modal functions
+    window.openDeleteModal = function() {
+        document.getElementById('deleteUserModal').style.display = 'block';
+    };
 
-    fetchUsers();
+    window.closeDeleteModal = function() {
+        document.getElementById('deleteUserModal').style.display = 'none';
+    };
 
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('deleteUserModal');
+        if (event.target === modal) {
+            closeDeleteModal();
+        }
+    };
+
+    // Handle alert dismissal
     const alertBox = document.querySelector('.session-alert');
     if (alertBox) {
         setTimeout(() => {
@@ -203,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => alertBox.remove(), 500);
         }, 4000);
     }
-
 });
 </script>
 
@@ -256,6 +271,8 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 </style>
 
+<script src="../assets/scripts/profile_dropdown.js"></script>
+<script src="../assets/scripts/sidebar.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>
