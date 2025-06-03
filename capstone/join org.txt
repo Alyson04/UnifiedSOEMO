@@ -4,6 +4,8 @@ body {
     padding: 0;
     font-family: 'Inter', sans-serif;
     box-sizing: border-box;
+    background-color: white;
+    color: #1c1c1c;
 }
 
 /* Navbar */
@@ -96,95 +98,80 @@ body {
   .nav-list a:hover {
     color: #1abc9c;
   }
-
+  
+/* Join Form Container */
 .outer-container {
     background-color: #D9E9FF;
-    padding: 40px 20px;
+    padding: 20px;
     border-radius: 16px;
-    max-width: 900px;
+    max-width: 800px;
     margin: 30px auto;
     box-shadow: 0 4px 15px rgba(2, 119, 189, 0.15);
 }
 
-.org-container {
-    max-width: 800px;
+.join-container {
+    max-width: 600px;
     margin: 20px auto;
-    padding: 30px;
-    background-color: white;
-    border-radius: 12px;
+    padding: 20px 80px;
+    padding-left: 60px;
+    background-color: #fff;
+    border-radius: 16px;
     box-shadow: 0 4px 15px rgba(2, 119, 189, 0.15);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
     border: 2px solid #014f86;
+    color: #333;
+    font-family: 'Inter', sans-serif;
 }
 
-.org-logo {
-    max-width: 150px;
-    height: auto;
-    display: block;
-    margin: 0 auto 20px auto;
-    border-radius: 8px;
-    object-fit: contain;
-}
-
-h1 {
-    text-align: center;
-    color: #014f86;
-    margin-bottom: 20px;
-    font-weight: 900;
-}
-
-p {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-strong {
-    color: #014f86;
-}
-
-.org-container ul {
-    padding-left: 20px;
-    margin-bottom: 20px;
-}
-
-.org-container ul li {
-    font-size: 15px;
-    margin-bottom: 8px;
-    list-style-type: disc;
-    text-align: justify;
-}
-
+/* Title */
 .section-title {
-    font-size: 18px;
-    margin-top: 25px;
-    color: #1e272e;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
-}
-
-.join-section {
     text-align: center;
-    margin-top: 30px;
+    font-size: 28px;
+    color: #014f86;
+    font-weight: 900;
+    margin-bottom: 25px;
 }
 
-.join-button {
-    display: inline-block;
-    padding: 12px 25px;
+/* Labels */
+.join-container label {
+    display: block;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #1e272e;
+}
+
+/* Inputs & Textareas */
+.join-container input,
+.join-container textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    background-color: #f9f9f9;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+}
+
+/* Submit Button */
+.join-container button {
+    display: block;
+    width: 100%;
+    padding: 14px;
     font-size: 16px;
     background-color: #014f86;
-    font-weight: 700;
     color: white;
-    border-radius: 8px;
-    text-decoration: none;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: 700;
 }
 
-.join-button:hover {
-    background-color: #2980b9;
+.join-container button:hover {
+    background-color: #3c5f8f;
 }
-
 .notification-modal {
   position: absolute;
   top: 40px;
@@ -202,6 +189,26 @@ strong {
 
 .notification-modal.hidden {
   display: none;
+}
+
+/* Cancel Button */
+.cancel-button {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 14px;
+    font-size: 16px;
+    background-color: #ccc;
+    color: #333;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.notification-modal.cancel-button:hover {
+    background-color: #bbb;
 }
 
 .notification-header {
@@ -223,145 +230,114 @@ strong {
   border-bottom: none;
 }
 
-.details-box {
-    background-color: #f1f9ff;
-    border-left: 6px solid #014f86;
-    border-radius: 10px;
-    padding: 15px 20px;
-    margin: 15px 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.details-box summary {
-    cursor: pointer;
-    font-size: 17px;
-    font-weight: bold;
-    color: #014f86;
-    margin-bottom: 10px;
-}
-
-.details-box p,
-.details-box ul {
-    margin-left: 10px;
-    font-size: 15px;
-    color: #333;
-    text-align: justify;
+/* Form Button Group */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 25px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Enhanced Mobile Responsive Styles */
 @media (max-width: 768px) {
     .outer-container {
         margin: 20px 15px;
-        padding: 20px 15px;
+        padding: 15px;
         margin-top: 70px;
+        width: auto;
     }
 
-    .org-container {
-        padding: 20px;
+    .join-container {
+        padding: 15px;
         margin: 10px auto;
-    }
-
-    .org-logo {
-        max-width: 120px;
-        margin-bottom: 15px;
-    }
-
-    h1 {
-        font-size: 24px;
-        margin-bottom: 15px;
-    }
-
-    p {
-        font-size: 15px;
-        line-height: 1.5;
-        margin-bottom: 12px;
-    }
-
-    .org-container ul {
-        padding-left: 15px;
-        margin-bottom: 15px;
-    }
-
-    .org-container ul li {
-        font-size: 14px;
-        margin-bottom: 6px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .section-title {
-        font-size: 16px;
-        margin-top: 20px;
-        padding-bottom: 4px;
+        font-size: 24px;
+        margin-bottom: 20px;
     }
 
-    .join-section {
-        margin-top: 25px;
-    }
-
-    .join-button {
-        padding: 10px 20px;
-        font-size: 15px;
-    }
-
-    .details-box {
-        padding: 12px;
-        margin: 10px 0;
-    }
-
-    .details-box summary {
-        font-size: 15px;
-        padding: 8px 0;
-    }
-
-    .details-box p {
+    .join-container label {
+        margin-top: 15px;
         font-size: 14px;
-        margin: 8px 0;
+    }
+
+    .join-container input,
+    .join-container textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        margin-top: 6px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+
+    .join-container button,
+    .cancel-button {
+        padding: 12px;
+        font-size: 15px;
+        width: 100%;
+        margin: 5px 0;
+        box-sizing: border-box;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+        gap: 10px;
+        padding: 0;
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .outer-container {
         margin: 15px 10px;
-        padding: 15px 10px;
+        padding: 12px;
         margin-top: 75px;
     }
 
-    .org-container {
-        padding: 15px;
-    }
-
-    .org-logo {
-        max-width: 100px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    p {
-        font-size: 14px;
-    }
-
-    .org-container ul li {
-        font-size: 13px;
+    .join-container {
+        padding: 12px;
+        width: 100%;
     }
 
     .section-title {
-        font-size: 15px;
+        font-size: 20px;
+        margin-bottom: 15px;
     }
 
-    .join-button {
-        padding: 8px 16px;
-        font-size: 14px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .details-box summary {
-        font-size: 14px;
-    }
-
-    .details-box p {
+    .join-container label {
         font-size: 13px;
     }
-}
 
+    .join-container input,
+    .join-container textarea {
+        width: 100%;
+        padding: 8px;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .join-container button,
+    .cancel-button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        margin: 4px 0;
+    }
+
+    .form-buttons {
+        margin-top: 15px;
+        gap: 8px;
+        width: 100%;
+    }
+
+    textarea {
+        min-height: 100px;
+        max-height: 200px;
+    }
+}

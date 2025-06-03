@@ -103,7 +103,7 @@ body {
 .blue-section {
     background-color: #2A4365;
     width: 100%;
-    padding: 2vh 0;
+    padding: 1vh 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -112,7 +112,7 @@ body {
 .section-image {
     width: 90%;
     max-width: 1542px;
-    height: 200px;
+    height: 160px;
     object-fit: cover;
     border-radius: 5px;
 }
@@ -123,34 +123,34 @@ body {
     font-size: 1.2rem;
     font-weight: 400;
     color: #2A4365;
-    max-width: 1500px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 0;
+    padding: 30px 20px;
     line-height: 1.6;
 }
 
 /* CALENDAR + EVENTS LAYOUT */
 .calendar-section {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     align-items: flex-start;
-    gap: 30px;
-    padding: 20px 40px;
+    gap: 40px;
+    padding: 20px 60px;
     flex-wrap: wrap;
 }
 
 /* CALENDAR STYLING */
 .calendar {
-  flex: 1 1 300px;
-  max-width: 380px;
-  background: #ffffffcc; /* semi-transparent white */
-  border-radius: 20px;
-  padding: 25px 20px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  flex-direction: column;
-  user-select: none;
+    flex: 0 1 320px;
+    background: #ffffffcc;
+    border-radius: 20px;
+    padding: 25px 20px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    margin: 0 auto;
 }
 
 /* Calendar Header */
@@ -218,28 +218,31 @@ body {
 }
 
 /* EVENTS SECTION */
-/* EVENTS SECTION */
 .events-section {
     display: flex;
     flex-direction: row;
-    gap: 40px; /* increased gap between upcoming and past events */
-    flex-grow: 1;
-    justify-content: flex-start;
+    gap: 40px;
+    justify-content: space-evenly;
     flex-wrap: wrap;
+    flex: 1;
+    min-width: 320px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 /* Upcoming and Past Events container styling */
 .upcoming-events, .past-events {
-    background-color: #f9fafb; /* light, clean background */
-    padding: 25px 25px;
+    background-color: #f9fafb;
+    padding: 25px;
     border-radius: 16px;
     width: 100%;
-    max-width: 360px; /* slightly wider */
+    max-width: 320px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: box-shadow 0.3s ease;
+    margin: 0 auto;
 }
 
 .upcoming-events:hover, .past-events:hover {
@@ -341,27 +344,128 @@ body {
 
 /* Responsive improvements */
 @media (max-width: 860px) {
+    .calendar-section {
+        padding: 20px;
+        gap: 30px;
+    }
+
     .events-section {
         flex-direction: column;
         gap: 30px;
         align-items: center;
+        width: 100%;
     }
 
     .upcoming-events, .past-events {
         max-width: 90%;
         padding: 20px;
     }
+}
+
+@media (max-width: 768px) {
+    .calendar-section {
+        padding: 15px;
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 60px;
+    }
+
+    .calendar {
+        width: 85%;
+        max-width: 100%;
+        padding: 20px 15px;
+    }
+
+    .events-section {
+        width: 85%;
+        padding: 0;
+    }
+
+    .upcoming-events, .past-events {
+        max-width: 85%;
+        padding: 20px 15px;
+    }
+
+    .upcoming-events h2, .past-events h2 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
 
     .upcoming-events a, .past-events a {
-        flex-direction: column;
-        align-items: flex-start;
+        padding: 12px;
+        margin-bottom: 12px;
     }
 
     .upcoming-events img, .past-events img {
-        width: 100%;
-        height: auto;
-        margin-right: 0;
+        width: 110px;
+        height: 80px;
+        margin-right: 15px;
+    }
+
+    .upcoming-events p, .past-events p {
+        font-size: 0.95rem;
+    }
+
+    .event-item div strong {
+        font-size: 0.95rem;
+    }
+
+    .blue-section {
+        padding: 0.8vh 0;
+        margin-top: 60px;
+    }
+
+    .section-image {
+        height: 130px;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-section {
+        padding: 10px;
+        margin-top: 70px;
+    }
+
+    .calendar, .events-section {
+        width: 90%;
+    }
+
+    .upcoming-events, .past-events {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    .upcoming-events h2, .past-events h2 {
+        font-size: 1.3rem;
         margin-bottom: 12px;
-        border-radius: 10px;
+    }
+
+    .upcoming-events a, .past-events a {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .upcoming-events img, .past-events img {
+        width: 90px;
+        height: 70px;
+        margin-right: 12px;
+    }
+
+    .upcoming-events p, .past-events p {
+        font-size: 0.9rem;
+    }
+
+    .event-item div strong {
+        font-size: 0.9rem;
+    }
+
+    .blue-section {
+        padding: 0.5vh 0;
+        margin-top: 65px;
+    }
+
+    .section-image {
+        height: 100px;
     }
 }

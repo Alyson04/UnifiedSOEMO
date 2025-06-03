@@ -1,0 +1,21 @@
+<?php 
+require '../api/auth.php'; 
+?>
+<?php $title = "Complete Information"; $style = "complete_profile.css"; include '../includes/header.php'; ?>
+<?php include '../includes/navbar.php'; ?>
+
+<div class="register-container">
+    <h2>Complete Your Profile</h2>
+    <form action="update_profile.php" method="POST">
+        <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+
+        <label>Password:</label>
+        <input type="password" name="password" placeholder="Enter a new password" required>
+
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<script src="../assets/scripts/notif_script.js"></script>
+<script src="../assets/scripts/inactive.js"></script>
+<?php include '../includes/footer.php'; ?>
