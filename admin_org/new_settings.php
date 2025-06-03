@@ -56,7 +56,7 @@ if ($user_id) {
 $conn->close();
 
 $title = "Settings";
-$style = "settings.css";
+$style = "new_settings.css";
 include '../includes/header.php';
 ?>
 
@@ -251,6 +251,7 @@ include '../includes/header.php';
 }
 </style>
 <script src="../assets/scripts/admin_org_shared.js"></script>
+<script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

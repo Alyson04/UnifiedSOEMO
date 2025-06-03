@@ -113,22 +113,25 @@ if ($org_id !== null) {
 $conn->close();
 
 $title = "Upcoming Events";
-$style = "upcoming_events.css";
+$style = "upcoming.css";
 include '../includes/header.php';
 ?>
 
 <!-- Add shared CSS for admin_org section -->
 <link rel="stylesheet" href="../assets/stylesheets/admin_org_shared.css">
 
+<!-- Add mobile-specific styles -->
+<link rel="stylesheet" href="../assets/stylesheets/admin_org_mobile.css">
+
 <!-- Hamburger Menu Button -->
 <button class="hamburger-menu">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
 </button>
 
-<!-- Sidebar Overlay -->
-<div class="sidebar-overlay"></div>
+<!-- Overlay for mobile sidebar -->
+<div class="overlay"></div>
 
 <?php include '../includes/sidebar.php'; ?>
 
@@ -178,6 +181,7 @@ include '../includes/header.php';
 
 <!-- Add shared JavaScript for admin_org section -->
 <script src="../assets/scripts/admin_org_shared.js"></script>
+<script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

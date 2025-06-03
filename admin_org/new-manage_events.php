@@ -23,7 +23,7 @@ if ($admin_id) {
 $conn->close();
 
 $title = "Manage Events";
-$style = "manage_events.css";
+$style = "new-manage_events.css";
 include '../includes/header.php';
 ?>
 
@@ -227,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- Add shared JavaScript for admin_org section -->
 <script src="../assets/scripts/admin_org_shared.js"></script>
+<script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

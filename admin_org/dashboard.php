@@ -140,15 +140,18 @@ include '../includes/header.php';
 <link rel="stylesheet" href="../assets/stylesheets/admin_org_shared.css">
 <link rel="stylesheet" href="../assets/stylesheets/org_dashboard.css">
 
+<!-- Add mobile-specific styles -->
+<link rel="stylesheet" href="../assets/stylesheets/admin_org_mobile.css">
+
 <!-- Hamburger Menu Button -->
 <button class="hamburger-menu">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
 </button>
 
-<!-- Sidebar Overlay -->
-<div class="sidebar-overlay"></div>
+<!-- Overlay for mobile sidebar -->
+<div class="overlay"></div>
 
 <?php include '../includes/sidebar.php'; ?>
 
@@ -254,8 +257,41 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- Add shared JavaScript for admin_org section -->
-<script src="../assets/scripts/admin_org_shared.js"></script>
+<style>
+    .session-alert {
+    position: fixed;
+    top: 20px;
+    left: 55%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green by default for success */
+    color: white;
+    padding: 14px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 500;
+    max-width: 80%;
+    text-align: center;
+    animation: fadeInSlideDown 0.4s ease-in-out;
+}
+
+.session-alert.error {
+    background-color: #f44336; /* Red for error */
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+</style>
+
+<script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>

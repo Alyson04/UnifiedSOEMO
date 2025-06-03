@@ -33,13 +33,13 @@ if (!$admin_id) {
   exit();
 }
 
-$title = "Create Post";
-$style = "new_post.css";
+$title = "Unified SOEMO Dashboard";
+$style = "new-post.css";
 include '../includes/header.php';
 ?>
 
-<!-- Add shared CSS for admin_org section -->
-<link rel="stylesheet" href="../assets/stylesheets/admin_org_shared.css">
+<!-- Add mobile-specific styles -->
+<link rel="stylesheet" href="../assets/stylesheets/admin_org_mobile.css">
 
 <!-- Hamburger Menu Button -->
 <button class="hamburger-menu">
@@ -170,12 +170,6 @@ include '../includes/header.php';
 }
 </style>
 
-<!-- Add shared JavaScript for admin_org section -->
-<script src="../assets/scripts/admin_org_shared.js"></script>
-<script src="../assets/scripts/notif_script.js"></script>
-<script src="../assets/scripts/inactive.js"></script>
-<?php include '../includes/footer.php'; ?>
-
 <script>
 // Your existing JS code here (for form submission, confirmation modal, textarea auto-grow, etc.)
 document.addEventListener('DOMContentLoaded', function() {
@@ -269,3 +263,7 @@ textarea.addEventListener('input', function () {
   }
 });
 </script>
+<script src="../assets/scripts/admin_org_mobile.js"></script>
+<script src="../assets/scripts/notif_script.js"></script>
+<script src="../assets/scripts/inactive.js"></script>
+<?php include '../includes/footer.php'; ?>

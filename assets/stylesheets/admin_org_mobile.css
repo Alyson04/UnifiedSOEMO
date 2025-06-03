@@ -1,0 +1,254 @@
+/* Mobile Styles for Admin Org */
+@media screen and (max-width: 768px) {
+    .page-container {
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Sidebar Overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -250px;
+        top: 0;
+        height: 100vh;
+        z-index: 999;
+        transition: transform 0.3s ease;
+        background-color: #243049;
+    }
+
+    .sidebar.active {
+        transform: translateX(250px);
+    }
+
+    /* When sidebar is active, make main content unclickable */
+    .sidebar.active ~ .main-content {
+        pointer-events: none;
+        user-select: none;
+        background-color: #00000080;
+        backdrop-filter: blur(2px);
+    }
+
+    .hamburger-menu {
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1000;
+    }
+
+    .hamburger-menu span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #1B2A47;
+        margin: 5px 0;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger-menu.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+        background-color: #ffffff;
+    }
+
+    .hamburger-menu.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger-menu.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+        background-color: #ffffff;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 15px;
+        padding-top: 60px;
+        position: relative;
+        z-index: 1;
+        transition: filter 0.3s ease;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 15px;
+        min-height: auto;
+        max-height: none;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Z-index Layering */
+    .notification-modal {
+        z-index: 997;
+    }
+    
+    .profile, .top-right {
+        z-index: 997;
+        position: relative;
+    }
+    
+    .dropdown-tray {
+        z-index: 997;
+    }
+
+    /* Hide name and role in mobile view */
+    .profile-info {
+        display: none !important;
+    }
+
+    /* Keep profile picture visible */
+    .profile {
+        gap: 0 !important;
+    }
+
+    /* Hide card values in settings */
+    .card-value {
+        display: none !important;
+    }
+
+    /* Adjust card row spacing */
+    .card-row {
+        gap: 0 !important;
+    }
+
+    /* Ensure profile picture and related elements stay below overlay */
+    .profile img, 
+    .bell,
+    .top-bar {
+        position: relative;
+        z-index: 997;
+    }
+
+    /* Stats section - keep in one line */
+    .stats {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-card {
+        flex: 1;
+        min-width: 100px;
+        font-size: 14px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-card h2 {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .stat-card p {
+        font-size: 12px;
+    }
+
+    /* Other mobile-specific styles */
+    .events-upcoming {
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+    }
+
+    .events-column {
+        width: 100%;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .form-wrapper {
+        padding: 15px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-section {
+        padding: 15px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-frame {
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Hide username in post cards for mobile */
+    .post-header .username {
+        display: none;
+    }
+
+    /* Adjust post header spacing */
+    .post-header {
+        gap: 0;
+    }
+
+    /* Mobile styles for new-post.php */
+    #postForm {
+        min-width: unset !important;
+        width: 100% !important;
+        margin: 15px 0 !important;
+    }
+
+    .post-card {
+        min-width: unset !important;
+        width: 100% !important;
+    }
+
+    #postsContainer {
+        width: 100% !important;
+    }
+
+    .form-wrapper {
+        padding: 10px !important;
+        width: 100% !important;
+    }
+
+    #postForm textarea {
+        width: 100% !important;
+        padding: 8px !important;
+    }
+
+    .form-bottom {
+        padding: 0 5px !important;
+    }
+}
+
+/* Tablet Styles */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .main-content {
+        padding: 20px;
+    }
+
+    .content {
+        margin-left: 10px;
+        padding: 20px;
+    }
+} 

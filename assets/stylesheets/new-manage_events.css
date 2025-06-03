@@ -542,14 +542,6 @@ tbody tr td:last-child {
   .notification-modal {
     z-index: 100;
   }
-  
-  .profile {
-    z-index: 1100;
-  }
-  
-  .dropdown-tray {
-    z-index: 1200;
-  }
 
   /* Form Error Message */
   .floating-alert {

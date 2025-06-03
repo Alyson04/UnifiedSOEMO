@@ -49,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("sssis", $title, $description, $event_date, $org_id, $thumbnail_filename);
 
             if ($stmt->execute()) {
-                // $success = "Event added successfully!";\
                 $_SESSION['success'] = "Event added successfully!";
                 header("Location: new-manage_events.php");
                 exit;
@@ -65,11 +64,25 @@ $conn->close();
 
 $title = "Add New Event";
 $style = "add_event.css";
-
 include '../includes/header.php';
-include '../includes/sidebar.php';
 ?>
 
+<!-- Add mobile-specific styles -->
+<link rel="stylesheet" href="../assets/stylesheets/admin_org_mobile.css">
+
+<!-- Hamburger Menu Button -->
+<button class="hamburger-menu">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+</button>
+
+<!-- Overlay for mobile sidebar -->
+<div class="overlay"></div>
+
+<?php include '../includes/sidebar.php'; ?>
+
+<!-- Main Panel -->
 <main class="main-content">
     <?php include '../includes/navbar.php'; ?>
 
@@ -142,84 +155,81 @@ include '../includes/sidebar.php';
             from { opacity: 0; transform: translate(-50%, -20px); }
             to { opacity: 1; transform: translate(-50%, 0); }
         }
-
         </style>
-<!-- Custom Alert Message -->
-<div id="formError" class="floating-alert" style="display: none;"></div>
 
-<!-- Event Form -->
-<form id="eventForm" method="POST" class="event-form" enctype="multipart/form-data">
-    <label for="title">Event Title</label>
-    <input type="text" name="title" id="title" required>
+        <!-- Custom Alert Message -->
+        <div id="formError" class="floating-alert" style="display: none;"></div>
 
-    <label for="description">Event Description</label>
-    <textarea name="description" id="description" rows="5" required></textarea>
+        <!-- Event Form -->
+        <form id="eventForm" method="POST" class="event-form" enctype="multipart/form-data">
+            <label for="title">Event Title</label>
+            <input type="text" name="title" id="title" required>
 
-    <label for="event_date">Event Date</label>
-    <input type="date" name="event_date" id="event_date" required>
+            <label for="description">Event Description</label>
+            <textarea name="description" id="description" rows="5" required></textarea>
 
-    <label for="thumbnail">Event Thumbnail</label>
-    <input type="file" name="thumbnail" id="thumbnail" accept="image/*" required>
+            <label for="event_date">Event Date</label>
+            <input type="date" name="event_date" id="event_date" required>
 
-    <!-- Changed onclick to validateFormAndShowModal() -->
-    <button type="button" onclick="validateFormAndShowModal()">Create Event</button>
-    <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
-</form>
+            <label for="thumbnail">Event Thumbnail</label>
+            <input type="file" name="thumbnail" id="thumbnail" accept="image/*" required>
 
-<!-- Confirmation Modal -->
-<div class="modal-overlay" id="confirmModal">
-    <div class="modal">
-        <p>Are you sure you want to create this event?</p>
-        <button class="confirm" onclick="submitForm()">Yes</button>
-        <button class="cancel" onclick="hideConfirmModal()">No</button>
-    </div>
-</div>
+            <button type="button" onclick="validateFormAndShowModal()">Create Event</button>
+            <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
+        </form>
 
-<!-- Modal Script -->
-<script>
-function validateFormAndShowModal() {
-    const errorBox = document.getElementById('formError');
-    const title = document.getElementById('title').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const eventDate = document.getElementById('event_date').value;
-    const thumbnail = document.getElementById('thumbnail').files.length;
+        <!-- Confirmation Modal -->
+        <div class="modal-overlay" id="confirmModal">
+            <div class="modal">
+                <p>Are you sure you want to create this event?</p>
+                <button class="confirm" onclick="submitForm()">Yes</button>
+                <button class="cancel" onclick="hideConfirmModal()">No</button>
+            </div>
+        </div>
 
-    // Reset alert
-    errorBox.style.display = 'none';
-    errorBox.innerText = '';
+        <!-- Modal Script -->
+        <script>
+        function validateFormAndShowModal() {
+            const errorBox = document.getElementById('formError');
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const eventDate = document.getElementById('event_date').value;
+            const thumbnail = document.getElementById('thumbnail').files.length;
 
-    if (!title || !description || !eventDate || thumbnail === 0) {
-        errorBox.innerText = 'All fields are required.';
-        errorBox.style.display = 'block';
-
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
+            // Reset alert
             errorBox.style.display = 'none';
-        }, 5000);
-        return;
-    }
+            errorBox.innerText = '';
 
-    showConfirmModal(); // All fields are valid
-}
+            if (!title || !description || !eventDate || thumbnail === 0) {
+                errorBox.innerText = 'All fields are required.';
+                errorBox.style.display = 'block';
 
-function showConfirmModal() {
-    document.getElementById('confirmModal').style.display = 'block';
-}
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    errorBox.style.display = 'none';
+                }, 5000);
+                return;
+            }
 
-function hideConfirmModal() {
-    document.getElementById('confirmModal').style.display = 'none';
-}
+            showConfirmModal(); // All fields are valid
+        }
 
-function submitForm() {
-    document.getElementById('eventForm').submit();
-}
-</script>
+        function showConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'block';
+        }
 
+        function hideConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
 
-
+        function submitForm() {
+            document.getElementById('eventForm').submit();
+        }
+        </script>
     </div>
 </main>
 
+<script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <?php include '../includes/footer.php'; ?>
