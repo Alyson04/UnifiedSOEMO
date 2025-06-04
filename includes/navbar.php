@@ -78,6 +78,9 @@ if (isset($_SESSION['user_id'])) {
             </div>
             <!-- Profile Dropdown -->
             <div class="dropdown-tray" id="profileDropdown">
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>    
+                <a href="edit_profile.php">Edit Profile</a>
+                <?php endif; ?>
                 <a href="../api/logout.php">Logout</a>
             </div>
         </div>
