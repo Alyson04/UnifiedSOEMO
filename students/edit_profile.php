@@ -9,15 +9,21 @@ require '../config/db_conn.php';
 $profile_img = '../assets/uploads_pfp/profile.png'; // fallback image
 
 if ($student_id) {
-    $sql_student = "SELECT fullName, email, profile_picture FROM users WHERE ID = ?";
+    $sql_student = "SELECT firstName, middleName, lastName, email, profile_picture FROM newusers WHERE id = ?";
     $stmt = $conn->prepare($sql_student);
     $stmt->bind_param("i", $student_id);
     $stmt->execute();
     $result_student = $stmt->get_result();
 
-    if ($result_student->num_rows > 0) {
+if ($result_student->num_rows > 0) {
         $row = $result_student->fetch_assoc();
-        $student_name = ucwords(strtolower($row['fullName']));
+
+        // Combine first, middle, last name into one display name
+        $firstName = $row['firstName'] ?? '';
+        $middleName = $row['middleName'] ?? '';
+        $lastName = $row['lastName'] ?? '';
+        $student_name = ucwords(strtolower(trim("$firstName $middleName $lastName")));
+
         $email = $row['email'];
 
         if (!empty($row['profile_picture'])) {
@@ -60,14 +66,30 @@ include '../includes/navbar.php';
                 <input type="file" name="profile_pic" id="profile_pic" accept="image/*" disabled>
             </div>
 
-            <label for="fullName">Full Name:</label>
-            <input type="text" name="fullName" id="fullName" value="<?= htmlspecialchars($student_name); ?>" disabled required>    
+            <label for="oldPassword">Old Password:</label>
+            <div class="input-icon">
+                <input type="password" name="oldPassword" id="oldPassword" placeholder="Enter old password" disabled>
+                <span class="toggle-icon" onclick="togglePassword('oldPassword', this)" style="display: none;">👁️</span>
+            </div>
 
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="<?= htmlspecialchars($email); ?>" disabled required>
+            <label for="newPassword">New Password:</label>
+            <div class="input-icon">
+                <input type="password" name="newPassword" id="newPassword" placeholder="Enter new password" disabled>
+                <span class="toggle-icon" onclick="togglePassword('newPassword', this)" style="display: none;">👁️</span>
+            </div>
+            <small id="passwordWarning" style="color: red; display: none;">
+                Password must be 8–20 characters, include 2 numbers and 2 special characters.
+            </small>
 
-            <label for="password">New Password:</label>
-            <input type="password" name="password" id="password" placeholder="Enter new password" disabled>
+            <label for="confirmNewPassword">Confirm New Password:</label>
+            <div class="input-icon">
+                <input type="password" name="confirmNewPassword" id="confirmNewPassword" placeholder="Confirm new password" disabled>
+                <span class="toggle-icon" onclick="togglePassword('confirmNewPassword', this)" style="display: none;">👁️</span>
+            </div>
+            <small id="passwordMismatch" style="color: red; display: none;">
+                Passwords do not match.
+            </small>
+
 
             <div class="button-group">
                 <button type="submit" id="save-btn" disabled>Save Changes</button>
@@ -114,23 +136,23 @@ include '../includes/navbar.php';
 <script>
 document.getElementById("edit-btn").addEventListener("click", function () {
     document.getElementById("profile_pic").disabled = false;
-    document.getElementById("fullName").disabled = false;
-    document.getElementById("email").disabled = false;
-    document.getElementById("password").disabled = false;
+    document.getElementById("oldPassword").disabled = false;
+    document.getElementById("newPassword").disabled = false;
+    document.getElementById("confirmNewPassword").disabled = false;
+
+    document.querySelectorAll(".toggle-icon").forEach(icon => {
+        icon.style.display = "inline";
+    });
+
     document.getElementById("save-btn").disabled = false;
     document.getElementById("cancel-btn").disabled = false;
     this.style.display = "none"; // Hide Edit button
 });
 
 document.getElementById("cancel-btn").addEventListener("click", function () {
-    document.getElementById("profile_pic").disabled = true;
-    document.getElementById("fullName").disabled = true;
-    document.getElementById("email").disabled = true;
-    document.getElementById("password").disabled = true;
-    document.getElementById("save-btn").disabled = true;
-    document.getElementById("cancel-btn").disabled = true;
-    document.getElementById("edit-btn").style.display = "block"; // Show Edit button again
+    location.reload();
 });
+
 
 const alertBox = document.querySelector('.session-alert');
     if (alertBox) {
@@ -140,6 +162,34 @@ const alertBox = document.querySelector('.session-alert');
             setTimeout(() => alertBox.remove(), 500);
         }, 4000);
     }
+
+function togglePassword(fieldId, icon) {
+    const input = document.getElementById(fieldId);
+     if (input.disabled) {
+        icon.style.display = 'none'; // Hide the icon if input is disabled
+        return;
+    }
+    const isPassword = input.type === "password";
+    input.type = isPassword ? "text" : "password";
+    icon.textContent = isPassword ? "🙈" : "👁️";
+}
+
+document.getElementById("newPassword").addEventListener("input", validatePassword);
+document.getElementById("confirmNewPassword").addEventListener("input", checkPasswordMatch);
+
+function validatePassword() {
+    const pwd = document.getElementById('newPassword').value;
+    const warning = document.getElementById('passwordWarning');
+    const regex = /^(?=(?:.*\d){2,})(?=(?:.*[^A-Za-z0-9]){2,}).{8,20}$/;
+    warning.style.display = regex.test(pwd) ? 'none' : 'block';
+}
+
+function checkPasswordMatch() {
+    const pwd = document.getElementById('newPassword').value;
+    const confirmPwd = document.getElementById('confirmNewPassword').value;
+    const mismatch = document.getElementById('passwordMismatch');
+    mismatch.style.display = (pwd && confirmPwd && pwd !== confirmPwd) ? 'block' : 'none';
+}
 </script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/editprofile_script.js"></script>

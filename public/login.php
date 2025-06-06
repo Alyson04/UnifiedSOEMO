@@ -31,11 +31,6 @@ include '../includes/header.php';
             <p class="forgot-password" id="openForgotModal"><a href="#">Forgot Password?</a></p>
         </form>
 
-        <button class="google-btn" onclick="window.location.href='../api/google_login.php'">
-            <img src="../assets/pictures/google_icons.png" alt="Google Login" class="google-icon">
-            Login with Google
-        </button>
-
         <p class="terms">
             By using this service, you understand and agree to the PUP Online Services 
             <a href="https://www.pup.edu.ph/terms/">Terms of Use</a> and 

@@ -3,17 +3,33 @@ require '../api/auth.php';
 require '../config/db_conn.php';
 
 $student_id = $_SESSION['user_id'] ?? null;
-$student_name = '';
 $org_name = '';
 $org_id = $_GET['org_id'] ?? null;
 
+$firstName = '';
+$middleName = '';
+$lastName = '';
+$email = '';
+$studentNumber = '';
+$course = '';
+$year = '';
+$section = '';
+
 if ($student_id) {
-    $stmt = $conn->prepare("SELECT fullName FROM users WHERE ID = ?");
+    $stmt = $conn->prepare("SELECT firstName, middleName, lastName, email, studentNumber, course, year, section FROM newusers WHERE ID = ?");
     $stmt->bind_param("i", $student_id);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
-        $student_name = ucwords(strtolower($result->fetch_assoc()['fullName']));
+        $row = $result->fetch_assoc();
+        $firstName = $row['firstName'] ?? '';
+        $middleName = $row['middleName'] ?? '';
+        $lastName = $row['lastName'] ?? '';
+        $email = $row['email'] ?? '';
+        $studentNumber = $row['studentNumber'] ?? '';
+        $course = $row['course'] ?? '';
+        $year = $row['year'] ?? '';
+        $section = $row['section'] ?? '';
     }
     $stmt->close();
 }
@@ -43,19 +59,31 @@ include '../includes/navbar.php';
           <input type="hidden" name="org_id" value="<?= htmlspecialchars($org_id) ?>">
 
           <label>Organization Name:</label>
-          <input type="text" value="<?= htmlspecialchars($org_name) ?>" disabled>
+          <input type="text" value="<?= htmlspecialchars($org_name) ?>" readonly>
 
-          <label>Full Name:</label>
-          <input type="text" value="<?= htmlspecialchars($student_name) ?>" disabled>
+          <label>First Name:</label>
+          <input type="text" name="firstName" value="<?= htmlspecialchars($firstName) ?>" readonly>
 
-          <label for="contact_number">Contact Number:</label>
-          <input type="text" name="contact_number" id="contact_number" required>
+          <label>Middle Name:</label>
+          <input type="text" name="middleName" value="<?= htmlspecialchars($middleName) ?>" readonly>
 
-          <label for="age">Age:</label>
-          <input type="number" name="age" id="age" required>
+          <label>Last Name:</label>
+          <input type="text" name="lastName" value="<?= htmlspecialchars($lastName) ?>" readonly>
 
-          <label for="year_section">Year & Section:</label>
-          <input type="text" name="year_section" id="year_section" required>
+          <label>Email:</label>
+          <input type="email" name="email" value="<?= htmlspecialchars($email) ?>" readonly>
+
+          <label>Student Number:</label>
+          <input type="text" name="studentNumber" value="<?= htmlspecialchars($studentNumber) ?>" readonly>
+
+          <label>Course:</label>
+          <input type="text" name="course" value="<?= htmlspecialchars($course) ?>" readonly>
+
+          <label>Year:</label>
+          <input type="text" name="year" value="<?= htmlspecialchars($year) ?>" readonly>
+
+          <label>Section:</label>
+          <input type="text" name="section" value="<?= htmlspecialchars($section) ?>" readonly>
 
           <label for="portfolio">Upload Portfolio / Required Files (PDF, DOCX, JPG, PNG):</label>
           <input type="file" name="portfolio_file" id="portfolio" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">

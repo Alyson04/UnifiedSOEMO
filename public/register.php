@@ -1,6 +1,9 @@
 <?php
 session_start();
-$title = "Register"; $style = "register_styles.css"; include '../includes/header.php'; ?>
+$title = "Register";
+$style = "register_styles.css";
+include '../includes/header.php';
+?>
 <?php if (!empty($_SESSION['error'])): ?>
     <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
     <?php unset($_SESSION['error']); ?>
@@ -8,50 +11,101 @@ $title = "Register"; $style = "register_styles.css"; include '../includes/header
     <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
     <?php unset($_SESSION['success']); ?>
 <?php endif; ?>
-<!-- Left Side - Signup Form -->
-<div class="left-container">
-    <div class="signup-form">
-        <h1 class="title">SIGN UP</h1>
 
-        <p class="subtitle">Already have an account? <a href="login.php">Log in</a></p>
+<main class="register-container">
+    <!-- Left Side - Signup Form -->
+    <div class="left-container">
+        <div class="signup-form">
+            <h1 class="title">SIGN UP</h1>
+            <p class="subtitle">Already have an account? <a href="login.php">Log in</a></p>
 
-        <form action="../api/register.php" method="POST">
-            <label for="fullname">Full Name:</label>
-            <input type="text" id="fullname" name="fullName" class="input-field" placeholder="Enter your full name" required>
+            <form action="../api/register.php" method="POST">
+                <div class="form-group">
+                    <label for="studentLastName">Last Name:</label>
+                    <input type="text" id="studentLastName" name="studentLastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentFirstName">First Name:</label>
+                    <input type="text" id="studentFirstName" name="studentFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentMiddleName">Middle Name:</label>
+                    <input type="text" id="studentMiddleName" name="studentMiddleName">
+                </div>
+                <div class="form-group">
+                    <label for="studentNumber">Student Number:</label>
+                    <input type="text" id="studentNumber" name="studentNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentCourse">Course:</label>
+                    <select id="studentCourse" name="studentCourse" required>
+                        <option value="">-- Select Course --</option>
+                        <option value="DCvET">Diploma in Civil Engineering Technology</option>
+                        <option value="DCET">Diploma in Computer Engineering Technology</option>
+                        <option value="DEET">Diploma in Electrical Engineering Technology</option>
+                        <option value="DECET">Diploma in Electronics Engineering Technology</option>
+                        <option value="DIT">Diploma in Information Technology</option>
+                        <option value="DMET">Diploma in Mechanical Engineering Technology</option>
+                        <option value="DOMT">Diploma in Office Management Technology</option>
+                        <option value="DRET">Diploma in Railway Engineering Technology</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="studentYear">Year:</label>
+                    <select id="studentYear" name="studentYear" required>
+                        <option value="">-- Select Year --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="studentSection">Section:</label>
+                    <input type="text" id="studentSection" name="studentSection" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentEmail">Email:</label>
+                    <input type="email" id="studentEmail" name="studentEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentPassword">Password:</label>
+                    <div class="input-icon">
+                        <input type="password" id="studentPassword" name="studentPassword" required>
+                        <span class="toggle-icon" onclick="togglePassword('studentPassword', this)">👁️</span>
+                    </div>
+                    <small id="studentPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 2 numbers and 2 special characters.</small>
+                </div>
+                <div class="form-group">
+                    <label for="studentConfirmPassword">Confirm Password:</label>
+                    <div class="input-icon">
+                        <input type="password" id="studentConfirmPassword" name="studentConfirmPassword" required>
+                        <span class="toggle-icon" onclick="togglePassword('studentConfirmPassword', this)">👁️</span>
+                    </div>
+                    <small id="studentPasswordMismatch" style="color: red; display: none;">Passwords do not match</small>
+                </div>
 
-            <label for="email">School Email:</label>
-            <input type="email" id="email" name="email" class="input-field" placeholder="you@example.com" required>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" class="input-field" placeholder="Enter 6 characters or more" required>
-
-            <button type="submit" class="btn">Sign Up</button>
-        </form>
-
-        <hr>
-        <button class="google-btn" onclick="window.location.href='../api/google_login.php'">
-            <img src="../assets/pictures/google_icons.png" alt="Google Login" class="google-icon">
-            Sign Up with Google
-        </button>
-
-       <p class="terms">
-         By using this service, you understand and agree to the PUP Online Services 
-         <a href="https://www.pup.edu.ph/terms/">Terms of Use</a> and 
-         <a href="https://www.pup.edu.ph/privacy/">Privacy Statement</a>.
-        </p>
+            <p class="terms">
+                By using this service, you understand and agree to the PUP Online Services 
+                <a href="https://www.pup.edu.ph/terms/" target="_blank">Terms of Use</a> and 
+                <a href="https://www.pup.edu.ph/privacy/" target="_blank">Privacy Statement</a>.
+            </p>
+        </div>
     </div>
-</div>
 
-<!-- Right Side - Background Image -->
-<div class="right-container"></div>
+    <!-- Right Side - Background Image -->
+    <div class="right-container"></div>
+</main>
 
 <style>
-    .session-alert {
+.session-alert {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #4CAF50; /* Green by default for success */
+    background-color: #4CAF50;
     color: white;
     padding: 14px 24px;
     border-radius: 6px;
@@ -62,11 +116,9 @@ $title = "Register"; $style = "register_styles.css"; include '../includes/header
     text-align: center;
     animation: fadeInSlideDown 0.4s ease-in-out;
 }
-
 .session-alert.error {
-    background-color: #f44336; /* Red for error */
+    background-color: #f44336;
 }
-
 @keyframes fadeInSlideDown {
     from {
         opacity: 0;
@@ -78,13 +130,47 @@ $title = "Register"; $style = "register_styles.css"; include '../includes/header
     }
 }
 </style>
+
 <script>
-    const alertBox = document.querySelector('.session-alert');
-    if (alertBox) {
-        setTimeout(() => {
-            alertBox.style.transition = 'opacity 0.5s ease';
-            alertBox.style.opacity = '0';
-            setTimeout(() => alertBox.remove(), 500);
-        }, 4000);
-    }
+function togglePassword(fieldId, icon) {
+    const field = document.getElementById(fieldId);
+    const isPassword = field.type === "password";
+    field.type = isPassword ? "text" : "password";
+    icon.textContent = isPassword ? "🙈" : "👁️";
+}
+
+const alertBox = document.querySelector('.session-alert');
+if (alertBox) {
+    setTimeout(() => {
+        alertBox.style.transition = 'opacity 0.5s ease';
+        alertBox.style.opacity = '0';
+        setTimeout(() => alertBox.remove(), 500);
+    }, 4000);
+}
+
+function togglePassword(fieldId, icon) {
+    const field = document.getElementById(fieldId);
+    const isPassword = field.type === "password";
+    field.type = isPassword ? "text" : "password";
+    icon.textContent = isPassword ? "🙈" : "👁️";
+}
+
+document.getElementById('studentPassword').addEventListener('input', validatePassword);
+document.getElementById('studentConfirmPassword').addEventListener('input', checkPasswordMatch);
+
+function validatePassword() {
+    const pwd = document.getElementById('studentPassword').value;
+    const warning = document.getElementById('studentPasswordWarning');
+    const regex = /^(?=(?:.*\d.*){2,})(?=(?:.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?`~].*){2,}).{8,20}$/;
+    warning.style.display = regex.test(pwd) ? 'none' : 'block';
+}
+
+function checkPasswordMatch() {
+    const pwd = document.getElementById('studentPassword').value;
+    const confirmPwd = document.getElementById('studentConfirmPassword').value;
+    const mismatch = document.getElementById('studentPasswordMismatch');
+    mismatch.style.display = (pwd && confirmPwd && pwd !== confirmPwd) ? 'block' : 'none';
+}
+
+
 </script>

@@ -1,64 +1,63 @@
 <?php
 // Default values
 $display_name = 'Guest';
-$role_label = '';
-$profile_img = '../assets/uploads_pfp/profile.png'; // Default profile pic
+$role_label = 'Guest';
+$profile_img = '../assets/uploads_pfp/profile.png'; // fallback image
+$role = 'guest';
+$is_guest = true;
 
 // If user is logged in
 if (isset($_SESSION['user_id'])) {
     include '../config/db_conn.php';
     $user_id = $_SESSION['user_id'];
 
-    // Fetch user info and role
-    $stmt = $conn->prepare("SELECT fullName, role, profile_picture, org_id FROM users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT firstName, middleName, lastName, role, profile_picture FROM newusers WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result && $row = $result->fetch_assoc()) {
-        $display_name = ucwords(strtolower($row['fullName']));
+        $firstName = $row['firstName'] ?? '';
+        $middleName = $row['middleName'] ?? '';
+        $lastName = $row['lastName'] ?? '';
+        $display_name = ucwords(strtolower("$firstName $middleName $lastName"));
+
         $role = $row['role'];
-        $user_org_id = $row['org_id'] ?? null;
         $role_label = $role === 'admin' ? 'Admin' : ($role === 'student' ? 'Student' : 'Org Admin');
+        $is_guest = false;
 
-        // For admin and student, check if profile picture exists
+        // Profile picture logic
         if (!empty($row['profile_picture'])) {
-            $uploaded_path = "../assets/uploads_pfp/" . $row['profile_picture'];
-            if (file_exists($uploaded_path)) {
-                $profile_img = $uploaded_path;
+            $candidate_path = '../assets/uploads_pfp/' . $row['profile_picture'];
+            if (file_exists($candidate_path)) {
+                $profile_img = $candidate_path;
             }
-        } elseif ($role === 'org_admin' && $user_org_id !== null) {
-            // Fetch organization's profile picture filename
-            $stmt_org = $conn->prepare("SELECT image_path FROM organizations WHERE id = ?");
-            $stmt_org->bind_param("i", $user_org_id);
-            $stmt_org->execute();
-            $result_org = $stmt_org->get_result();
-
-            if ($result_org && $org_row = $result_org->fetch_assoc()) {
-                $org_img_file = $org_row['image_path'];
-                $org_img_path = "../assets/uploads_organizations/" . $org_img_file;
-                if (!empty($org_img_file) && file_exists($org_img_path)) {
-                    $profile_img = $org_img_path;
-                }
-            }
-            $stmt_org->close();
         }
     }
+
     $stmt->close();
+}
+
+// Determine home page link based on role
+$home_link = 'index.php';
+if (!$is_guest && $role === 'student') {
+    $home_link = 'dashboard.php';
 }
 ?>
 
 <!-- Unified Header -->
-<header class="top-bar <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'org_admin')) echo 'admin-navbar'; ?>">
-    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>
+<header class="top-bar <?php if (!$is_guest && ($role === 'admin' || $role === 'org_admin')) echo 'admin-navbar'; ?>">
+    <?php if ($role === 'student' || $is_guest): ?>
         <div class="logo">
             <img src="../assets/pictures/logo.png" alt="Unified SOEMO Logo">
         </div>
         <ul class="nav-list">
-            <li><a href="dashboard.php">HOME</a></li>
+            <li><a href="<?= $home_link ?>">HOME</a></li>
             <li><a href="organizations.php">ORGANIZATIONS</a></li>
-            <li><a href="new-post.php">POSTS</a></li>
-            <li><a href="events.php">EVENTS</a></li>
+            <?php if (!$is_guest): ?>
+                <li><a href="new-post.php">POSTS</a></li>
+                <li><a href="events.php">EVENTS</a></li>
+            <?php endif; ?>
             <li><a href="about_us.php">ABOUT US</a></li>
         </ul>
     <?php else: ?>
@@ -69,19 +68,22 @@ if (isset($_SESSION['user_id'])) {
     <?php endif; ?>
 
     <div class="top-right">
-        <?php include 'notification_modal.php'; ?>
+        <?php if (!$is_guest) include 'notification_modal.php'; ?>
         <div class="profile" onclick="toggleProfileDropdown()">
             <img src="<?= htmlspecialchars($profile_img); ?>" alt="profile picture" />
             <div class="profile-info">
                 <strong><?= htmlspecialchars($display_name); ?></strong>
                 <span><?= htmlspecialchars($role_label); ?></span>
             </div>
-            <!-- Profile Dropdown -->
             <div class="dropdown-tray" id="profileDropdown">
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'): ?>    
-                <a href="edit_profile.php">Edit Profile</a>
+                <?php if ($role === 'student'): ?>
+                    <a href="edit_profile.php">Edit Profile</a>
                 <?php endif; ?>
-                <a href="../api/logout.php">Logout</a>
+                <?php if (!$is_guest): ?>
+                    <a href="../api/logout.php">Logout</a>
+                <?php else: ?>
+                    <a href="login.php">Login</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

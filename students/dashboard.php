@@ -1,19 +1,30 @@
 <?php 
 require '../api/auth.php';
+
 $student_id = $_SESSION['user_id'] ?? null;
 $student_name = '';
+$tutorial_seen = 0;
+
 require '../config/db_conn.php';
-// Fetch admin's full name from database
 
 if ($student_id) {
-    $sql_student = "SELECT fullName FROM users WHERE ID = ?";
+    $sql_student = "SELECT firstName, middleName, lastName, tutorial_seen FROM newusers WHERE id = ?";
     $stmt = $conn->prepare($sql_student);
     $stmt->bind_param("i", $student_id);
     $stmt->execute();
     $result_student = $stmt->get_result();
+
     if ($result_student->num_rows > 0) {
-        $student_name = ucwords(strtolower($result_student->fetch_assoc()['fullName']));
+        $row = $result_student->fetch_assoc();
+
+        $first = $row['firstName'] ?? '';
+        $middle = $row['middleName'] ?? '';
+        $last = $row['lastName'] ?? '';
+        $student_name = ucwords(strtolower(trim("$first $middle $last")));
+
+        $tutorial_seen = $row['tutorial_seen'] ?? 0;
     }
+
     $stmt->close();
 }
 
@@ -22,32 +33,9 @@ $conn->close();
 $title = "Student Dashboard";
 $style = "studentdashboard_styles.css";
 include '../includes/header.php';
-include '../includes/navbar.php'; ?>
-<?php if (!empty($_SESSION['error'])): ?>
-    <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
-    <?php unset($_SESSION['error']); ?>
-<?php elseif (!empty($_SESSION['success'])): ?>
-    <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
-    <?php unset($_SESSION['success']); ?>
-<?php endif; ?>
-<?php
-require '../config/db_conn.php';
-$tutorial_seen = 0;
-
-if ($student_id) {
-    $sql_student = "SELECT fullName, tutorial_seen FROM users WHERE ID = ?";
-    $stmt = $conn->prepare($sql_student);
-    $stmt->bind_param("i", $student_id);
-    $stmt->execute();
-    $result_student = $stmt->get_result();
-    if ($result_student->num_rows > 0) {
-        $row = $result_student->fetch_assoc();
-        $student_name = ucwords(strtolower($row['fullName']));
-        $tutorial_seen = $row['tutorial_seen'];
-    }
-    $stmt->close();
-}
+include '../includes/navbar.php'; 
 ?>
+
 
 <?php if (!$tutorial_seen): ?>
 <div class="popup-overlay" id="tutorial">
@@ -203,6 +191,10 @@ const alertBox = document.querySelector('.session-alert');
         opacity: 1;
         transform: translate(-50%, 0);
     }
+}
+
+.welcome {
+    margin-top: 15px;
 }
 </style>
 

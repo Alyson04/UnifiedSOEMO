@@ -216,6 +216,7 @@ body {
 
 /* Input Fields */
 .card-body input[type="text"],
+.card-body input[type="email"],
 .card-body input[type="password"] {
   padding: 10px 16px;
   font-size: 0.95rem;
@@ -297,18 +298,20 @@ body {
 }
 
 .form-group input[type="text"],
+.form-group input[type="email"],
 .form-group input[type="password"],
 .form-group select {
   width: 100%;
   text-align: center;
-  padding: 10px 16px;
+  padding: 10px 40px 10px 16px; /* more right padding for eye icon */
   border-radius: 14px;
   border: 2px solid #a3b2d1;
   background-color: #eef4fb;
   color: #2A4365;
   font-weight: 600;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+  font-size: 16px; /* fix font-size to prevent shifting */
+  box-sizing: border-box; /* keeps padding from affecting size */}
 
 .form-group input::placeholder {
   text-align: center;
