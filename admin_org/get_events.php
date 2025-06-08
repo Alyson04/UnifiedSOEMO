@@ -1,6 +1,6 @@
 <?php
 require '../api/auth.php';
-checkUserRole('org_admin');
+checkUserRole('orgAdmin');
 
 require '../config/db_conn.php';
 header('Content-Type: application/json');

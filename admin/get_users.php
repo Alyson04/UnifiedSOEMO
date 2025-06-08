@@ -18,6 +18,14 @@ $disableExpiredRenewals = "
 ";
 $conn->query($disableExpiredRenewals);
 
+$disableGraduatedUsers = "
+    UPDATE newusers
+    SET status = 'disabled'
+    WHERE graduated = 'yes'
+    AND status != 'disabled'  -- Ensuring that we don't update already 'disabled' users
+";
+$conn->query($disableGraduatedUsers);
+
 // Auto-update graduation
 $currentYear = (int)date('Y');
 $cutoffYear = $currentYear - 4;
@@ -45,11 +53,23 @@ $params = [];
 $types = '';
 $conditions = [];
 
-$sql = "SELECT id, lastName, firstName, middleName, studentNumber, course, year, section, email, role, created_at, status, graduated FROM newusers";
+// SQL to fetch users with application status (from join_org) and organization name (from neworganizations), but only the organizations they belong to
+$sql = "
+    SELECT DISTINCT
+        u.id, u.lastName, u.firstName, u.middleName, u.studentNumber, 
+        u.course, u.year, u.section, u.email, u.role, u.created_at, 
+        u.status, u.graduated, 
+        jo.status AS applicationStatus,  -- Get application status from join_org table (status)
+        no.name AS orgName             -- Get organization name from neworganizations table
+    FROM newusers u
+    LEFT JOIN join_org jo ON u.id = jo.student_id  -- Join with join_org table to get application status
+    LEFT JOIN organization_members om ON u.id = om.user_id  -- Join with organization_members to filter by user’s memberships
+    LEFT JOIN neworganizations no ON om.organization_id = no.id  -- Join with neworganizations table to get organization name the user belongs to
+";
 $count_sql = "SELECT COUNT(*) as total FROM newusers";
 
 if (!empty($role_filter)) {
-    $conditions[] = "role = ?";
+    $conditions[] = "u.role = ?";
     $params[] = $role_filter;
     $types .= 's';
 }

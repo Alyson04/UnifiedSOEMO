@@ -4,7 +4,7 @@ $student_id = $_SESSION['user_id'] ?? null;
 $student_name = '';
 require '../config/db_conn.php';
 
-$title = "Student Dashboard";
+$title = "Home Page";
 $style = "studentdashboard_styles.css";
 include '../includes/header.php';
 include '../includes/navbar.php'; ?>

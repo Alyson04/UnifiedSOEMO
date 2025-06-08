@@ -170,8 +170,8 @@
 .content {
     margin-left: 20px;
     max-width: 1200px;
-    min-height: 580px;
-    max-height: 580px;
+    min-height: 630px;
+    max-height: 630px;
     padding: 20px;
     background: #f4f7fa; /* very light blue-gray */
     color: #2A4365; /* main text color */
@@ -195,7 +195,7 @@
     letter-spacing: 2px;
     box-shadow: 0 6px 22px rgba(42, 67, 101, 0.7);
     user-select: none;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 /* Add Event Button */
@@ -309,22 +309,6 @@ tbody tr td:first-child {
 tbody tr td:last-child {
     border-top-right-radius: 16px;
     border-bottom-right-radius: 16px;
-}
-
-/* Set custom widths */
-.event-table th:nth-child(1),
-.event-table td:nth-child(1) {
-    width: 20%;
-}
-
-.event-table th:nth-child(2),
-.event-table td:nth-child(2) {
-    width: 65%; /* Make description wider */
-}
-
-.event-table th:nth-child(3),
-.event-table td:nth-child(3) {
-    width: 15%;
 }
 
 .event-table table tbody tr {

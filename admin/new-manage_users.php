@@ -83,7 +83,9 @@ include '../includes/header.php';
                     <th>Section</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th>Status</th>
+                    <th>Application Status</th> <!-- New column for Application Status -->
+                    <th>Organization</th> <!-- New column for Organization Name -->
+                    <th>Account Status</th>
                     <th>Graduated</th>
                     <th>Date Created</th>
                     <th>Actions</th>
@@ -113,6 +115,15 @@ include '../includes/header.php';
 </div>
 
 <script>
+// Handle status change only for UI update (no backend request yet)
+function handleStatusChange(selectElement) {
+    const status = selectElement.value;
+    const row = selectElement.closest('tr');
+    const applicationStatusCell = row.querySelector('td:nth-child(10)'); // The cell where application status is located
+    applicationStatusCell.querySelector('span').textContent = status.charAt(0).toUpperCase() + status.slice(1); // Update UI
+}
+
+// Enable edit mode for the row
 function enableEdit(button) {
     const row = button.closest('tr');
     row.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
@@ -120,20 +131,33 @@ function enableEdit(button) {
     button.style.display = 'none';
     row.querySelector('.save-btn').classList.remove('hidden');
     row.querySelector('.cancel-btn').classList.remove('hidden');
+    
+    // Reset dropdown value to match current course
+    const courseCell = row.querySelector('td:nth-child(5)'); // Assuming 'course' is in the 5th column
+    const course = courseCell.querySelector('.view').textContent.trim(); // Get the course value from the 'view' span
+    const courseSelect = row.querySelector('select[name="course"]'); // Get the dropdown
+
+    // Ensure that the dropdown shows the correct value based on the current course
+    const option = Array.from(courseSelect.options).find(opt => opt.value === course);
+    if (option) {
+        option.selected = true; // Set the correct option as selected
+    }
 }
 
+// Cancel edit mode
 function cancelEdit(button) {
     const row = button.closest('tr');
     row.querySelectorAll('.view').forEach(el => el.classList.remove('hidden'));
     row.querySelectorAll('.edit').forEach(el => el.classList.add('hidden'));
     row.querySelector('.edit-btn').style.display = 'inline-block';
-    // row.querySelector('.edit-btn').classList.remove('hidden');
     row.querySelector('.save-btn').classList.add('hidden');
     row.querySelector('.cancel-btn').classList.add('hidden');
 }
 
+// Save edited fields including application status
 function saveEdit(button, userId) {
     const row = button.closest('tr');
+    
     const fieldMappings = {
         lastName: row.cells[0],
         firstName: row.cells[1],
@@ -144,8 +168,9 @@ function saveEdit(button, userId) {
         section: row.cells[6],
         email: row.cells[7],
         role: row.cells[8],
-        status: row.cells[9],
-        graduated: row.cells[10]
+        applicationStatus: row.cells[9],
+        status: row.cells[11],
+        graduated: row.cells[12]
     };
 
     const updatePromises = Object.entries(fieldMappings).map(([field, cell]) => {
@@ -166,6 +191,7 @@ function saveEdit(button, userId) {
         });
     });
 
+    // Wait for all updates to complete
     Promise.allSettled(updatePromises).then(results => {
         const hasError = results.some(r => r.status === 'rejected');
         if (hasError) {
@@ -181,14 +207,15 @@ function saveEdit(button, userId) {
     });
 }
 
-
 function openDeleteModal() {
     document.getElementById('deleteUserModal').style.display = 'block';
 }
+
 function closeDeleteModal() {
     document.getElementById('deleteUserModal').style.display = 'none';
 }
 
+// Fetch users and display them
 const tableBody = document.getElementById('userTableBody');
 const paginationControls = document.getElementById('paginationControls');
 const roleFilter = document.getElementById('role_filter');
@@ -211,6 +238,7 @@ function fetchUsers(page = 1) {
         });
 }
 
+// Render user rows
 function renderUsers(users) {
     tableBody.innerHTML = '';
     if (!users.length) {
@@ -227,7 +255,7 @@ function renderUsers(users) {
             <td><span class="view">${safeValue(user.studentNumber)}</span><input class="edit hidden" value="${user.studentNumber}" ${user.role === 'admin' ? 'disabled' : ''}></td>
             <td>
             <span class="view">${safeValue(user.course)}</span>
-            <select class="edit hidden" ${user.role === 'admin' ? 'disabled' : ''}>
+            <select class="edit hidden" name="course" ${user.role === 'admin' ? 'disabled' : ''}>
                 <option value="">-- Select Course --</option>
                 <option value="DCvET" ${user.course === 'DCvET' ? 'selected' : ''}>Diploma in Civil Engineering Technology</option>
                 <option value="DCET" ${user.course === 'DCET' ? 'selected' : ''}>Diploma in Computer Engineering Technology</option>
@@ -257,6 +285,14 @@ function renderUsers(users) {
                     <option value="orgAdmin" ${user.role === 'orgAdmin' ? 'selected' : ''}>Org Admin</option>
                 </select>
             </td>
+            <td><span class="view">${safeValue(user.applicationStatus)}</span>
+                <select class="edit hidden" ${user.role === 'admin' ? 'disabled' : ''} onchange="handleStatusChange(this)">
+                    <option value="pending" ${user.applicationStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="approved" ${user.applicationStatus === 'approved' ? 'selected' : ''}>Approved</option>
+                    <option value="rejected" ${user.applicationStatus === 'rejected' ? 'selected' : ''}>Rejected</option>
+                </select>
+            </td>
+            <td><span class="view">${safeValue(user.orgName)}</span><input class="edit hidden" value="${user.orgName}" disabled></td> <!-- New column -->
             <td><span class="view">${safeValue(user.status)}</span>
                 <select class="edit hidden" ${user.role === 'admin' ? 'disabled' : ''}>
                     <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active</option>
@@ -278,10 +314,12 @@ function renderUsers(users) {
                 <button class="edit hidden cancel-btn" onclick="cancelEdit(this)">Cancel</button>
             </td>
         `;
+
         tableBody.appendChild(tr);
     });
 }
 
+// Pagination and other necessary functions
 function renderPagination(total, perPage, currentPage) {
     const totalPages = Math.ceil(total / perPage);
     paginationControls.innerHTML = '';

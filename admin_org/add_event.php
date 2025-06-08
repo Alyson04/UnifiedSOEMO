@@ -1,6 +1,6 @@
 <?php
 require '../api/auth.php';
-checkUserRole('org_admin'); // Only org admins can access this page
+checkUserRole('orgAdmin'); // Only org admins can access this page
 
 require '../config/db_conn.php';
 

@@ -8,9 +8,7 @@ if ($query === '') {
     // Return all organizations with active users
     $sql = "
         SELECT DISTINCT o.id, o.name, o.description, o.image_path, o.created_at
-        FROM organizations o
-        INNER JOIN users u ON u.org_id = o.id
-        WHERE u.status != 'deleted'
+        FROM neworganizations o
         ORDER BY o.created_at ASC
     ";
     $stmt = $conn->prepare($sql);
@@ -18,9 +16,7 @@ if ($query === '') {
     // Search organizations based on name or description
     $sql = "
         SELECT DISTINCT o.id, o.name, o.description, o.image_path, o.created_at
-        FROM organizations o
-        INNER JOIN users u ON u.org_id = o.id
-        WHERE u.status != 'deleted'
+        FROM neworganizations o
         AND (o.name LIKE ? OR o.description LIKE ?)
         ORDER BY o.created_at ASC
     ";

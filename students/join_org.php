@@ -4,7 +4,7 @@ require '../config/db_conn.php';
 
 $student_id = $_SESSION['user_id'] ?? null;
 $org_name = '';
-$org_id = $_GET['org_id'] ?? null;
+$org_id = $_GET['id'] ?? null;
 
 $firstName = '';
 $middleName = '';
@@ -35,7 +35,7 @@ if ($student_id) {
 }
 
 if ($org_id) {
-    $stmt = $conn->prepare("SELECT name FROM organizations WHERE id = ?");
+    $stmt = $conn->prepare("SELECT name FROM neworganizations WHERE id = ?");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $result = $stmt->get_result();

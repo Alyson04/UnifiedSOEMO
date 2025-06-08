@@ -1,14 +1,12 @@
-<?php 
+<?php
 require '../api/auth.php';
 checkUserRole('admin'); // Only allow admins
 
 require '../config/db_conn.php';
 
-// Get logged-in user's ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
-// Fetch admin's full name from database
 if ($admin_id) {
     $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
@@ -24,7 +22,7 @@ if ($admin_id) {
 $conn->close();
 
 $title = "Unified SOEMO Dashboard";
-$style = "new-manage_organizations.css"; // Reuse manage events style
+$style = "new-manage_organizations.css";
 include '../includes/header.php';
 ?>
 
@@ -40,88 +38,165 @@ include '../includes/header.php';
 
 <?php include '../includes/sidebar.php'; ?>
 
-<!-- Main Panel -->
 <main class="main-content">
 <?php include '../includes/navbar.php'; ?>
 
 <div class="content">
     <h2 class="page-title">MANAGE ORGANIZATIONS</h2>
 
-    <!-- Organizations Table -->
+    <div class="filter-status" style="margin-bottom: 1rem;">
+        <label for="statusFilter">Filter by Status:</label>
+        <select id="statusFilter">
+            <option value="">All</option>
+            <option value="active">Active</option>
+            <option value="renewal">Renewal</option>
+            <option value="expired">Expired</option>
+            <option value="revalidation">Revalidation</option>
+        </select>
+    </div>
+
+    <div class="top-actions" style="margin-bottom: 1rem;">
+        <a href="create_organization.php" class="action-btn">+ Create Organization</a>
+    </div>
+
     <div class="event-table">
         <table>
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Date Created</th>
+                    <th>Mission</th>
+                    <th>Vision</th>
+                    <th>Status</th>
+                    <th>Last Updated</th>
+                    <th>Renewal Date</th>
+                    <th>Expiry Date</th>
+                    <th>Admin</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="orgTableBody">
-                <!-- Data will load here via AJAX -->
-            </tbody>
+            <tbody id="orgTableBody"></tbody>
         </table>
-        
     </div>
-<div id="paginationControls" class="pagination-controls"></div>
-    
+
+    <div id="paginationControls" class="pagination-controls"></div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const tableBody = document.getElementById('orgTableBody');
     const paginationControls = document.getElementById('paginationControls');
+    const statusFilter = document.getElementById('statusFilter');
 
-    function fetchOrganizations(page = 1) {
-        fetch(`get_organizations.php?page=${page}`)
-            .then(res => res.json())
-            .then(data => {
-                renderOrganizations(data.organizations);
-                renderPagination(data.total, data.perPage, page);
-            })
-            .catch(() => {
-                tableBody.innerHTML = '<tr><td colspan="3">Error loading organizations.</td></tr>';
-                paginationControls.innerHTML = '';
-            });
+    let orgAdmins = [];
+
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/[&<>"']/g, (m) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;',
+            })[m]);
+    }
+
+    async function fetchOrgAdmins() {
+        try {
+            const res = await fetch('get_org_admins.php');
+            const data = await res.json();
+            orgAdmins = data;
+            console.log("Fetched orgAdmins: ", orgAdmins);  // Log orgAdmins
+        } catch (err) {
+            console.error('Failed to fetch orgAdmins:', err);
+        }
+    }
+
+    function populateAdminSelect(selectEl, selectedId = null) {
+        selectEl.innerHTML = '<option value="">Select Admin</option>';
+        orgAdmins.forEach(admin => {
+            const option = document.createElement('option');
+            option.value = admin.id;
+            option.textContent = admin.fullName;
+            if (selectedId && selectedId == admin.id) {
+                option.selected = true;
+            }
+            selectEl.appendChild(option);
+        });
+    }
+
+    async function fetchOrganizations(page = 1) {
+        const status = statusFilter.value;
+        const res = await fetch(`get_organizations.php?page=${page}&status=${status}`);
+        const data = await res.json();
+
+        console.log("Fetched organizations:", data.organizations);  // Log the organization data
+
+        renderOrganizations(data.organizations);
+        renderPagination(data.total, data.perPage, page);
     }
 
     function renderOrganizations(orgs) {
-    tableBody.innerHTML = '';
+        tableBody.innerHTML = '';
 
-    if (orgs.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="3">No organizations found.</td></tr>';
-        return;
+        if (orgs.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="10">No organizations found.</td></tr>';
+            return;
+        }
+
+        orgs.forEach(org => {
+        console.log("Searching for admin with id:", org.user_id);
+        const admin = orgAdmins.find(admin => admin.id === org.user_id);
+        console.log("Matching admin for org.user_id: ", admin);
+        const adminName = admin ? `${escapeHtml(admin.firstName)} ${escapeHtml(admin.lastName)}` : 'Not Assigned';
+
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><span class="view">${escapeHtml(org.name)}</span><input class="edit hidden" value="${escapeHtml(org.name)}"></td>
+                <td><span class="view">${escapeHtml(org.description)}</span><input class="edit hidden" value="${escapeHtml(org.description)}"></td>
+                <td><span class="view">${escapeHtml(org.mission)}</span><input class="edit hidden" value="${escapeHtml(org.mission)}"></td>
+                <td><span class="view">${escapeHtml(org.vision)}</span><input class="edit hidden" value="${escapeHtml(org.vision)}"></td>
+                <td>
+                    <span class="view">${escapeHtml(org.status)}</span>
+                    <select class="edit hidden">
+                        <option value="active" ${org.status === 'active' ? 'selected' : ''}>Active</option>
+                        <option value="renewal" ${org.status === 'renewal' ? 'selected' : ''}>Renewal</option>
+                        <option value="expired" ${org.status === 'expired' ? 'selected' : ''}>Expired</option>
+                        <option value="revalidation" ${org.status === 'revalidation' ? 'selected' : ''}>Revalidation</option>
+                    </select>
+                </td>
+                <td>${org.last_updated ? new Date(org.last_updated).toLocaleDateString() : 'N/A'}</td>
+                <td>${org.renewal_date ? new Date(org.renewal_date).toLocaleDateString() : 'N/A'}</td>
+                <td>${org.expiry_date ? new Date(org.expiry_date).toLocaleDateString() : 'N/A'}</td>
+                <td>
+                    <span class="view">${adminName}</span>
+                    <select class="edit hidden admin-select"></select>
+                </td>
+                <td>
+                    <button class="edit-btn" onclick="enableEdit(this)">Edit</button>
+                    <button class="save-btn hidden" onclick="saveEdit(this, ${org.id})">Save</button>
+                    <button class="cancel-btn hidden" onclick="cancelEdit(this)">Cancel</button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+            const select = tr.querySelector('select.admin-select');
+            populateAdminSelect(select, org.user_id);
+        });
+
+        const minRows = 5;
+        const emptyRows = minRows - orgs.length;
+        for (let i = 0; i < emptyRows; i++) {
+            const emptyTr = document.createElement('tr');
+            emptyTr.innerHTML = `<td colspan="10" style="height: 50px; visibility: hidden;">&nbsp;</td>`;
+            tableBody.appendChild(emptyTr);
+        }
     }
-
-    orgs.forEach(org => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${escapeHtml(org.name)}</td>
-            <td>${escapeHtml(org.description)}</td>
-            <td>${new Date(org.created_at).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}</td>
-        `;
-        tableBody.appendChild(tr);
-    });
-
-    // Pad table with empty rows if fewer than 5
-    const minRows = 5;
-    const emptyRows = minRows - orgs.length;
-    for (let i = 0; i < emptyRows; i++) {
-        const emptyTr = document.createElement('tr');
-        emptyTr.innerHTML = `
-            <td colspan="3" style="height: 50px; visibility: hidden;">&nbsp;</td>
-        `;
-        tableBody.appendChild(emptyTr);
-    }
-}
-
 
     function renderPagination(total, perPage, current) {
         const totalPages = Math.ceil(total / perPage);
         paginationControls.innerHTML = '';
-
         if (totalPages <= 1) return;
-
         for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement('button');
             btn.textContent = i;
@@ -131,15 +206,71 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function escapeHtml(text) {
-        return text.replace(/[&<>"']/g, function(m) {
-            return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m];
-        });
-    }
+    window.enableEdit = function(button) {
+        const row = button.closest('tr');
+        row.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
+        row.querySelectorAll('.edit').forEach(el => el.classList.remove('hidden'));
+        button.style.display = 'none';
+        row.querySelector('.save-btn').classList.remove('hidden');
+        row.querySelector('.cancel-btn').classList.remove('hidden');
+    };
 
-    fetchOrganizations();
+    window.cancelEdit = function(button) {
+        const row = button.closest('tr');
+        row.querySelectorAll('.view').forEach(el => el.classList.remove('hidden'));
+        row.querySelectorAll('.edit').forEach(el => el.classList.add('hidden'));
+        row.querySelector('.edit-btn').style.display = 'inline-block';
+        row.querySelector('.save-btn').classList.add('hidden');
+        row.querySelector('.cancel-btn').classList.add('hidden');
+    };
+
+    window.saveEdit = function(button, orgId) {
+        const row = button.closest('tr');
+        const fieldMappings = {
+            name: row.cells[0],
+            description: row.cells[1],
+            mission: row.cells[2],
+            vision: row.cells[3],
+            status: row.cells[4],
+            user_id: row.cells[8] // Admin assignment
+        };
+
+        const updatePromises = Object.entries(fieldMappings).map(([field, cell]) => {
+            const input = cell.querySelector('.edit');
+            if (!input) return Promise.resolve();
+            const value = input.value;
+
+            return fetch('update_organization_field.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${encodeURIComponent(orgId)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(`Failed to update ${field}: ${data.message}`);
+                }
+                const view = cell.querySelector('.view');
+                if (field === 'user_id') {
+                    const admin = orgAdmins.find(a => a.id == value);
+                    view.textContent = admin ? admin.fullName : 'Not Assigned';
+                } else {
+                    view.textContent = value;
+                }
+            })
+            .catch(err => alert(err.message));
+        });
+
+        Promise.all(updatePromises).then(() => cancelEdit(button));
+    };
+
+    // Initialize
+    await fetchOrgAdmins();
+    await fetchOrganizations(1);
+    statusFilter.addEventListener('change', () => fetchOrganizations(1));
 });
 </script>
+
 
 <style>
 .pagination-controls {
@@ -156,6 +287,24 @@ document.addEventListener('DOMContentLoaded', () => {
 .pagination-controls button.active {
     background: #333;
     color: #fff;
+}
+.action-btn {
+    padding: 10px 16px;
+    background-color: #2A4365;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+.action-btn:hover {
+    background-color: #1f2f47;
+}
+.edit.hidden,
+.save-btn.hidden,
+.cancel-btn.hidden,
+.view.hidden { 
+    display: none; 
 }
 </style>
 

@@ -24,10 +24,9 @@ $org = null;
 
 if ($org_id) {
     $stmt = $conn->prepare("
-        SELECT o.name, o.description, o.image_path, o.created_at,
-               l.objective, l.how_to_join, l.requirements, l.highlights
-        FROM organizations o
-        LEFT JOIN loadorg l ON o.id = l.org_id
+        SELECT o.id, o.name, o.description, o.image_path, o.created_at,
+               o.objective, o.how_to_join, o.requirements, o.mission, o.vision
+        FROM neworganizations o
         WHERE o.id = ?
     ");
     $stmt->bind_param("i", $org_id);
@@ -107,7 +106,7 @@ include '../includes/navbar.php';
         <?php endif; ?>
 
         <div class="join-section">
-            <a href="join_org.php?org_id=<?= urlencode($org_id) ?>" class="join-button">Join Now</a>
+            <a href="join_org.php?id=<?= urlencode($org_id) ?>" class="join-button">Join Now</a>
         </div>
     </div>
 
