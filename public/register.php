@@ -35,9 +35,9 @@ include '../includes/header.php';
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="studentNumber">Student Number: (Format: yyyy-nnnnnn-mn-0)</label>
-                    <input type="text" id="studentNumber" name="studentNumber" pattern="\d{4}-\d{6}-mn-0" title="Format: yyyy-nnnnnn-mn-0 (e.g., 2023-123456-mn-0)" required>
-                    <small id="studentNumberWarning" style="color: red; display: none;">Please follow the format: yyyy-nnnnnn-mn-0</small>
+                    <label for="studentNumber">Student Number: (Format: yyyy-nnnnn-MN-0)</label>
+                    <input type="text" id="studentNumber" name="studentNumber" pattern="\d{4}-\d{5}-MN-0" title="Format: yyyy-nnnnn-MN-0 (e.g., 2023-12345-MN-0)" required>
+                    <small id="studentNumberWarning" style="color: red; display: none;">Please follow the format: yyyy-nnnnn-MN-0</small>
                 </div>
                 <div class="form-group">
                     <label for="studentCourse">Course:</label>
@@ -178,7 +178,7 @@ function checkPasswordMatch() {
 function validateStudentNumber() {
     const studentNum = document.getElementById('studentNumber').value;
     const warning = document.getElementById('studentNumberWarning');
-    const regex = /^\d{4}-\d{6}-mn-0$/;
+    const regex = /^\d{4}-\d{5}-MN-0$/;
     
     if (studentNum) {
         warning.style.display = regex.test(studentNum) ? 'none' : 'block';
