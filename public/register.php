@@ -20,21 +20,24 @@ include '../includes/header.php';
             <p class="subtitle">Already have an account? <a href="login.php">Log in</a></p>
 
             <form action="../api/register.php" method="POST">
-                <div class="form-group">
-                    <label for="studentLastName">Last Name:</label>
-                    <input type="text" id="studentLastName" name="studentLastName" required>
+                <div class="name-fields-container">
+                    <div class="form-group name-field">
+                        <label for="studentLastName">Last Name:</label>
+                        <input type="text" id="studentLastName" name="studentLastName" required>
+                    </div>
+                    <div class="form-group name-field">
+                        <label for="studentFirstName">First Name:</label>
+                        <input type="text" id="studentFirstName" name="studentFirstName" required>
+                    </div>
+                    <div class="form-group name-field">
+                        <label for="studentMiddleName">Middle Name:</label>
+                        <input type="text" id="studentMiddleName" name="studentMiddleName">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="studentFirstName">First Name:</label>
-                    <input type="text" id="studentFirstName" name="studentFirstName" required>
-                </div>
-                <div class="form-group">
-                    <label for="studentMiddleName">Middle Name:</label>
-                    <input type="text" id="studentMiddleName" name="studentMiddleName">
-                </div>
-                <div class="form-group">
-                    <label for="studentNumber">Student Number:</label>
-                    <input type="text" id="studentNumber" name="studentNumber" required>
+                    <label for="studentNumber">Student Number: (Format: yyyy-nnnnnn-mn-0)</label>
+                    <input type="text" id="studentNumber" name="studentNumber" pattern="\d{4}-\d{6}-mn-0" title="Format: yyyy-nnnnnn-mn-0 (e.g., 2023-123456-mn-0)" required>
+                    <small id="studentNumberWarning" style="color: red; display: none;">Please follow the format: yyyy-nnnnnn-mn-0</small>
                 </div>
                 <div class="form-group">
                     <label for="studentCourse">Course:</label>
@@ -50,18 +53,20 @@ include '../includes/header.php';
                         <option value="DRET">Diploma in Railway Engineering Technology</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="studentYear">Year:</label>
-                    <select id="studentYear" name="studentYear" required>
-                        <option value="">-- Select Year --</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="studentSection">Section:</label>
-                    <input type="text" id="studentSection" name="studentSection" required>
+                <div class="year-section-container">
+                    <div class="form-group year-field">
+                        <label for="studentYear">Year:</label>
+                        <select id="studentYear" name="studentYear" required>
+                            <option value="">-- Select Year --</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <div class="form-group section-field">
+                        <label for="studentSection">Section: 1,2,3,4,5...?</label>
+                        <input type="text" id="studentSection" name="studentSection" required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="studentEmail">Email:</label>
@@ -71,7 +76,7 @@ include '../includes/header.php';
                     <label for="studentPassword">Password:</label>
                     <div class="input-icon">
                         <input type="password" id="studentPassword" name="studentPassword" required>
-                        <span class="toggle-icon" onclick="togglePassword('studentPassword', this)">👁️</span>
+                        <img src="../assets/pictures/eye-off.png" class="toggle-icon" onclick="togglePassword('studentPassword', this)" alt="toggle password">
                     </div>
                     <small id="studentPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 2 numbers and 2 special characters.</small>
                 </div>
@@ -79,7 +84,7 @@ include '../includes/header.php';
                     <label for="studentConfirmPassword">Confirm Password:</label>
                     <div class="input-icon">
                         <input type="password" id="studentConfirmPassword" name="studentConfirmPassword" required>
-                        <span class="toggle-icon" onclick="togglePassword('studentConfirmPassword', this)">👁️</span>
+                        <img src="../assets/pictures/eye-off.png" class="toggle-icon" onclick="togglePassword('studentConfirmPassword', this)" alt="toggle password">
                     </div>
                     <small id="studentPasswordMismatch" style="color: red; display: none;">Passwords do not match</small>
                 </div>
@@ -134,9 +139,13 @@ include '../includes/header.php';
 <script>
 function togglePassword(fieldId, icon) {
     const field = document.getElementById(fieldId);
-    const isPassword = field.type === "password";
-    field.type = isPassword ? "text" : "password";
-    icon.textContent = isPassword ? "🙈" : "👁️";
+    if (field.type === "password") {
+        field.type = "text";
+        icon.src = "../assets/pictures/eye.png";
+    } else {
+        field.type = "password";
+        icon.src = "../assets/pictures/eye-off.png";
+    }
 }
 
 const alertBox = document.querySelector('.session-alert');
@@ -148,15 +157,9 @@ if (alertBox) {
     }, 4000);
 }
 
-function togglePassword(fieldId, icon) {
-    const field = document.getElementById(fieldId);
-    const isPassword = field.type === "password";
-    field.type = isPassword ? "text" : "password";
-    icon.textContent = isPassword ? "🙈" : "👁️";
-}
-
 document.getElementById('studentPassword').addEventListener('input', validatePassword);
 document.getElementById('studentConfirmPassword').addEventListener('input', checkPasswordMatch);
+document.getElementById('studentNumber').addEventListener('input', validateStudentNumber);
 
 function validatePassword() {
     const pwd = document.getElementById('studentPassword').value;
@@ -172,5 +175,27 @@ function checkPasswordMatch() {
     mismatch.style.display = (pwd && confirmPwd && pwd !== confirmPwd) ? 'block' : 'none';
 }
 
-
+function validateStudentNumber() {
+    const studentNum = document.getElementById('studentNumber').value;
+    const warning = document.getElementById('studentNumberWarning');
+    const regex = /^\d{4}-\d{6}-mn-0$/;
+    
+    if (studentNum) {
+        warning.style.display = regex.test(studentNum) ? 'none' : 'block';
+        
+        // Auto-format as user types
+        if (studentNum.length > 0 && !studentNum.includes('-')) {
+            let formatted = studentNum.replace(/\D/g, ''); // Remove non-digits
+            if (formatted.length >= 4) {
+                formatted = formatted.substr(0, 4) + '-' + formatted.substr(4);
+            }
+            if (formatted.length >= 11) {
+                formatted = formatted.substr(0, 11) + '-mn-0';
+                document.getElementById('studentNumber').value = formatted;
+            }
+        }
+    } else {
+        warning.style.display = 'none';
+    }
+}
 </script>
