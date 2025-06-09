@@ -295,7 +295,7 @@ button {
 
     .main-content {
         padding: 15px;
-        margin-top: 60px;
+        margin-top: 0px;
     }
 
     .page-title {
@@ -340,6 +340,7 @@ button {
 @media (max-width: 480px) {
     .main-layout {
         padding: 15px 10px;
+
     }
 
     .main-content {
