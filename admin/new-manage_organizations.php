@@ -55,7 +55,7 @@ include '../includes/header.php';
         </select>
     </div>
 
-    <div class="top-actions" style="margin-bottom: 1rem;">
+    <div class="top-actions" style="margin-top: 30px; margin-bottom: 50px;">
         <a href="create_organization.php" class="action-btn">+ Create Organization</a>
     </div>
 
@@ -68,10 +68,10 @@ include '../includes/header.php';
                     <th>Mission</th>
                     <th>Vision</th>
                     <th>Status</th>
-                    <th>Last Updated</th>
-                    <th>Renewal Date</th>
-                    <th>Expiry Date</th>
-                    <th>Org Admin</th>
+                    <th>Last<br>Updated</th>
+                    <th>Renewal<br>Date</th>
+                    <th>Expiry<br>Date</th>
+                    <th>Org<br>Admin</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -288,17 +288,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     background: #333;
     color: #fff;
 }
+
 .action-btn {
-    padding: 10px 16px;
-    background-color: #2A4365;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 999px;
-    font-weight: bold;
-    transition: background-color 0.3s;
+ align-self: flex-start;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #36577d, #2A4365);
+  color: #dbe2ef; /* soft blue-white */
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(42, 67, 101, 0.55);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+  user-select: none;
+  margin-bottom: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.action-btn:hover{
+background: linear-gradient(135deg, #1f3554, #15273c);
+  box-shadow: 0 10px 28px rgba(21, 39, 60, 0.8);
+}
+.action-btn:first-child {
+  margin-left: 0;
+}
+
 .action-btn:hover {
-    background-color: #1f2f47;
+  background-color: #0056b3;
 }
 .edit.hidden,
 .save-btn.hidden,

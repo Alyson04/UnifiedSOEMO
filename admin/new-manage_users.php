@@ -100,7 +100,7 @@ include '../includes/header.php';
 </div>
 
 <!-- Delete Modal -->
-<div id="deleteUserModal" class="modal-overlay" style="display:none;">
+<div id="deleteUserModal" class="modal-overlaydel" style="display:none;">
     <div class="modal-box">
         <h3>Delete User</h3>
         <form action="delete_user.php" method="POST">
@@ -111,6 +111,17 @@ include '../includes/header.php';
                 <button type="button" class="action-btn" style="border:none;" onclick="closeDeleteModal()">Cancel</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Save Changes Confirmation Modal -->
+<div id="saveConfirmModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box confirmation-box">
+        <p>Are you sure you want to save these changes?</p>
+        <div class="modal-actions">
+            <button class="action-btn confirm-yes" onclick="confirmSave()">Yes</button>
+            <button class="action-btn confirm-no" onclick="closeSaveConfirmModal()">No</button>
+        </div>
     </div>
 </div>
 
@@ -154,10 +165,58 @@ function cancelEdit(button) {
     row.querySelector('.cancel-btn').classList.add('hidden');
 }
 
+let currentSaveButton = null;
+let currentUserId = null;
+
 // Save edited fields including application status
 function saveEdit(button, userId) {
     const row = button.closest('tr');
+    let hasChanges = false;
+
+    // Check if any field has been changed
+    const fieldMappings = {
+        lastName: row.cells[0],
+        firstName: row.cells[1],
+        middleName: row.cells[2],
+        studentNumber: row.cells[3],
+        course: row.cells[4],
+        year: row.cells[5],
+        section: row.cells[6],
+        email: row.cells[7],
+        role: row.cells[8],
+        applicationStatus: row.cells[9],
+        status: row.cells[11],
+        graduated: row.cells[12]
+    };
+
+    // Check each field for changes
+    Object.entries(fieldMappings).forEach(([field, cell]) => {
+        const input = cell.querySelector('.edit');
+        const span = cell.querySelector('.view');
+        if (input && span) {
+            const newValue = input.value;
+            const oldValue = span.textContent;
+            if (newValue !== oldValue && newValue !== 'N/A' && oldValue !== 'N/A') {
+                hasChanges = true;
+            }
+        }
+    });
+
+    // Only show confirmation if there are changes
+    if (hasChanges) {
+        currentSaveButton = button;
+        currentUserId = userId;
+        document.getElementById('saveConfirmModal').style.display = 'block';
+    } else {
+        // If no changes, just exit edit mode
+        cancelEdit(button);
+    }
+}
+
+function confirmSave() {
+    if (!currentSaveButton || !currentUserId) return;
     
+    const row = currentSaveButton.closest('tr');
     const fieldMappings = {
         lastName: row.cells[0],
         firstName: row.cells[1],
@@ -175,13 +234,13 @@ function saveEdit(button, userId) {
 
     const updatePromises = Object.entries(fieldMappings).map(([field, cell]) => {
         const input = cell.querySelector('.edit');
-        if (!input) return Promise.resolve(); // skip if not editable
+        if (!input) return Promise.resolve();
         const value = input.value;
 
         return fetch('update_user_field.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `id=${encodeURIComponent(userId)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`
+            body: `id=${encodeURIComponent(currentUserId)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`
         })
         .then(response => response.json())
         .then(data => {
@@ -204,7 +263,16 @@ function saveEdit(button, userId) {
         row.querySelector('.edit-btn').style.display = 'inline-block';
         row.querySelector('.save-btn').classList.add('hidden');
         row.querySelector('.cancel-btn').classList.add('hidden');
+        
+        // Close the confirmation modal
+        closeSaveConfirmModal();
     });
+}
+
+function closeSaveConfirmModal() {
+    document.getElementById('saveConfirmModal').style.display = 'none';
+    currentSaveButton = null;
+    currentUserId = null;
 }
 
 function openDeleteModal() {
