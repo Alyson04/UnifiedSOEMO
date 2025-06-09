@@ -147,8 +147,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         orgs.forEach(org => {
         console.log("Searching for admin with id:", org.user_id);
         const admin = orgAdmins.find(admin => admin.id === org.user_id);
-        console.log("Matching admin for org.user_id: ", admin);
-        const adminName = admin ? `${escapeHtml(admin.firstName)} ${escapeHtml(admin.lastName)}` : 'Not Assigned';
+        console.log("Matching admin for org.user_id: ", orgAdmins.find(admin => admin.id == org.user_id));
+        const adminName = admin ? escapeHtml(admin.fullName) : 'Not Assigned';
 
 
             const tr = document.createElement('tr');

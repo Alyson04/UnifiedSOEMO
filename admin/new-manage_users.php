@@ -84,7 +84,7 @@ include '../includes/header.php';
                     <th>Email</th>
                     <th>Role</th>
                     <th>Application Status</th> <!-- New column for Application Status -->
-                    <th>Organization</th> <!-- New column for Organization Name -->
+                    <th>Joined Organization</th> <!-- New column for Organization Name -->
                     <th>Account Status</th>
                     <th>Graduated</th>
                     <th>Date Created</th>
