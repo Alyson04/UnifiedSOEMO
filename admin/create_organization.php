@@ -206,7 +206,7 @@ function submitForm() {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      alert('Organization created successfully!');
+      // alert('Organization created successfully!');
       window.location.href = "new-manage_organizations.php"; // Redirect on success
     } else {
       showFormError(data.message);

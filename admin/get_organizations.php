@@ -97,9 +97,13 @@ $sql = "
         no.expiry_date, 
         no.last_updated, 
         no.user_id,
-        nu.firstName,   -- Get first name of the user
-        nu.middleName,  -- Get middle name of the user
-        nu.lastName     -- Get last name of the user
+        CONCAT(
+            COALESCE(nu.firstName, ''),
+            ' ',
+            COALESCE(nu.middleName, ''),
+            ' ',
+            COALESCE(nu.lastName, '')
+        ) as admin_name
     FROM neworganizations no
     LEFT JOIN newusers nu ON no.user_id = nu.id
 ";

@@ -109,6 +109,37 @@ include '../includes/header.php';
   .disabled-event { opacity: 0.5; background: #f9f9f9; }
   .status-select, .edit-title, .edit-date, .org-select { padding: 4px; }
   .btn-edit, .btn-toggle-disable, .btn-cancel { margin-right: 5px; padding: 4px 8px; }
+  .session-alert {
+    position: fixed;
+    top: 20px;
+    left: 55%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green by default for success */
+    color: white;
+    padding: 14px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 500;
+    max-width: 80%;
+    text-align: center;
+    animation: fadeInSlideDown 0.4s ease-in-out;
+}
+
+.session-alert.error {
+    background-color: #f44336; /* Red for error */
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
 </style>
 
 <script>
@@ -313,6 +344,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return isNaN(d) ? '' : `${d.getFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}-${('0'+d.getDate()).slice(-2)}`;
   }
 });
+
+const alertBox = document.querySelector('.session-alert');
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.transition = 'opacity 0.5s ease';
+            alertBox.style.opacity = '0';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 4000);
+    }
 </script>
 
 

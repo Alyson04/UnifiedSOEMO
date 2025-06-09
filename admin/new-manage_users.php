@@ -48,7 +48,6 @@ include '../includes/header.php';
     <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
     <?php unset($_SESSION['success']); ?>
 <?php endif; ?>
-
 <div class="content">
     <h2 class="page-title">MANAGE USERS</h2>
 
@@ -343,6 +342,15 @@ function escapeHtml(text) {
 
 roleFilter.addEventListener('change', () => fetchUsers(1));
 document.addEventListener('DOMContentLoaded', () => fetchUsers());
+
+const alertBox = document.querySelector('.session-alert');
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.transition = 'opacity 0.5s ease';
+            alertBox.style.opacity = '0';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 4000);
+    }
 </script>
 
 <style>

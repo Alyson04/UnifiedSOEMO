@@ -1,9 +1,12 @@
 <?php
+session_start();
 require '../config/db_conn.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    exit('Invalid request method');
+    $_SESSION['error'] = 'Invalid request method.';
+    header('Location: ../admin/create_new_user.php');
+    exit;
 }
 
 function sanitize($conn, $input) {
@@ -54,29 +57,41 @@ if ($role === 'student') {
 }
 
 if (!empty($missingFields)) {
-    exit('Missing fields: ' . implode(', ', $missingFields));
+    $_SESSION['error'] = 'Missing fields: ' . implode(', ', $missingFields);
+    header('Location: ../admin/create_new_user.php');
+    exit;
 }
 
 // Email validation
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    exit('Invalid email format');
+    $_SESSION['error'] = 'Invalid email format.';
+    header('Location: ../admin/create_new_user.php');
+    exit;
 }
 if ($role === 'admin' && !preg_match("/@pup\.edu\.ph$/", $email)) {
-    exit('Admin email must end with @pup.edu.ph');
+    $_SESSION['error'] = 'Admin email must end with @pup.edu.ph';
+    header('Location: ../admin/create_new_user.php');
+    exit;
 }
 if (in_array($role, ['student', 'orgAdmin']) && !preg_match("/@iskolarngbayan\.pup\.edu\.ph$/", $email)) {
-    exit('School email must end with @iskolarngbayan.pup.edu.ph');
+    $_SESSION['error'] = 'School email must end with @iskolarngbayan.pup.edu.ph';
+    header('Location: ../admin/create_new_user.php');
+    exit;
 }
 
 // Password validation
 if ($password !== $confirmPassword) {
-    exit('Passwords do not match');
+    $_SESSION['error'] = 'Passwords do not match.';
+    header('Location: ../admin/create_new_user.php');
+    exit;
 }
 $lengthValid = strlen($password) >= 8 && strlen($password) <= 20;
 $hasNumbers = preg_match_all('/\d/', $password) >= 2;
 $hasSpecials = preg_match_all('/[^A-Za-z0-9]/', $password) >= 2;
 if (!$lengthValid || !$hasNumbers || !$hasSpecials) {
-    exit('Password does not meet complexity requirements');
+     $_SESSION['error'] = 'Password must be 8–20 characters long and include at least 2 numbers and 2 special characters.';
+    header('Location: ../admin/create_new_user.php');
+    exit;
 }
 
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -84,7 +99,9 @@ $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 // Validate student number logic
 if ($studentNumber !== 'N/A') {
     if (!preg_match('/^\d{4}-\d{5}-MN-0$/', $studentNumber)) {
-        exit('Invalid student number format. Use YYYY-NNNNN-MN-0');
+        $_SESSION['error'] = 'Invalid student number format. Use YYYY-NNNNN-MN-0';
+        header('Location: ../admin/create_new_user.php');
+        exit;
     }
 
     // Check uniqueness
@@ -93,7 +110,9 @@ if ($studentNumber !== 'N/A') {
     $checkStmt->execute();
     $checkResult = $checkStmt->get_result();
     if ($checkResult->num_rows > 0) {
-        exit('Student Number already exists');
+        $_SESSION['error'] = 'Student Number already exists.';
+        header('Location: ../admin/create_new_user.php');
+        exit;
     }
     $checkStmt->close();
 }
@@ -106,11 +125,15 @@ if ($role === 'admin') {
     $currentYear = (int)date('Y');
 
     if ($entryYear > $currentYear) {
-        exit('Invalid student number: entry year cannot be in the future.');
+        $_SESSION['error'] = 'Invalid student number: entry year cannot be in the future.';
+        header('Location: ../admin/create_new_user.php');
+        exit;
     }
 
     if (($currentYear - $entryYear) >= 4) {
-        exit('This user cannot register anymore because they have already graduated.');
+        $_SESSION['error'] = 'This user cannot register anymore because they have already graduated.';
+        header('Location: ../admin/create_new_user.php');
+        exit;
     }
 }
 
@@ -134,9 +157,11 @@ $stmt->bind_param(
 );
 
 if ($stmt->execute()) {
-    echo 'User successfully created';
+    $_SESSION['success'] = 'User successfully created.';
+    header('Location: ../admin/new-manage_users.php');
 } else {
-    echo 'Database error: ' . $stmt->error;
+    $_SESSION['error'] = 'Database error: ' . $stmt->error;
+    header('Location: ../admin/create_new_user.php');
 }
 
 $stmt->close();

@@ -17,14 +17,17 @@ include '../includes/header.php';
 <div class="login-container">
     <div class="login-form">
         <h2 class="title">LOG IN</h2>
-        <p class="signup">Doesn’t have an account? <a href="register.php">Sign up</a></p>
+        <p class="signup">Doesn't have an account? <a href="register.php">Sign up</a></p>
         
         <form action="../api/login.php" method="POST">
             <label>Email Address:</label>
             <input type="email" class="input-field" name="email" placeholder="Enter your email" required>
             
             <label>Password:</label>
-            <input type="password" class="input-field" name="password" placeholder="Enter your password" required>
+            <div class="input-icon">
+                <input type="password" class="input-field" name="password" id="password" placeholder="Enter your password" required>
+                <img src="../assets/pictures/eye-off.png" class="toggle-icon" onclick="togglePassword('password', this)" alt="toggle password">
+            </div>
             
             <button type="submit" class="btn">Log In</button>
             
@@ -128,6 +131,32 @@ button {
   border: none;
   border-radius: 4px;
 }
+
+/* Input icon container */
+.input-icon {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon .input-field {
+    width: 100%;
+}
+
+.toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 40%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.toggle-icon:hover {
+    opacity: 1;
+}
 </style>
 
 <script>
@@ -159,4 +188,16 @@ button {
       modal.style.display = 'none';
     }
   });
+
+  // Add this function at the beginning of your script section
+  function togglePassword(fieldId, icon) {
+    const field = document.getElementById(fieldId);
+    if (field.type === "password") {
+        field.type = "text";
+        icon.src = "../assets/pictures/eye.png";
+    } else {
+        field.type = "password";
+        icon.src = "../assets/pictures/eye-off.png";
+    }
+  }
 </script>

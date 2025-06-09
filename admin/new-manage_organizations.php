@@ -43,7 +43,14 @@ include '../includes/header.php';
 
 <div class="content">
     <h2 class="page-title">MANAGE ORGANIZATIONS</h2>
-
+    <?php if (!empty($_SESSION['error'])): ?>
+      <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
+      <?php unset($_SESSION['error']); ?>
+    <?php elseif (!empty($_SESSION['success'])): ?>
+      <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
+      <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+        
     <div class="filter-status" style="margin-bottom: 1rem;">
         <label for="statusFilter">Filter by Status:</label>
         <select id="statusFilter">
@@ -145,11 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         orgs.forEach(org => {
-        console.log("Searching for admin with id:", org.user_id);
-        const admin = orgAdmins.find(admin => admin.id === org.user_id);
-        console.log("Matching admin for org.user_id: ", orgAdmins.find(admin => admin.id == org.user_id));
-        const adminName = admin ? escapeHtml(admin.fullName) : 'Not Assigned';
-
+            const adminName = org.user_id ? (org.admin_name ? escapeHtml(org.admin_name.trim()) : 'Not Assigned') : 'Not Assigned';
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -269,6 +272,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchOrganizations(1);
     statusFilter.addEventListener('change', () => fetchOrganizations(1));
 });
+const alertBox = document.querySelector('.session-alert');
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.transition = 'opacity 0.5s ease';
+            alertBox.style.opacity = '0';
+            setTimeout(() => alertBox.remove(), 500);
+        }, 4000);
+    }
 </script>
 
 
@@ -305,6 +316,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 .cancel-btn.hidden,
 .view.hidden { 
     display: none; 
+}
+.session-alert {
+    position: fixed;
+    top: 20px;
+    left: 55%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green by default for success */
+    color: white;
+    padding: 14px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 2000;
+    font-weight: 500;
+    max-width: 80%;
+    text-align: center;
+    animation: fadeInSlideDown 0.4s ease-in-out;
+}
+
+.session-alert.error {
+    background-color: #f44336; /* Red for error */
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
 }
 </style>
 

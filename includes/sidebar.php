@@ -34,7 +34,7 @@ $user_role = $_SESSION['role'] ?? null;
       <img src="../fromOtherBranches/pics/event-icon.png" alt="Events Icon" />
       Events
     </a>
-    <?php if ($user_role === 'org_admin'): ?>
+    <?php if ($user_role === 'orgAdmin'): ?>
     <a href="new-post.php" class="nav-item <?= $current_page === 'new-post.php' ? 'active' : '' ?>">
       <img src="../assets/pictures/download.png" alt="Post Icon" />
       Posts

@@ -15,6 +15,7 @@ foreach ($requiredFields as $field) {
 
 // If there are any missing fields, return an error message with the list of missing fields
 if (count($missingFields) > 0) {
+    $_SESSION['error'] = 'Missing required fields: ' . implode(', ', $missingFields);
     echo json_encode([
         'success' => false,
         'message' => 'Missing required fields: ' . implode(', ', $missingFields)
@@ -35,39 +36,46 @@ $status = $_POST['status'] ?? 'active';  // If no status is provided, default to
 
 // Validate name
 if (strlen($orgName) < 5 || strlen($orgName) > 100) {
+    $_SESSION['error'] = 'Organization name must be between 5 and 100 characters.';
     echo json_encode(['success' => false, 'message' => 'Organization name must be between 5 and 100 characters.']);
     exit;
 }
 
 // Validate description
 if (strlen($description) < 10 || strlen($description) > 500) {
+    $_SESSION['error'] = 'Description must be between 10 and 500 characters.';
     echo json_encode(['success' => false, 'message' => 'Description must be between 10 and 500 characters.']);
     exit;
 }
 
 // Validate mission and vision
 if (strlen($mission) < 20 || strlen($mission) > 1000) {
+    $_SESSION['error'] = 'Mission must be between 20 and 1000 characters.';
     echo json_encode(['success' => false, 'message' => 'Mission must be between 20 and 1000 characters.']);
     exit;
 }
 
 if (strlen($vision) < 20 || strlen($vision) > 1000) {
+    $_SESSION['error'] = 'Vision must be between 20 and 1000 characters.';
     echo json_encode(['success' => false, 'message' => 'Vision must be between 20 and 1000 characters.']);
     exit;
 }
 
 // Validate objective, howToJoin, and requirements
 if (strlen($objective) < 10 || strlen($objective) > 500) {
+    $_SESSION['error'] = 'Objective must be between 10 and 500 characters.';
     echo json_encode(['success' => false, 'message' => 'Objective must be between 10 and 500 characters.']);
     exit;
 }
 
 if (strlen($howToJoin) < 10 || strlen($howToJoin) > 500) {
+    $_SESSION['error'] = 'How to join must be between 10 and 500 characters.';
     echo json_encode(['success' => false, 'message' => 'How to join must be between 10 and 500 characters.']);
     exit;
 }
 
 if (strlen($requirements) < 10 || strlen($requirements) > 500) {
+    $_SESSION['error'] = 'Requirements must be between 10 and 500 characters.';
     echo json_encode(['success' => false, 'message' => 'Requirements must be between 10 and 500 characters.']);
     exit;
 }
@@ -102,10 +110,11 @@ if ($stmt2->execute()) {
             $stmtUpdate->close();
         }
     }
-
+    $_SESSION['success'] = 'Organization created successfully!';
     echo json_encode(['success' => true, 'message' => 'Organization created successfully!']);
     exit;
 } else {
+    $_SESSION['error'] = 'Failed to create organization.';
     echo json_encode(['success' => false, 'message' => 'Failed to create organization.']);
     exit;
 }
