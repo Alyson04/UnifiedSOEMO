@@ -71,7 +71,7 @@ include '../includes/header.php';
                     <th>Last Updated</th>
                     <th>Renewal Date</th>
                     <th>Expiry Date</th>
-                    <th>Admin</th>
+                    <th>Org Admin</th>
                     <th>Actions</th>
                 </tr>
             </thead>

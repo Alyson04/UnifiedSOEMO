@@ -1,99 +1,99 @@
 <?php
-require 'auth.php';
-checkUserRole('admin'); // Only admins allowed
-
-require '../config/db_conn.php';
-
 session_start();
+require '../config/db_conn.php';
+require '../api/auth.php';
+
+checkUserRole('admin'); // Restrict to admin
+
 $admin_id = $_SESSION['user_id'] ?? null;
-
 if (!$admin_id) {
-    // die('Unauthorized access.');
-    header("Location: ../public/login.php");
-}
-
-// Get POST data safely
-$fullName = trim($_POST['fullName'] ?? '');
-$email = trim($_POST['email'] ?? '');
-$password = $_POST['password'] ?? '';
-
-// Validate basic fields (You can add more validation if needed)
-if (empty($fullName) || empty($email)) {
-    $_SESSION['error'] = "Missing fields!";
-    header("Location: ../admin/new_settings.php?error=missing_fields");
+    $_SESSION['error'] = "Unauthorized access.";
+    header("Location: ../admin/new_settings.php");
     exit;
 }
 
-// Optional password hash
-$password_sql = "";
-$bind_password = false;
-if (!empty($password)) {
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    $password_sql = ", password = ?";
-    $bind_password = true;
+// Sanitize inputs
+$firstName = trim($_POST['firstName'] ?? '');
+$lastName = trim($_POST['lastName'] ?? '');
+$middleName = trim($_POST['middleName'] ?? '');
+$email = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL);
+$password = $_POST['password'] ?? '';
+$confirmPassword = $_POST['confirmPassword'] ?? '';
+
+// Validate required fields
+if (!$firstName || !$lastName || !$email) {
+    $_SESSION['error'] = "First name, last name, and email are required.";
+    header("Location: ../admin/new_settings.php");
+    exit;
 }
 
-// Handle profile picture upload
-$pfp_filename = null;
+// Validate password match if updating password
+if (!empty($password) || !empty($confirmPassword)) {
+    if ($password !== $confirmPassword) {
+        $_SESSION['error'] = "Passwords do not match.";
+        header("Location: ../admin/new_settings.php");
+        exit;
+    }
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+} else {
+    $hashedPassword = null; // Don't update password
+}
+
+// Handle logo upload
+$logoFileName = null;
 if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = '../assets/uploads_pfp/';
-    $tmp_name = $_FILES['logo']['tmp_name'];
-    $original_name = basename($_FILES['logo']['name']);
-    $ext = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+    $uploadDir = "../assets/uploads_pfp/";
+    $fileTmp = $_FILES['logo']['tmp_name'];
+    $fileName = basename($_FILES['logo']['name']);
+    $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $allowedExt = ['jpg', 'jpeg', 'png', 'gif'];
 
-    // Generate unique filename
-    $new_filename = 'admin_' . $admin_id . '_' . time() . '.' . $ext;
-    $target_file = $upload_dir . $new_filename;
-
-    // Only allow image types
-    $allowed_types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-    if (!in_array($ext, $allowed_types)) {
-        $_SESSION['error'] = "Invalid file type!";
-        header("Location: ../admin/new_settings.php?error=invalid_filetype");
+    if (!in_array($fileExt, $allowedExt)) {
+        $_SESSION['error'] = "Invalid file type for logo.";
+        header("Location: ../admin/new_settings.php");
         exit;
     }
 
-    if (!move_uploaded_file($tmp_name, $target_file)) {
-        $_SESSION['error'] = "Upload failed!";
-        header("Location: ../admin/new_settings.php?error=upload_failed");
+    $newFileName = uniqid("logo_", true) . "." . $fileExt;
+    $destination = $uploadDir . $newFileName;
+
+    if (!move_uploaded_file($fileTmp, $destination)) {
+        $_SESSION['error'] = "Failed to upload image.";
+        header("Location: ../admin/new_settings.php");
         exit;
     }
 
-    $pfp_filename = $new_filename;
+    $logoFileName = $newFileName;
 }
 
-// Build SQL query dynamically
-$sql = "UPDATE users SET fullName = ?, email = ?";
-$params = [$fullName, $email];
-$types = "ss";
+// Prepare update query
+$fields = "firstName=?, lastName=?, middleName=?, email=?";
+$params = [$firstName, $lastName, $middleName, $email];
 
-if ($bind_password) {
-    $sql .= $password_sql;
-    $params[] = $hashed_password;
-    $types .= "s";
+if ($hashedPassword) {
+    $fields .= ", password=?";
+    $params[] = $hashedPassword;
+}
+if ($logoFileName) {
+    $fields .= ", profile_picture=?";
+    $params[] = $logoFileName;
 }
 
-if ($pfp_filename) {
-    $sql .= ", profile_picture = ?";
-    $params[] = $pfp_filename;
-    $types .= "s";
-}
-
-$sql .= " WHERE ID = ?";
 $params[] = $admin_id;
-$types .= "i";
 
-// Prepare and execute
+$sql = "UPDATE newusers SET $fields WHERE ID=?";
 $stmt = $conn->prepare($sql);
+$types = str_repeat("s", count($params) - 1) . "i";
 $stmt->bind_param($types, ...$params);
 
 if ($stmt->execute()) {
-    $_SESSION['success'] = "Profile updated successfully!";
-    header("Location: ../admin/new_settings.php?success=1");
+    $_SESSION['success'] = "Profile updated successfully.";
 } else {
-    $_SESSION['error'] = "Profile update failed!";
-    header("Location: ../admin/new_settings.php?error=db_error");
+    $_SESSION['error'] = "Update failed. Please try again.";
 }
 
 $stmt->close();
 $conn->close();
+
+header("Location: ../admin/new_settings.php");
+exit;

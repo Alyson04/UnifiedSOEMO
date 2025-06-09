@@ -40,14 +40,14 @@ $admin_email = '';
 $admin_profile_picture = '../assets/uploads_pfp/profile.png'; // default image
 
 if ($admin_id) {
-    $sql_admin = "SELECT fullName, email, profile_picture FROM users WHERE ID = ?";
+    $sql_admin = "SELECT lastName, firstName, middleName, email, profile_picture FROM newusers WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
     $result_admin = $stmt->get_result();
     if ($result_admin->num_rows > 0) {
         $admin_data = $result_admin->fetch_assoc();
-        $admin_name = ucwords(strtolower($admin_data['fullName']));
+        $admin_name = ucwords(strtolower($admin_data['lastName'] . ', ' . $admin_data['firstName'] . ' ' . $admin_data['middleName']));
         $admin_email = strtolower($admin_data['email']);
         $pfp_filename = $admin_data['profile_picture'];
         $pfp_path = "../assets/uploads_pfp/" . $pfp_filename;
@@ -109,15 +109,36 @@ include '../includes/header.php';
       <div class="card-section">
         <h3>Account Settings</h3>
 
-        <!-- Full Name -->
-        <div class="card-row" data-field="fullName">
-          <div class="card-label">Full Name:</div>
-          <div class="card-value" id="display-fullName"><?= htmlspecialchars($admin_name) ?></div>
-          <textarea class="card-input d-none" id="input-fullName" name="fullName" rows="2"><?= htmlspecialchars($admin_name) ?></textarea>
-          <div class="card-action">
-            <span class="edit-text" onclick="startEdit('fullName')" role="button" tabindex="0">[Change Full Name] ✎</span>
-          </div>
-        </div>
+<!-- Last Name -->
+<div class="card-row" data-field="lastName">
+  <div class="card-label">Last Name:</div>
+  <div class="card-value" id="display-lastName"><?= htmlspecialchars($admin_data['lastName']) ?></div>
+  <input type="text" class="card-input d-none" id="input-lastName" name="lastName" value="<?= htmlspecialchars($admin_data['lastName']) ?>" />
+  <div class="card-action">
+    <span class="edit-text" onclick="startEdit('lastName')" role="button" tabindex="0">[Change Last Name] ✎</span>
+  </div>
+</div>
+
+<!-- First Name -->
+<div class="card-row" data-field="firstName">
+  <div class="card-label">First Name:</div>
+  <div class="card-value" id="display-firstName"><?= htmlspecialchars($admin_data['firstName']) ?></div>
+  <input type="text" class="card-input d-none" id="input-firstName" name="firstName" value="<?= htmlspecialchars($admin_data['firstName']) ?>" />
+  <div class="card-action">
+    <span class="edit-text" onclick="startEdit('firstName')" role="button" tabindex="0">[Change First Name] ✎</span>
+  </div>
+</div>
+
+<!-- Middle Name -->
+<div class="card-row" data-field="middleName">
+  <div class="card-label">Middle Name:</div>
+  <div class="card-value" id="display-middleName"><?= htmlspecialchars($admin_data['middleName']) ?></div>
+  <input type="text" class="card-input d-none" id="input-middleName" name="middleName" value="<?= htmlspecialchars($admin_data['middleName']) ?>" />
+  <div class="card-action">
+    <span class="edit-text" onclick="startEdit('middleName')" role="button" tabindex="0">[Change Middle Name]✎</span>
+  </div>
+</div>
+
 
         <!-- Email -->
         <div class="card-row" data-field="email">
@@ -138,6 +159,17 @@ include '../includes/header.php';
             <span class="edit-text" onclick="startEdit('password')" role="button" tabindex="0">[Change Password] ✎</span>
           </div>
         </div>
+
+        <!-- Confirm Password -->
+<div class="card-row" data-field="confirmPassword">
+  <div class="card-label">Confirm Password:</div>
+  <div class="card-value" id="display-confirmPassword">••••••••</div>
+  <input type="password" class="card-input d-none" id="input-confirmPassword" name="confirmPassword" placeholder="Confirm new password" />
+  <div class="card-action">
+    <span class="edit-text" onclick="startEdit('confirmPassword')" role="button" tabindex="0">[Confirm Password] ✎</span>
+  </div>
+</div>
+
 
       </div>      
 
@@ -162,21 +194,33 @@ include '../includes/header.php';
 
   function startEdit(field) {
     const { display, input, editText } = elems(field);
-    display.classList.add('d-none');
-    input.classList.remove('d-none');
-    editText.classList.add('d-none');
-    input.focus();
+    if (display && input && editText) {
+      display.classList.add('d-none');
+      input.classList.remove('d-none');
+      editText.classList.add('d-none');
+      input.focus();
+    }
   }
 
-  const alertBox = document.querySelector('.session-alert');
-    if (alertBox) {
-        setTimeout(() => {
-            alertBox.style.transition = 'opacity 0.5s ease';
-            alertBox.style.opacity = '0';
-            setTimeout(() => alertBox.remove(), 500);
-        }, 4000);
+  // Attach edit listeners for new fields
+  ['lastName', 'firstName', 'middleName', 'confirmPassword'].forEach(field => {
+    const { editText } = elems(field);
+    if (editText) {
+      editText.onclick = () => startEdit(field);
     }
+  });
+
+  // Fade out session alert
+  const alertBox = document.querySelector('.session-alert');
+  if (alertBox) {
+    setTimeout(() => {
+      alertBox.style.transition = 'opacity 0.5s ease';
+      alertBox.style.opacity = '0';
+      setTimeout(() => alertBox.remove(), 500);
+    }, 4000);
+  }
 </script>
+
 <style>
   .d-none { display: none; }
   .edit-text {

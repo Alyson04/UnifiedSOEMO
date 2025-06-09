@@ -4,14 +4,29 @@ checkUserRole('orgAdmin'); // Only org admins can access this page
 
 require '../config/db_conn.php';
 
-$org_id = $_SESSION['org_id'] ?? null;
 $user_id = $_SESSION['user_id'] ?? null;
-
+$org_id = null;
 $error = '';
 $success = '';
 $thumbnail_filename = null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Fetch the org_id for this orgAdmin user
+if ($user_id) {
+    $stmtOrg = $conn->prepare("SELECT id FROM neworganizations WHERE user_id = ?");
+    $stmtOrg->bind_param("i", $user_id);
+    $stmtOrg->execute();
+    $stmtOrg->bind_result($org_id);
+    $stmtOrg->fetch();
+    $stmtOrg->close();
+
+    if (!$org_id) {
+        $error = "Organization not found for the current user.";
+    }
+} else {
+    $error = "User not logged in.";
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $event_date = $_POST['event_date'] ?? '';
@@ -41,6 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = "Failed to upload thumbnail.";
                 }
             }
+        } else {
+            $error = "Thumbnail is required.";
         }
 
         // Insert event if no error

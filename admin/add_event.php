@@ -1,20 +1,38 @@
 <?php
 require '../api/auth.php';
-checkUserRole('admin'); // Only org admins can access this page
+checkUserRole('admin'); // Only org admins and admins can access this page
 
 require '../config/db_conn.php';
 
-$org_id = $_SESSION['org_id'] ?? null;
+$role = $_SESSION['role'] ?? null;
+$org_id = ($role === 'org_admin') ? ($_SESSION['org_id'] ?? null) : null;
 $user_id = $_SESSION['user_id'] ?? null;
 
 $error = '';
 $success = '';
 $thumbnail_filename = null;
+$org_list = [];
+
+// Fetch org list for admin dropdown
+if ($role === 'admin') {
+    $org_result = $conn->query("SELECT id, name FROM neworganizations");
+    while ($row = $org_result->fetch_assoc()) {
+        $org_list[] = $row;
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $event_date = $_POST['event_date'] ?? '';
+    
+    // Set org_id from form if admin
+    if ($role === 'admin') {
+        $org_id = $_POST['org_id'] ?? null;
+        if (empty($org_id)) {
+            $error = "Please select an organization.";
+        }
+    }
 
     // Basic validation
     if (empty($title) || empty($description) || empty($event_date)) {
@@ -67,22 +85,8 @@ $style = "add_event.css";
 include '../includes/header.php';
 ?>
 
-<!-- Add mobile-specific styles -->
-<!-- <link rel="stylesheet" href="../assets/stylesheets/admin_org_mobile.css"> -->
-
-<!-- Hamburger Menu Button -->
-<!-- <button class="hamburger-menu">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-</button> -->
-
-<!-- Overlay for mobile sidebar -->
-<!-- <div class="overlay"></div> -->
-
 <?php include '../includes/sidebar.php'; ?>
 
-<!-- Main Panel -->
 <main class="main-content">
     <?php include '../includes/navbar.php'; ?>
 
@@ -95,7 +99,6 @@ include '../includes/header.php';
             <div class="alert success"><?= htmlspecialchars($success) ?></div>
         <?php endif; ?>
 
-        <!-- Internal Modal Styles -->
         <style>
         .modal-overlay {
             display: none;
@@ -125,15 +128,12 @@ include '../includes/header.php';
             cursor: pointer;
         }
 
-        .modal .confirm {
-            background: linear-gradient(135deg, #36577d, #2A4365);
-            color: white;
-        }
-
+        .modal .confirm,
         .modal .cancel {
             background: linear-gradient(135deg, #36577d, #2A4365);
             color: white;
         }
+
         .floating-alert {
             position: fixed;
             top: 50px;
@@ -157,11 +157,19 @@ include '../includes/header.php';
         }
         </style>
 
-        <!-- Custom Alert Message -->
         <div id="formError" class="floating-alert" style="display: none;"></div>
 
-        <!-- Event Form -->
         <form id="eventForm" method="POST" class="event-form" enctype="multipart/form-data">
+            <?php if ($role === 'admin'): ?>
+                <label for="org_id">Select Organization</label>
+                <select name="org_id" id="org_id" required>
+                    <option value="">-- Select Organization --</option>
+                    <?php foreach ($org_list as $org): ?>
+                        <option value="<?= htmlspecialchars($org['id']) ?>"><?= htmlspecialchars($org['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+
             <label for="title">Event Title</label>
             <input type="text" name="title" id="title" required>
 
@@ -178,7 +186,6 @@ include '../includes/header.php';
             <a href="new-manage_events.php" class="btn-cancel">Cancel</a>
         </form>
 
-        <!-- Confirmation Modal -->
         <div class="modal-overlay" id="confirmModal">
             <div class="modal">
                 <p>Are you sure you want to create this event?</p>
@@ -187,7 +194,6 @@ include '../includes/header.php';
             </div>
         </div>
 
-        <!-- Modal Script -->
         <script>
         function validateFormAndShowModal() {
             const errorBox = document.getElementById('formError');
@@ -195,23 +201,27 @@ include '../includes/header.php';
             const description = document.getElementById('description').value.trim();
             const eventDate = document.getElementById('event_date').value;
             const thumbnail = document.getElementById('thumbnail').files.length;
+            const orgSelect = document.getElementById('org_id');
 
-            // Reset alert
             errorBox.style.display = 'none';
             errorBox.innerText = '';
 
-            if (!title || !description || !eventDate || thumbnail === 0) {
+            if (orgSelect && orgSelect.value.trim() === '') {
+                errorBox.innerText = 'Please select an organization.';
+                errorBox.style.display = 'block';
+            } else if (!title || !description || !eventDate || thumbnail === 0) {
                 errorBox.innerText = 'All fields are required.';
                 errorBox.style.display = 'block';
+            }
 
-                // Auto-hide after 5 seconds
+            if (errorBox.innerText !== '') {
                 setTimeout(() => {
                     errorBox.style.display = 'none';
                 }, 5000);
                 return;
             }
 
-            showConfirmModal(); // All fields are valid
+            showConfirmModal();
         }
 
         function showConfirmModal() {

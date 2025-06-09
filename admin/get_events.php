@@ -5,31 +5,25 @@ checkUserRole('admin'); // Only allow admins
 require '../config/db_conn.php';
 
 // Pagination settings
-$perPage = 5; // events per page
+$perPage = 5;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 
-// Get total count of unique events (for pagination)
-$sqlCount = "
-    SELECT COUNT(DISTINCT e.id) AS total
-    FROM events e
-    INNER JOIN organizations o ON e.org_id = o.id
-    INNER JOIN users u ON o.id = u.org_id
-    WHERE u.status != 'deleted'
-";
+// Get total count of events
+$sqlCount = "SELECT COUNT(*) AS total FROM events";
 $countResult = $conn->query($sqlCount);
 $total = 0;
 if ($countResult) {
     $total = $countResult->fetch_assoc()['total'] ?? 0;
 }
 
-// Fetch paginated distinct events
+// Fetch paginated events with organization name and new fields
 $sql = "
-    SELECT DISTINCT e.id, e.title, e.event_date, o.name AS org_name, e.created_at
+    SELECT e.id, e.title, e.description, e.event_date, e.created_at, 
+           e.is_disabled, e.status, 
+           no.name AS org_name
     FROM events e
-    INNER JOIN organizations o ON e.org_id = o.id
-    INNER JOIN users u ON o.id = u.org_id
-    WHERE u.status != 'deleted'
+    INNER JOIN neworganizations no ON e.org_id = no.id
     ORDER BY e.created_at DESC
     LIMIT ? OFFSET ?
 ";
@@ -41,6 +35,7 @@ $result = $stmt->get_result();
 
 $events = [];
 while ($row = $result->fetch_assoc()) {
+    $row['is_disabled'] = (bool)$row['is_disabled']; // Cast to boolean for clarity
     $events[] = $row;
 }
 
