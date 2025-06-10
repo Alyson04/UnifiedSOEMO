@@ -9,7 +9,7 @@ $org_id = $_SESSION['org_id'] ?? null;
 $admin_name = '';
 
 if ($admin_id) {
-    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $sql_admin = "SELECT CONCAT(firstName, ' ', COALESCE(middleName, ''), ' ', lastName) as fullName FROM newusers WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
@@ -76,7 +76,7 @@ include '../includes/header.php';
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="eventTableBody">
+            <tbody id="eventsTableBody">
                 <!-- Loaded via AJAX -->
             </tbody>
         </table>
@@ -87,67 +87,63 @@ include '../includes/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.getElementById('eventTableBody');
+    const tableBody = document.getElementById('eventsTableBody');
     const paginationControls = document.getElementById('paginationControls');
-
-function fetchEvents(page = 1) {
-    fetch(`get_events.php?page=${page}`)
-        .then(res => res.json())
-        .then(data => {
-            console.log("User ID from server:", data.user_id); // <-- log user_id here
-
-            renderEvents(data.events);
-            renderPagination(data.total, data.perPage, page);
-        })
-        .catch(err => {
-            console.error("Error fetching events:", err);
-        });
-}
-
-
-
-function renderEvents(events) {
     const minRows = 5;
-    tableBody.innerHTML = '';
 
-    if (events.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6">No events found.</td></tr>';
-        for (let i = 1; i < minRows; i++) {
+    function fetchEvents(page = 1) {
+        fetch(`get_events.php?page=${page}`)
+            .then(res => res.json())
+            .then(data => {
+                renderEvents(data.events);
+                renderPagination(data.total, data.perPage, page);
+            })
+            .catch(err => {
+                console.error("Error fetching events:", err);
+                tableBody.innerHTML = '<tr><td colspan="6">Error loading events.</td></tr>';
+            });
+    }
+
+    function renderEvents(events) {
+        tableBody.innerHTML = '';
+
+        if (events.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6">No events found.</td></tr>';
+            for (let i = 1; i < minRows; i++) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = '<td colspan="6" style="height: 50px;"></td>';
+                tableBody.appendChild(emptyRow);
+            }
+            return;
+        }
+
+        events.forEach(event => {
+            const tr = document.createElement('tr');
+            tr.dataset.eventId = event.id;
+            tr.innerHTML = `
+                <td><span class="editable" data-field="title">${escapeHtml(event.title)}</span></td>
+                <td><span class="editable" data-field="description">${escapeHtml(event.description || '')}</span></td>
+                <td><span class="editable" data-field="event_date">${formatDate(event.event_date)}</span></td>
+                <td>${formatDate(event.created_at)}</td>
+                <td>${escapeHtml(event.status || 'Under Review')}</td>
+                <td>
+                    <button class="btn-edit">Edit</button>
+                    <button class="btn-save" style="display:none;">Save</button>
+                    <button class="btn-cancel" style="display:none;">Cancel</button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        // Add empty rows if needed
+        for (let i = events.length; i < minRows; i++) {
             const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = '<td colspan="6" style="height: 50px;"></td>';
+            emptyRow.innerHTML = '<td colspan="6" style="height: 50px; visibility: hidden;">&nbsp;</td>';
             tableBody.appendChild(emptyRow);
         }
-        return;
+
+        attachEditListeners();
     }
-
-    events.forEach(event => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><span class="editable" data-field="title">${escapeHtml(event.title)}</span></td>
-            <td><span class="editable" data-field="description">${escapeHtml(event.description || '')}</span></td>
-            <td><span class="editable" data-field="event_date">${formatDate(event.event_date)}</span></td>
-            <td>${formatDate(event.created_at)}</td>
-            <td>${escapeHtml(event.status || 'Pending')}</td>
-            <td>
-                <button class="btn-edit">Edit</button>
-                <button class="btn-save" style="display:none;">Save</button>
-                <button class="btn-cancel" style="display:none;">Cancel</button>
-            </td>
-        `;
-        tableBody.appendChild(tr);
-    });
-
-    for (let i = events.length; i < minRows; i++) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = `<td colspan="6" style="height: 50px; visibility: hidden;">&nbsp;</td>`;
-        tableBody.appendChild(emptyRow);
-    }
-
-    attachEditListeners();
-}
-
-
-
 
     function renderPagination(total, perPage, current) {
         const totalPages = Math.ceil(total / perPage);
@@ -165,81 +161,103 @@ function renderEvents(events) {
     }
 
     function formatDate(dateStr) {
+        if (!dateStr) return 'N/A';
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateStr).toLocaleDateString('en-US', options);
     }
 
     function escapeHtml(text) {
-        return text.replace(/[&<>"']/g, function(m) {
-            return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m];
+        if (!text) return '';
+        return text.toString().replace(/[&<>"']/g, function(m) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[m];
         });
     }
 
     function attachEditListeners() {
-    document.querySelectorAll('.btn-edit').forEach(button => {
-        button.addEventListener('click', function () {
-            const tr = this.closest('tr');
-            tr.querySelectorAll('.editable').forEach(span => {
-                const value = span.textContent;
-                const field = span.dataset.field;
+        document.querySelectorAll('.btn-edit').forEach(button => {
+            button.addEventListener('click', function() {
+                const tr = this.closest('tr');
+                
+                tr.querySelectorAll('.editable').forEach(span => {
+                    const value = span.textContent;
+                    const field = span.dataset.field;
 
-                let input = document.createElement(field === 'event_date' ? 'input' : 'textarea');
-                input.name = field;
-                input.value = value;
+                    let input;
+                    if (field === 'description') {
+                        input = document.createElement('textarea');
+                        input.className = 'edit-desc';
+                    } else {
+                        input = document.createElement('input');
+                        input.className = 'edit-' + field;
+                    }
 
-                if (field === 'event_date') {
-                    input.type = 'date';
-                    input.value = new Date(value).toISOString().split('T')[0];
-                }
+                    input.name = field;
+                    input.value = value;
 
-                span.replaceWith(input);
+                    if (field === 'event_date') {
+                        input.type = 'date';
+                        const date = new Date(value);
+                        input.value = date.toISOString().split('T')[0];
+                    }
+
+                    span.replaceWith(input);
+                });
+
+                this.style.display = 'none';
+                tr.querySelector('.btn-save').style.display = 'inline-block';
+                tr.querySelector('.btn-cancel').style.display = 'inline-block';
             });
-
-            tr.querySelector('.btn-edit').style.display = 'none';
-            tr.querySelector('.btn-save').style.display = 'inline-block';
-            tr.querySelector('.btn-cancel').style.display = 'inline-block';
         });
-    });
 
-    document.querySelectorAll('.btn-cancel').forEach(button => {
-        button.addEventListener('click', function () {
-            fetchEvents(); // Just reload the events
+        document.querySelectorAll('.btn-save').forEach(button => {
+            button.addEventListener('click', function() {
+                const tr = this.closest('tr');
+                const eventId = tr.dataset.eventId;
+                
+                const data = {
+                    id: eventId,
+                    title: tr.querySelector('[name="title"]').value,
+                    description: tr.querySelector('[name="description"]').value,
+                    event_date: tr.querySelector('[name="event_date"]').value
+                };
+
+                fetch('update_event.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(response => {
+                    if (response.success) {
+                        fetchEvents();
+                    } else {
+                        alert(response.message || "Update failed");
+                    }
+                })
+                .catch(err => {
+                    console.error("Update error:", err);
+                    alert("Failed to update event. Please try again.");
+                });
+            });
         });
-    });
 
-    document.querySelectorAll('.btn-save').forEach(button => {
-        button.addEventListener('click', function () {
-            const tr = this.closest('tr');
-            const title = tr.querySelector('input[name="title"], textarea[name="title"]').value;
-            const description = tr.querySelector('input[name="description"], textarea[name="description"]').value;
-            const event_date = tr.querySelector('input[name="event_date"]').value;
-
-            // You need a way to identify the event ID (e.g. add it as a hidden field or data-* attribute)
-            const eventId = tr.dataset.eventId;
-
-            fetch('update_event.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: eventId, title, description, event_date })
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (response.success) {
-                    fetchEvents(); // Reload the updated table
-                } else {
-                    alert("Update failed");
-                }
-            })
-            .catch(err => console.error("Update error:", err));
+        document.querySelectorAll('.btn-cancel').forEach(button => {
+            button.addEventListener('click', () => fetchEvents());
         });
-    });
-}
+    }
 
-
+    // Initialize
     fetchEvents();
 
+    // Handle session alerts
     const alertBox = document.querySelector('.session-alert');
     if (alertBox) {
         setTimeout(() => {
@@ -253,7 +271,7 @@ function renderEvents(events) {
 
 <style>
 .pagination-controls {
-    margin-top: 1em;
+    margin-top: .7em;
 }
 .pagination-controls button {
     padding: 5px 10px;
@@ -267,13 +285,32 @@ function renderEvents(events) {
     background: #333;
     color: #fff;
 }
-
+.action-btn {
+    padding: 10px 16px;
+    background-color: #2A4365;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+.action-btn:hover {
+    background-color: #1f2f47;
+}
+.edit-title, .edit-desc, .edit-date { 
+    width: 100%;
+    padding: 4px;
+    box-sizing: border-box;
+}
+.edit-desc {
+    min-height: 60px;
+}
 .session-alert {
     position: fixed;
     top: 20px;
     left: 55%;
     transform: translateX(-50%);
-    background-color: #4CAF50; /* Green by default for success */
+    background-color: #4CAF50;
     color: white;
     padding: 14px 24px;
     border-radius: 6px;
@@ -286,7 +323,7 @@ function renderEvents(events) {
 }
 
 .session-alert.error {
-    background-color: #f44336; /* Red for error */
+    background-color: #f44336;
 }
 
 @keyframes fadeInSlideDown {
@@ -299,7 +336,6 @@ function renderEvents(events) {
         transform: translate(-50%, 0);
     }
 }
-
 </style>
 
 <!-- Add shared JavaScript for admin_org section -->
@@ -307,4 +343,5 @@ function renderEvents(events) {
 <script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
+<script src="../assets/scripts/hamburger.js"></script>
 <?php include '../includes/footer.php'; ?>
