@@ -55,18 +55,21 @@ include '../includes/navbar.php';
 <!-- Sidebar Overlay -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- Sidebar for Mobile -->
 <div class="mobile-sidebar" id="mobileSidebar">
     <ul class="sidebar-list">
-        <li><a href="../students/dashboard.php">Home</a></li>
-        <li><a href="../students/organizations.php">Organizations</a></li>
-        <li><a href="../students/new-post.php">Posts</a></li>
-        <li><a href="../students/events.php">Events</a></li>
-        <li><a href="../students/about_us.php">About Us</a></li>
+        <li><a href="index.php">Home</a></li>
+        <li><a href="organizations.php">Organizations</a></li>
+        <li><a href="about_us.php">About Us</a></li>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <li><a href="../api/logout.php">Logout</a></li>
+        <?php else: ?>
+            <li><a href="login.php">Login</a></li>
+            <li><a href="register.php">Register</a></li>
+        <?php endif; ?>
     </ul>
 </div>
 
-<style>
+<style> 
 /* Mobile Menu Styles */
 .hamburger {
     display: none;
@@ -88,15 +91,17 @@ include '../includes/navbar.php';
 
 .hamburger-lines {
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
+    line-height: 35px;
+    text-align: center;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
 }
 
-.mobile-profile {
+/* .mobile-profile {
     display: none;
     position: absolute;
     top: 15px;
@@ -121,8 +126,8 @@ include '../includes/navbar.php';
 .sidebar-overlay.active {
     display: block;
     opacity: 1;
-}
-
+} */
+/* 
 .mobile-profile img {
     width: 35px;
     height: 35px;
@@ -164,7 +169,7 @@ include '../includes/navbar.php';
 .mobile-dropdown-tray a:last-child {
     border-top: 1px solid #eee;
     color: #E74C3C;
-}
+} */
 
 .mobile-sidebar {
     display: none;
@@ -221,23 +226,30 @@ include '../includes/navbar.php';
 }
 
 .sidebar-list li:last-child {
-    margin-top: 5px;
-    border-radius: 8px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
+}
+.sidebar-list li:last-child a {
+    color: #E74C3C;
+}
+.sidebar-list li:last-child:hover {
+    background: rgba(231, 76, 60, 0.15);
 }
 
+.sidebar-list li:last-child a:hover {
+    color: #ff6b6b;
+}
 /* Mobile Responsive Styles */
 @media only screen and (max-width: 600px) {
     .hamburger {
-        display: flex;
+        display: block;
     }
     
     .mobile-sidebar {
         display: block;
     }
 
-    .mobile-profile {
-        display: block;
-    }
     
     .navbar {
         display: none !important;
