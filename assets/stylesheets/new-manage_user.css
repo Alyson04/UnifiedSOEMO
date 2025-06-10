@@ -118,8 +118,6 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 margin-bottom: 25px;
-        background: none;
-    box-shadow: none;
 }
 
 
@@ -181,7 +179,7 @@ margin-bottom: 25px;
 .page-title {
   background: linear-gradient(135deg, #2A4365, #1f3554);
   color: #e1e8f0; /* lighter shade for contrast */
-  padding: 18px 0;
+  padding: 8px;
   width: 100%;
   border-radius: 20px;
   font-size: 24px;
@@ -259,6 +257,10 @@ tbody td {
   text-align: center;
   color: #2A4365;
   border-right: 1px solid #a3b2d1; /* soft blue border */
+}
+
+tbody td .edit{
+  padding: 1px;
 }
 
 tbody td:last-child {
@@ -392,7 +394,8 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   font-size: 14px;
 }
 
-.modal-overlay {
+/* Delete Modal Styles */
+.modal-overlaydel {
   position: fixed;
   top: 0;
   left: 0;
@@ -414,7 +417,7 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   box-shadow: 0 0 15px rgba(0,0,0,0.3);
   text-align: center;
   margin: auto;
-  margin-top: 190px;
+  margin-top: 10px;
 }
 
 .modal-box input[type="text"] {
@@ -430,6 +433,75 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   display: flex;
   justify-content: space-between;
   gap: 10px;
+}
+
+
+/* Save Confirmation Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirmation-box {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.confirmation-box p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.confirmation-box .modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.confirmation-box .confirm-yes,
+.confirmation-box .confirm-no {
+  padding: 8px 30px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.confirmation-box .confirm-yes {
+  background-color: #2A4365;
+  color: white;
+}
+
+.confirmation-box .confirm-no {
+  background-color: #718096;
+  color: white;
+}
+
+.confirmation-box .confirm-yes:hover {
+  background-color: #1A365D;
+}
+
+.confirmation-box .confirm-no:hover {
+  background-color: #4A5568;
 }
 
 .hamburger-menu {
@@ -581,7 +653,7 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   .modal-box {
     width: 90%;
     max-width: none;
-    margin: 20px;
+    margin: 2px;
     padding: 15px;
   }
 
@@ -640,5 +712,161 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   .action-btn {
     padding: 10px 24px;
     font-size: 0.9rem;
+  }
+}
+
+/* Table Action Buttons */
+.edit-btn, .save-btn, .cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 8px rgba(42, 67, 101, 0.15);
+  min-width: 80px;
+  text-align: center;
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #36577d, #2A4365);
+  color: #dbe2ef;
+  display: inline-block;
+}
+
+.edit-btn:hover {
+  background: linear-gradient(135deg, #1f3554, #15273c);
+  box-shadow: 0 4px 12px rgba(21, 39, 60, 0.3);
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #36577d, #2A4365);
+  color: #dbe2ef;
+  margin-right: 4px;
+  display: inline-block;
+  padding: 2px 4px;
+}
+
+.save-btn:hover {
+  background: linear-gradient(135deg, #1f3554, #15273c);
+  box-shadow: 0 4px 12px rgba(21, 39, 60, 0.3);
+}
+
+.cancel-btn {
+  background: #ccc;
+  color: #666;
+  margin-left: -3px;
+  margin-top: 5px;
+  display: inline-block;
+  padding: 2px 4px;
+}
+
+.cancel-btn:hover {
+  background: #b3b3b3;
+  box-shadow: 0 4px 12px rgba(75, 85, 99, 0.3);
+}
+
+/* Container for save and cancel buttons */
+td .edit.hidden {
+  display: none;
+}
+
+td:last-child {
+  text-align: center;
+  min-width: 180px;
+}
+
+/* Mobile Responsive Adjustments for Action Buttons */
+@media screen and (max-width: 768px) {
+  .edit-btn, .save-btn, .cancel-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    min-width: 70px;
+  }
+  
+  td:last-child {
+    white-space: nowrap;
+    min-width: 160px;
+  }
+}
+
+/* Edit Input and Select Styles */
+.edit[type="text"],
+input.edit,
+select.edit {
+  padding: 2px 4px;
+  border: 2px solid #36577d;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: 'Segoe UI', sans-serif;
+  color: #2A4365;
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+  width: auto;
+  min-width: 180px;
+  max-width: none;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(42, 67, 101, 0.05);
+}
+
+/* Specific adjustments for different fields */
+select.edit[name="course"] {
+  min-width: 300px;
+}
+
+select.edit[name="role"],
+select.edit[name="status"],
+select.edit[name="graduated"] {
+  min-width: 120px;
+}
+
+input.edit[value*="@"],
+input.edit[name="email"] {
+  min-width: 250px;
+}
+
+input.edit[name="studentNumber"] {
+  min-width: 140px;
+}
+
+.edit[type="text"]:focus,
+input.edit:focus,
+select.edit:focus {
+  border-color: #2A4365;
+  box-shadow: 0 0 0 2px rgba(42, 67, 101, 0.1);
+  background-color: #fff;
+}
+
+select.edit {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%232A4365' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+}
+
+/* Mobile Responsive Adjustments for Edit Fields */
+@media screen and (max-width: 768px) {
+  .edit[type="text"],
+  input.edit,
+  select.edit {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    min-width: 140px;
+  }
+  
+  select.edit[name="course"] {
+    min-width: 200px;
+  }
+  
+  input.edit[value*="@"],
+  input.edit[name="email"] {
+    min-width: 180px;
+  }
+  
+  select.edit {
+    padding-right: 24px;
   }
 }

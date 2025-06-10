@@ -43,14 +43,7 @@ include '../includes/header.php';
 
 <div class="content">
     <h2 class="page-title">MANAGE ORGANIZATIONS</h2>
-    <?php if (!empty($_SESSION['error'])): ?>
-      <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
-      <?php unset($_SESSION['error']); ?>
-    <?php elseif (!empty($_SESSION['success'])): ?>
-      <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
-      <?php unset($_SESSION['success']); ?>
-    <?php endif; ?>
-        
+
     <div class="filter-status" style="margin-bottom: 1rem;">
         <label for="statusFilter">Filter by Status:</label>
         <select id="statusFilter">
@@ -62,7 +55,7 @@ include '../includes/header.php';
         </select>
     </div>
 
-    <div class="top-actions" style="margin-bottom: 1rem;">
+    <div class="top-actions" style="margin-top: 30px; margin-bottom: 50px;">
         <a href="create_organization.php" class="action-btn">+ Create Organization</a>
     </div>
 
@@ -75,10 +68,10 @@ include '../includes/header.php';
                     <th>Mission</th>
                     <th>Vision</th>
                     <th>Status</th>
-                    <th>Last Updated</th>
-                    <th>Renewal Date</th>
-                    <th>Expiry Date</th>
-                    <th>Org Admin</th>
+                    <th>Last<br>Updated</th>
+                    <th>Renewal<br>Date</th>
+                    <th>Expiry<br>Date</th>
+                    <th>Org<br>Admin</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -152,7 +145,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         orgs.forEach(org => {
-            const adminName = org.user_id ? (org.admin_name ? escapeHtml(org.admin_name.trim()) : 'Not Assigned') : 'Not Assigned';
+        console.log("Searching for admin with id:", org.user_id);
+        const admin = orgAdmins.find(admin => admin.id === org.user_id);
+        console.log("Matching admin for org.user_id: ", orgAdmins.find(admin => admin.id == org.user_id));
+        const adminName = admin ? escapeHtml(admin.fullName) : 'Not Assigned';
+
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -272,14 +269,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchOrganizations(1);
     statusFilter.addEventListener('change', () => fetchOrganizations(1));
 });
-const alertBox = document.querySelector('.session-alert');
-    if (alertBox) {
-        setTimeout(() => {
-            alertBox.style.transition = 'opacity 0.5s ease';
-            alertBox.style.opacity = '0';
-            setTimeout(() => alertBox.remove(), 500);
-        }, 4000);
-    }
 </script>
 
 
@@ -299,54 +288,38 @@ const alertBox = document.querySelector('.session-alert');
     background: #333;
     color: #fff;
 }
+
 .action-btn {
-    padding: 10px 16px;
-    background-color: #2A4365;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 999px;
-    font-weight: bold;
-    transition: background-color 0.3s;
+ align-self: flex-start;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #36577d, #2A4365);
+  color: #dbe2ef; /* soft blue-white */
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(42, 67, 101, 0.55);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+  user-select: none;
+  margin-bottom: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.action-btn:hover{
+background: linear-gradient(135deg, #1f3554, #15273c);
+  box-shadow: 0 10px 28px rgba(21, 39, 60, 0.8);
+}
+.action-btn:first-child {
+  margin-left: 0;
+}
+
 .action-btn:hover {
-    background-color: #1f2f47;
+  background-color: #0056b3;
 }
 .edit.hidden,
 .save-btn.hidden,
 .cancel-btn.hidden,
 .view.hidden { 
     display: none; 
-}
-.session-alert {
-    position: fixed;
-    top: 20px;
-    left: 55%;
-    transform: translateX(-50%);
-    background-color: #4CAF50; /* Green by default for success */
-    color: white;
-    padding: 14px 24px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 2000;
-    font-weight: 500;
-    max-width: 80%;
-    text-align: center;
-    animation: fadeInSlideDown 0.4s ease-in-out;
-}
-
-.session-alert.error {
-    background-color: #f44336; /* Red for error */
-}
-
-@keyframes fadeInSlideDown {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -20px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
 }
 </style>
 

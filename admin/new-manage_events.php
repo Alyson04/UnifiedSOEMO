@@ -54,7 +54,7 @@ include '../includes/header.php';
       <?php unset($_SESSION['success']); ?>
     <?php endif; ?>
 
-    <div class="add-event-button">
+    <div class="add-event-button" style="margin-top: 30px; margin-bottom: 50px;">
       <a href="add_event.php" class="btn-add-event">+ Add New Event</a>
     </div>
 
@@ -94,52 +94,35 @@ include '../includes/header.php';
     background: #333;
     color: #fff;
 }
-.action-btn {
-    padding: 10px 16px;
-    background-color: #2A4365;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 999px;
-    font-weight: bold;
-    transition: background-color 0.3s;
+.btn-add-event {
+ align-self: flex-start;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #36577d, #2A4365);
+  color: #dbe2ef; /* soft blue-white */
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(42, 67, 101, 0.55);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+  user-select: none;
+  margin-bottom: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.action-btn:hover{
+background: linear-gradient(135deg, #1f3554, #15273c);
+  box-shadow: 0 10px 28px rgba(21, 39, 60, 0.8);
+}
+.action-btn:first-child {
+  margin-left: 0;
+}
+
 .action-btn:hover {
-    background-color: #1f2f47;
+  background-color: #0056b3;
 }
   .disabled-event { opacity: 0.5; background: #f9f9f9; }
   .status-select, .edit-title, .edit-date, .org-select { padding: 4px; }
   .btn-edit, .btn-toggle-disable, .btn-cancel { margin-right: 5px; padding: 4px 8px; }
-  .session-alert {
-    position: fixed;
-    top: 20px;
-    left: 55%;
-    transform: translateX(-50%);
-    background-color: #4CAF50; /* Green by default for success */
-    color: white;
-    padding: 14px 24px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 2000;
-    font-weight: 500;
-    max-width: 80%;
-    text-align: center;
-    animation: fadeInSlideDown 0.4s ease-in-out;
-}
-
-.session-alert.error {
-    background-color: #f44336; /* Red for error */
-}
-
-@keyframes fadeInSlideDown {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -20px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
-}
 </style>
 
 <script>
@@ -344,15 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return isNaN(d) ? '' : `${d.getFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}-${('0'+d.getDate()).slice(-2)}`;
   }
 });
-
-const alertBox = document.querySelector('.session-alert');
-    if (alertBox) {
-        setTimeout(() => {
-            alertBox.style.transition = 'opacity 0.5s ease';
-            alertBox.style.opacity = '0';
-            setTimeout(() => alertBox.remove(), 500);
-        }, 4000);
-    }
 </script>
 
 
