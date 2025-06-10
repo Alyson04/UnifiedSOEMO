@@ -258,7 +258,7 @@ thead {
 thead th {
     padding: 8px 10px;
     text-align: center;
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
     user-select: none;
 }
 
@@ -268,17 +268,18 @@ thead th:last-child {
 
 /* Table Body Rows */
 tbody tr {
-    background: #e6efff;
-    box-shadow: 0 2px 8px rgba(42, 67, 101, 0.08);
+    background: #e6efff; /* very light blue */
+    box-shadow: 0 3px 12px rgba(42, 67, 101, 0.1);
     border-radius: 16px;
     transition: transform 0.25s ease, box-shadow 0.3s ease;
     cursor: default;
 }
 
 tbody tr:hover {
-    background: #b6c9f2;
-    box-shadow: 0 4px 12px rgba(42, 67, 101, 0.15);
-    transform: translateY(-2px);
+    background: #b6c9f2; /* light blue highlight */
+    box-shadow: 0 12px 40px rgba(42, 67, 101, 0.35);
+    transform: translateY(-4px);
+    cursor: pointer;
 }
 
 /* Table Body Cells */
@@ -287,7 +288,7 @@ tbody td {
     font-weight: 600;
     text-align: center;
     color: #2A4365;
-    border-right: 1px solid rgba(42, 67, 101, 0.1);
+    border-right: 1px solid #a3b2d1; /* soft blue border */
 }
 
 tbody td:last-child {
@@ -309,6 +310,60 @@ tbody tr td:last-child {
     border-top-right-radius: 16px;
     border-bottom-right-radius: 16px;
 }
+
+/* Table Action Buttons */
+.btn-edit, .btn-toggle-disable, .btn-cancel, .btn-save {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 8px rgba(42, 67, 101, 0.15);
+  min-width: 60px;
+  text-align: center;
+  margin: 2px;
+}
+
+.btn-edit, .btn-save {
+  background: linear-gradient(135deg, #36577d, #2A4365);
+  color: #dbe2ef;
+  display: inline-block;
+}
+
+.btn-edit:hover, .btn-save:hover {
+  background: linear-gradient(135deg, #1f3554, #15273c);
+  box-shadow: 0 4px 12px rgba(21, 39, 60, 0.3);
+}
+
+.btn-toggle-disable {
+  background: linear-gradient(135deg, #36577d, #2A4365);
+  color: #dbe2ef;
+  margin-right: 2px;
+  display: inline-block;
+}
+
+.btn-toggle-disable:hover {
+  background: linear-gradient(135deg, #1f3554, #15273c);
+  box-shadow: 0 4px 12px rgba(21, 39, 60, 0.3);
+}
+
+.btn-cancel {
+  background: #ccc;
+  color: #666;
+  margin-left: 0;
+  margin-top: 0;
+  display: inline-block;
+}
+
+/* Container for buttons */
+td:last-child {
+  text-align: center;
+  min-width: 180px;
+}
+
 .notification-modal {
   position: absolute;
   top: 40px;
@@ -553,73 +608,8 @@ tbody tr td:last-child {
   }
 }
 
-/* Table Action Buttons */
-.edit-btn, .save-btn, .cancel-btn, .btn-toggle-disable {
-  padding: 4px 8px;
-  border: none;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Segoe UI', sans-serif;
-  box-shadow: 0 2px 8px rgba(42, 67, 101, 0.15);
-  min-width: 60px;
-  text-align: center;
-  margin: 2px;
-}
-
-.edit-btn, .btn-toggle-disable {
-  background: linear-gradient(135deg, #36577d, #2A4365);
-  color: #dbe2ef;
-  display: inline-block;
-}
-
-.edit-btn:hover, .btn-toggle-disable:hover {
-  background: linear-gradient(135deg, #1f3554, #15273c);
-  box-shadow: 0 4px 12px rgba(21, 39, 60, 0.3);
-}
-
-.save-btn {
-  background: linear-gradient(135deg, #36577d, #2A4365);
-  color: #dbe2ef;
-  margin-right: 2px;
-  display: inline-block;
-}
-
-.save-btn:hover {
-  background: linear-gradient(135deg, #1f3554, #15273c);
-  box-shadow: 0 4px 12px rgba(21, 39, 60, 0.3);
-}
-
-.cancel-btn {
-  background: #ccc;
-  color: #666;
-  margin-left: 0;
-  margin-top: 0;
-  display: inline-block;
-}
-
-/* Container for save and cancel buttons */
-td .edit.hidden {
-  display: none;
-}
-
-td:last-child {
-  text-align: center;
-  min-width: 180px;
-}
-
 /* Edit Input and Select Styles */
-.edit[type="text"],
-input.edit,
-select.edit,
-textarea.edit,
-.edit-title,
-.edit-desc,
-.edit-date,
-.status-select,
-.org-select {
+.edit-title, .edit-desc, .edit-date, .status-select, .org-select {
   padding: 2px 4px;
   border: 2px solid #36577d;
   border-radius: 6px;
@@ -628,23 +618,24 @@ textarea.edit,
   color: #2A4365;
   background-color: #f8fafc;
   transition: all 0.3s ease;
-  width: auto;
-  min-width: 140px;
-  max-width: none;
+  width: 95%;
+  max-width: 95%;
+  min-width: 0;
   outline: none;
   box-shadow: 0 2px 4px rgba(42, 67, 101, 0.05);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 
 .edit-desc {
-  min-width: 200px;
-  resize: vertical;
-  min-height: 30px;
+  white-space: normal;
+  resize: none;
+  height: auto;
+  min-height: 60px;
 }
 
-.edit[type="text"]:focus,
-input.edit:focus,
-select.edit:focus,
-textarea.edit:focus,
 .edit-title:focus,
 .edit-desc:focus,
 .edit-date:focus,
@@ -655,9 +646,8 @@ textarea.edit:focus,
   background-color: #fff;
 }
 
-select.edit,
-.status-select,
-.org-select {
+select.status-select,
+select.org-select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%232A4365' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -665,9 +655,26 @@ select.edit,
   padding-right: 28px;
 }
 
-/* Mobile Responsive Adjustments */
+/* Mobile Responsive Adjustments for Edit Fields */
 @media screen and (max-width: 768px) {
-  .edit-btn, .save-btn, .cancel-btn, .btn-toggle-disable {
+  .edit-title,
+  .edit-desc,
+  .edit-date,
+  .status-select,
+  .org-select {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+  
+  select.status-select,
+  select.org-select {
+    padding-right: 24px;
+  }
+
+  .btn-edit,
+  .btn-toggle-disable,
+  .btn-cancel,
+  .btn-save {
     padding: 6px 12px;
     font-size: 0.8rem;
     min-width: 70px;
@@ -676,26 +683,6 @@ select.edit,
   td:last-child {
     white-space: nowrap;
     min-width: 160px;
-  }
-
-  .edit[type="text"],
-  input.edit,
-  select.edit,
-  textarea.edit,
-  .edit-title,
-  .edit-desc,
-  .edit-date,
-  .status-select,
-  .org-select {
-    font-size: 0.9rem;
-    padding: 6px 10px;
-    min-width: 140px;
-  }
-  
-  select.edit,
-  .status-select,
-  .org-select {
-    padding-right: 24px;
   }
 }
 
