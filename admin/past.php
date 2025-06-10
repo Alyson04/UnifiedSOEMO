@@ -5,16 +5,15 @@ checkUserRole('admin'); // Only allow admins
 require '../config/db_conn.php';
 
 // Get total users excluding admin and deleted users
-$sql = "SELECT COUNT(*) AS total_users FROM users WHERE role != 'admin' AND status != 'deleted'";
+$sql = "SELECT COUNT(*) AS total_users FROM newusers WHERE role != 'admin' AND status != 'deleted'";
 $result = $conn->query($sql);
 $total_users = $result->fetch_assoc()['total_users'];
 
 // Get total organizations (exclude those where the organization owner's account is deleted)
-// Assuming organization owner is a user with role 'org_admin' linked via org_id = organizations.id
 $sql_orgs = "
     SELECT COUNT(DISTINCT o.id) AS total_organizations 
-    FROM organizations o 
-    JOIN users u ON u.org_id = o.id 
+    FROM neworganizations o 
+    JOIN newusers u ON u.id = o.id 
     WHERE u.status != 'deleted' AND u.role = 'org_admin'
 ";
 $result_orgs = $conn->query($sql_orgs);
@@ -23,11 +22,8 @@ $total_organizations = $result_orgs->fetch_assoc()['total_organizations'];
 // Get upcoming events (exclude events where the organizer's account is deleted and not org_admin)
 $sql_events = "
     SELECT COUNT(DISTINCT e.ID) AS total_events 
-    FROM events e 
-    JOIN users u ON u.org_id = e.org_id 
+    FROM events e  
     WHERE e.event_date >= CURDATE() 
-      AND u.status != 'deleted' 
-      AND u.role = 'org_admin'
 ";
 $result_events = $conn->query($sql_events);
 $total_events = $result_events->fetch_assoc()['total_events'];
@@ -35,11 +31,8 @@ $total_events = $result_events->fetch_assoc()['total_events'];
 // Get past events (exclude events by deleted users and non-org_admin)
 $sql_past = "
     SELECT COUNT(DISTINCT e.ID) AS past_events 
-    FROM events e 
-    JOIN users u ON u.org_id = e.org_id 
+    FROM events e  
     WHERE e.event_date < CURDATE() 
-      AND u.status != 'deleted' 
-      AND u.role = 'org_admin'
 ";
 $result_past = $conn->query($sql_past);
 $past_events = $result_past->fetch_assoc()['past_events'];
@@ -48,10 +41,7 @@ $past_events = $result_past->fetch_assoc()['past_events'];
 $sql_past_events = "
     SELECT e.title, e.event_date 
     FROM events e 
-    JOIN users u ON u.org_id = e.org_id 
-    WHERE e.event_date < CURDATE() 
-      AND u.status != 'deleted' 
-      AND u.role = 'org_admin'
+    WHERE e.event_date < CURDATE()
     ORDER BY e.event_date DESC
 ";
 $result_past_events = $conn->query($sql_past_events);
@@ -65,9 +55,6 @@ while ($row = $result_past_events->fetch_assoc()) {
 $sql_recent_events = "
     SELECT e.title, e.event_date 
     FROM events e 
-    JOIN users u ON u.org_id = e.org_id 
-    WHERE u.status != 'deleted' 
-      AND u.role = 'org_admin'
     ORDER BY e.event_date DESC 
     LIMIT 5
 ";
@@ -83,7 +70,7 @@ $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 
 if ($admin_id) {
-    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $sql_admin = "SELECT CONCAT_WS(' ', firstName, middleName, lastName) AS fullName FROM newusers WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();

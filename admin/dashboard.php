@@ -5,15 +5,15 @@ checkUserRole('admin'); // Only allow admins
 require '../config/db_conn.php';
 
 // Get total users excluding admin and deleted accounts
-$sql = "SELECT COUNT(*) AS total_users FROM users WHERE role != 'admin' AND status != 'deleted'";
+$sql = "SELECT COUNT(*) AS total_users FROM newusers";
 $result = $conn->query($sql);
 $total_users = $result->fetch_assoc()['total_users'];
 
 // Get total organizations (exclude orgs whose owner is deleted)
 $sql_orgs = "
   SELECT COUNT(*) AS total_organizations 
-  FROM organizations o
-  JOIN users u ON o.id = u.ID
+  FROM neworganizations o
+  JOIN newusers u ON o.id = u.ID
   WHERE u.status != 'deleted'";
 $result_orgs = $conn->query($sql_orgs);
 $total_organizations = $result_orgs->fetch_assoc()['total_organizations'];
@@ -24,7 +24,7 @@ $sql_events = "
   FROM events e
   WHERE event_date >= CURRENT_DATE 
              AND org_id IN (
-                 SELECT org_id FROM users WHERE status != 'deleted'
+                 SELECT org_id FROM newusers WHERE status != 'deleted'
              )";
 $result_events = $conn->query($sql_events);
 $total_events = $result_events->fetch_assoc()['total_events'];
@@ -35,7 +35,7 @@ $sql_past = "
   FROM events e
   WHERE event_date < CURRENT_DATE 
              AND org_id IN (
-                 SELECT org_id FROM users WHERE status != 'deleted'
+                 SELECT org_id FROM newusers WHERE status != 'deleted'
              )";
 $result_past = $conn->query($sql_past);
 $past_events = $result_past->fetch_assoc()['past_events'];
@@ -44,8 +44,6 @@ $past_events = $result_past->fetch_assoc()['past_events'];
 $sql_recent_events = "
   SELECT title, event_date 
   FROM events e
-  JOIN users u ON e.org_id = u.ID
-  WHERE u.status != 'deleted'
   ORDER BY event_date DESC 
   LIMIT 5";
 $result_recent_events = $conn->query($sql_recent_events);
@@ -60,7 +58,7 @@ $admin_name = '';
 
 // Fetch admin's full name
 if ($admin_id) {
-    $sql_admin = "SELECT fullName FROM users WHERE ID = ?";
+    $sql_admin = "SELECT CONCAT_WS(' ', firstName, middleName, lastName) AS fullName FROM newusers WHERE ID = ?";
     $stmt = $conn->prepare($sql_admin);
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
@@ -73,8 +71,8 @@ if ($admin_id) {
 
 // Recent signups (excluding admin and deleted)
 $sql_recent_signups = "
-  SELECT fullName, email 
-  FROM users 
+  SELECT CONCAT_WS(' ', firstName, middleName, lastName) AS fullName, email 
+  FROM newusers 
   WHERE role != 'admin' AND status != 'deleted' 
   ORDER BY created_at DESC 
   LIMIT 5";
@@ -89,7 +87,7 @@ if ($result_recent_signups) {
 // Monthly signups for chart
 $sql_monthly = "
   SELECT MONTH(created_at) AS month, COUNT(*) AS signups 
-  FROM users 
+  FROM newusers 
   WHERE role != 'admin' AND status != 'deleted' AND YEAR(created_at) = YEAR(CURDATE()) 
   GROUP BY MONTH(created_at) 
   ORDER BY MONTH(created_at)";
