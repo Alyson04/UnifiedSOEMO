@@ -381,5 +381,13 @@ document.getElementById('confirmPassword').addEventListener('input', function() 
         this.style.borderColor = '#ff6b6b';
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('section').addEventListener('input', function(e) {
+        if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+            this.value = 1;
+        }
+    });
+});
 </script>
 <?php include '../includes/footer.php'; ?> 

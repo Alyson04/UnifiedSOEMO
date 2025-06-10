@@ -382,6 +382,17 @@ include '../includes/header.php';
     document.getElementById("orgAdminFields").style.display = "none";
     document.getElementById("studentFields").style.display = "none";
     document.getElementById("submitBtnWrapper").style.display = "none";
+
+    document.getElementById('studentSection').addEventListener('input', function(e) {
+        if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+            this.value = 1;
+        }
+    });
+    document.getElementById('orgSection').addEventListener('input', function(e) {
+        if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+            this.value = 1;
+        }
+    });
   });
 
   function updateForm() {

@@ -138,15 +138,25 @@ function handleStatusChange(selectElement) {
 function enableEdit(button) {
     const row = button.closest('tr');
     row.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
-    row.querySelectorAll('.edit').forEach(el => el.classList.remove('hidden'));
+    row.querySelectorAll('.edit').forEach(el => {
+        el.classList.remove('hidden');
+        // Add input validation for section
+        if (el.parentElement === row.cells[6]) { // Section is in the 7th column (index 6)
+            el.addEventListener('input', function() {
+                if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+                    this.value = 1;
+                }
+            });
+        }
+    });
     button.style.display = 'none';
     row.querySelector('.save-btn').classList.remove('hidden');
     row.querySelector('.cancel-btn').classList.remove('hidden');
     
     // Reset dropdown value to match current course
-    const courseCell = row.querySelector('td:nth-child(5)'); // Assuming 'course' is in the 5th column
-    const course = courseCell.querySelector('.view').textContent.trim(); // Get the course value from the 'view' span
-    const courseSelect = row.querySelector('select[name="course"]'); // Get the dropdown
+    const courseCell = row.querySelector('td:nth-child(5)');
+    const course = courseCell.querySelector('.view').textContent.trim();
+    const courseSelect = row.querySelector('select[name="course"]');
 
     // Ensure that the dropdown shows the correct value based on the current course
     const option = Array.from(courseSelect.options).find(opt => opt.value === course);
@@ -172,6 +182,11 @@ let currentUserId = null;
 function saveEdit(button, userId) {
     const row = button.closest('tr');
     let hasChanges = false;
+
+    const sectionInput = row.querySelector('input[value="' + row.querySelector('td:nth-child(7) span.view').textContent + '"]');
+    if (sectionInput && !isNaN(sectionInput.value) && parseInt(sectionInput.value) < 1) {
+        sectionInput.value = 1;
+    }
 
     // Check if any field has been changed
     const fieldMappings = {
@@ -411,6 +426,23 @@ function escapeHtml(text) {
 
 roleFilter.addEventListener('change', () => fetchUsers(1));
 document.addEventListener('DOMContentLoaded', () => fetchUsers());
+
+function attachEditListeners() {
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+            const tr = this.closest('tr');
+            tr.querySelectorAll('.edit').forEach(input => {
+                if (input.classList.contains('section-input')) {
+                    input.addEventListener('input', function() {
+                        if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+                            this.value = 1;
+                        }
+                    });
+                }
+            });
+        });
+    });
+}
 </script>
 
 <style>
