@@ -582,4 +582,6 @@ function togglePassword(inputId, iconElement) {
 
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
+<script src="../assets/scripts/sidebar.js"></script>
+<script src="../assets/scripts/profile_dropdown.js"></script>
 <?php include '../includes/footer.php'; ?>
