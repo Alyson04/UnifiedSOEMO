@@ -9,25 +9,39 @@ $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 $org_id = null;
 
-// Fetch admin's full name and org_id from database
+// Fetch admin's full name and organization_id from database
 if ($admin_id) {
-    $sql_admin = "SELECT fullName, org_id FROM users WHERE ID = ?";
+    // Get the organization ID directly from neworganizations
+    $sql_admin = "SELECT 
+                    CONCAT_WS(' ', nu.firstName, nu.middleName, nu.lastName) AS fullName,
+                    no.id as organization_id
+                  FROM newusers nu
+                  JOIN neworganizations no ON no.user_id = nu.id
+                  WHERE nu.ID = ?";
+    
     $stmt = $conn->prepare($sql_admin);
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
     $result_admin = $stmt->get_result();
+    
     if ($result_admin->num_rows > 0) {
         $admin_data = $result_admin->fetch_assoc();
         $admin_name = ucwords(strtolower($admin_data['fullName']));
-        $org_id = $admin_data['org_id'];
+        $org_id = $admin_data['organization_id'];
     }
     $stmt->close();
 }
 
-// Get total users with role 'student' and same org_id AND status != 'deleted'
+// Get total users (students) in the organization
 $total_users = 0;
 if ($org_id !== null) {
-    $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role = 'student' AND org_id = ? AND status != 'deleted'";
+    $sql = "SELECT COUNT(n.id) AS total_users 
+            FROM organization_members om
+            JOIN newusers n ON om.user_id = n.id
+            WHERE om.organization_id = ? 
+            AND n.role = 'student' 
+            AND n.status != 'deleted'";
+    
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
@@ -40,12 +54,8 @@ if ($org_id !== null) {
 $sql_events = "
     SELECT COUNT(*) AS total_events 
     FROM events e
-    JOIN users u ON e.org_id = u.org_id
     WHERE e.org_id = ? 
-      AND e.event_date >= CURDATE() 
-      AND u.status != 'deleted'
-      AND u.role = 'org_admin'
-      ";
+      AND e.event_date >= CURDATE()";
 $stmt_events = $conn->prepare($sql_events);
 $stmt_events->bind_param("i", $org_id);
 $stmt_events->execute();
@@ -57,13 +67,8 @@ $stmt_events->close();
 $sql_past = "
     SELECT COUNT(DISTINCT e.ID) AS past_events 
     FROM events e
-    JOIN users u ON e.org_id = u.org_id
     WHERE e.org_id = ? 
-      AND e.event_date < CURDATE() 
-      AND u.status != 'deleted'
-      AND u.role = 'org_admin'
-";
-
+      AND e.event_date < CURDATE()";
 $stmt_past = $conn->prepare($sql_past);
 $stmt_past->bind_param("i", $org_id);
 $stmt_past->execute();
@@ -71,13 +76,11 @@ $result_past = $stmt_past->get_result();
 $past_events = $result_past->fetch_assoc()['past_events'];
 $stmt_past->close();
 
-
 // Get recent events (latest 5) where user is not deleted
 $sql_recent_events = "
     SELECT e.title, e.event_date 
     FROM events e
-    JOIN users u ON e.org_id = u.ID
-    WHERE e.org_id = ? AND u.status != 'deleted'
+    WHERE e.org_id = ?
     ORDER BY e.event_date DESC
     LIMIT 5";
 $stmt_recent_events = $conn->prepare($sql_recent_events);
@@ -91,14 +94,16 @@ while ($row = $result_recent_events->fetch_assoc()) {
 }
 $stmt_recent_events->close();
 
-
-// Get monthly signups for the organization where user status != 'deleted'
+// Get monthly signups for the organization
 $sql_monthly_signups = "
-    SELECT MONTH(created_at) AS month, COUNT(*) AS signups 
-    FROM users 
-    WHERE role = 'student' AND org_id = ? AND status != 'deleted'
-    GROUP BY MONTH(created_at) 
-    ORDER BY MONTH(created_at)
+    SELECT MONTH(n.created_at) AS month, COUNT(*) AS signups 
+    FROM organization_members om
+    JOIN newusers n ON om.user_id = n.id
+    WHERE om.organization_id = ? 
+    AND n.role = 'student' 
+    AND n.status != 'deleted'
+    GROUP BY MONTH(n.created_at) 
+    ORDER BY MONTH(n.created_at)
 ";
 $stmt = $conn->prepare($sql_monthly_signups);
 $stmt->bind_param("i", $org_id);
@@ -111,12 +116,15 @@ while ($row = $result_monthly->fetch_assoc()) {
 }
 $stmt->close();
 
-// Get recent users (last 5 signups) where status != 'deleted'
+// Get recent users (last 5 signups)
 $sql_recent_signups = "
-    SELECT fullName, email 
-    FROM users 
-    WHERE org_id = ? AND status != 'deleted' 
-    ORDER BY created_at DESC 
+    SELECT CONCAT_WS(' ', n.firstName, n.middleName, n.lastName) AS fullName, n.email 
+    FROM organization_members om
+    JOIN newusers n ON om.user_id = n.id
+    WHERE om.organization_id = ? 
+    AND n.role = 'student' 
+    AND n.status != 'deleted' 
+    ORDER BY n.created_at DESC 
     LIMIT 5";
 $stmt = $conn->prepare($sql_recent_signups);
 $stmt->bind_param("i", $org_id);

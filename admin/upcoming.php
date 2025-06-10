@@ -5,7 +5,7 @@ checkUserRole('admin'); // Only allow admins
 require '../config/db_conn.php';
 
 // Get total users excluding admin and deleted
-$sql = "SELECT COUNT(*) AS total_users FROM newusers WHERE role != 'admin' AND status != 'deleted'";
+$sql = "SELECT COUNT(*) AS total_users FROM newusers";
 $result = $conn->query($sql);
 $total_users = $result->fetch_assoc()['total_users'];
 

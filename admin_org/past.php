@@ -15,7 +15,10 @@ $recent_events = [];
 
 // Get org_id and admin's name
 if ($admin_id) {
-    $stmt = $conn->prepare("SELECT fullName, org_id FROM users WHERE ID = ?");
+    $stmt = $conn->prepare("SELECT CONCAT_WS(' ', firstName, middleName, lastName) AS fullName, no.id as organization_id 
+                           FROM newusers nu
+                           JOIN neworganizations no ON no.user_id = nu.id
+                           WHERE nu.ID = ? AND nu.role = 'orgAdmin'");
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
     $stmt->bind_result($fullName, $org_id);
@@ -27,7 +30,11 @@ if ($admin_id) {
 
 // Count students in the same org AND not deleted
 if ($org_id) {
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'student' AND org_id = ? AND status != 'deleted'");
+    $stmt = $conn->prepare("SELECT COUNT(n.id) FROM organization_members om
+                           JOIN newusers n ON om.user_id = n.id
+                           WHERE om.organization_id = ? 
+                           AND n.role = 'student' 
+                           AND n.status != 'deleted'");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $stmt->bind_result($total_users);

@@ -4,110 +4,79 @@ checkUserRole('orgAdmin'); // Only allow org_admins
 
 require '../config/db_conn.php';
 
-// Get logged-in user's ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
 $admin_name = '';
 $org_id = null;
+$total_users = 0;
+$total_events = 0;
+$past_events = 0;
+$upcoming_events_list = [];
 
-// Fetch admin's full name and org_id
+// Get org_id and admin's name
 if ($admin_id) {
-    $sql_admin = "SELECT fullName, org_id FROM users WHERE ID = ?";
-    $stmt = $conn->prepare($sql_admin);
+    $stmt = $conn->prepare("SELECT CONCAT_WS(' ', firstName, middleName, lastName) AS fullName, no.id as organization_id 
+                           FROM newusers nu
+                           JOIN neworganizations no ON no.user_id = nu.id
+                           WHERE nu.ID = ? AND nu.role = 'orgAdmin'");
     $stmt->bind_param("i", $admin_id);
     $stmt->execute();
-    $result_admin = $stmt->get_result();
-    if ($result_admin->num_rows > 0) {
-        $admin_data = $result_admin->fetch_assoc();
-        $admin_name = ucwords(strtolower($admin_data['fullName']));
-        $org_id = $admin_data['org_id'];
+    $stmt->bind_result($fullName, $org_id);
+    if ($stmt->fetch()) {
+        $admin_name = ucwords(strtolower($fullName));
     }
     $stmt->close();
 }
 
-// Get total users (students) with same org_id and not deleted
-$total_users = 0;
-if ($org_id !== null) {
-    $sql = "SELECT COUNT(*) AS total_users FROM users WHERE role = 'student' AND org_id = ? AND status != 'deleted'";
-    $stmt = $conn->prepare($sql);
+// Count students in the same org AND not deleted
+if ($org_id) {
+    $stmt = $conn->prepare("SELECT COUNT(n.id) FROM organization_members om
+                           JOIN newusers n ON om.user_id = n.id
+                           WHERE om.organization_id = ? 
+                           AND n.role = 'student' 
+                           AND n.status != 'deleted'");
+    $stmt->bind_param("i", $org_id);
+    $stmt->execute();
+    $stmt->bind_result($total_users);
+    $stmt->fetch();
+    $stmt->close();
+}
+
+// Count upcoming events
+if ($org_id) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM events WHERE event_date >= CURDATE() AND org_id = ?");
+    $stmt->bind_param("i", $org_id);
+    $stmt->execute();
+    $stmt->bind_result($total_events);
+    $stmt->fetch();
+    $stmt->close();
+}
+
+// Count past events
+if ($org_id) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM events WHERE event_date < CURDATE() AND org_id = ?");
+    $stmt->bind_param("i", $org_id);
+    $stmt->execute();
+    $stmt->bind_result($past_events);
+    $stmt->fetch();
+    $stmt->close();
+}
+
+// Get upcoming events list
+if ($org_id) {
+    $stmt = $conn->prepare("
+        SELECT title, event_date 
+        FROM events 
+        WHERE event_date >= CURDATE() 
+        AND org_id = ? 
+        ORDER BY event_date ASC
+    ");
     $stmt->bind_param("i", $org_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $total_users = $result->fetch_assoc()['total_users'];
+    while ($row = $result->fetch_assoc()) {
+        $upcoming_events_list[] = $row;
+    }
     $stmt->close();
-}
-
-// Get upcoming events count
-$total_events = 0;
-if ($org_id !== null) {
-    $sql_events = "
-        SELECT COUNT(*) AS total_events 
-        FROM events
-        WHERE event_date >= CURDATE() 
-          AND org_id = ?
-    ";
-    $stmt_events = $conn->prepare($sql_events);
-    $stmt_events->bind_param("i", $org_id);
-    $stmt_events->execute();
-    $result_events = $stmt_events->get_result();
-    $total_events = $result_events->fetch_assoc()['total_events'];
-    $stmt_events->close();
-}
-
-// Get past events count
-$past_events = 0;
-if ($org_id !== null) {
-    $sql_past = "
-        SELECT COUNT(*) AS past_events 
-        FROM events
-        WHERE event_date < CURDATE() 
-          AND org_id = ?
-    ";
-    $stmt_past = $conn->prepare($sql_past);
-    $stmt_past->bind_param("i", $org_id);
-    $stmt_past->execute();
-    $result_past = $stmt_past->get_result();
-    $past_events = $result_past->fetch_assoc()['past_events'];
-    $stmt_past->close();
-}
-
-// Upcoming events list
-$upcoming_events = [];
-if ($org_id !== null) {
-    $sql_upcoming_events = "
-        SELECT title, event_date 
-        FROM events
-        WHERE event_date >= CURDATE() 
-          AND org_id = ?
-        ORDER BY event_date ASC
-    ";
-    $stmt_upcoming = $conn->prepare($sql_upcoming_events);
-    $stmt_upcoming->bind_param("i", $org_id);
-    $stmt_upcoming->execute();
-    $result_upcoming_events = $stmt_upcoming->get_result();
-    while ($row = $result_upcoming_events->fetch_assoc()) {
-        $upcoming_events[] = $row;
-    }
-    $stmt_upcoming->close();
-}
-
-// Recent events list (limit 5)
-$recent_events = [];
-if ($org_id !== null) {
-    $sql_recent_events = "
-        SELECT title, event_date 
-        FROM events
-        WHERE org_id = ?
-        ORDER BY event_date DESC 
-        LIMIT 5
-    ";
-    $stmt_recent = $conn->prepare($sql_recent_events);
-    $stmt_recent->bind_param("i", $org_id);
-    $stmt_recent->execute();
-    $result_recent_events = $stmt_recent->get_result();
-    while ($row = $result_recent_events->fetch_assoc()) {
-        $recent_events[] = $row;
-    }
-    $stmt_recent->close();
 }
 
 $conn->close();
@@ -150,37 +119,35 @@ include '../includes/header.php';
   <a href="past.php" class="card stat-card">
     <h2><?= $past_events ?></h2><p>Past Events</p>
   </a>
-</section>
+</section>     
 
 <!-- Upcoming Events Section -->
 <section class="events-upcoming">
-  <div class="events-column dates-column">
+  <div class="events-column">
     <h3>Event Dates</h3>
-    <?php if (!empty($upcoming_events)) : ?>
-        <?php foreach ($upcoming_events as $event) : ?>
+    <?php if (!empty($upcoming_events_list)) : ?>
+        <?php foreach ($upcoming_events_list as $event) : ?>
             <div class="event-item"><?= date("M d, Y", strtotime($event['event_date'])) ?></div>
         <?php endforeach; ?>
     <?php else : ?>
-        <div class="no-events">No upcoming events found.</div>
+        <div>No upcoming events found.</div>
     <?php endif; ?>
   </div>
 
-  <div class="events-column names-column">
+  <div class="events-column">
     <h3>Event Names</h3>
-    <?php if (!empty($upcoming_events)) : ?>
-        <?php foreach ($upcoming_events as $event) : ?>
+    <?php if (!empty($upcoming_events_list)) : ?>
+        <?php foreach ($upcoming_events_list as $event) : ?>
             <div class="event-item"><?= htmlspecialchars($event['title']) ?></div>
         <?php endforeach; ?>
     <?php else : ?>
-        <div class="no-events">No upcoming events found.</div>
+        <div>No upcoming events found.</div>
     <?php endif; ?>
   </div>
 </section>
 
 </main>
 
-<!-- Add shared JavaScript for admin_org section -->
-<script src="../assets/scripts/admin_org_shared.js"></script>
 <script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
