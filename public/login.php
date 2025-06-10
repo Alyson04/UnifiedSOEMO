@@ -145,7 +145,7 @@ button {
 .toggle-icon {
     position: absolute;
     right: 12px;
-    top: 40%;
+    top: 48%;
     transform: translateY(-50%);
     cursor: pointer;
     width: 20px;
