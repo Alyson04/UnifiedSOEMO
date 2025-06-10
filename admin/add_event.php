@@ -85,6 +85,16 @@ $style = "add_event.css";
 include '../includes/header.php';
 ?>
 
+<!-- Hamburger Menu -->
+<button class="hamburger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay"></div>
+
 <?php include '../includes/sidebar.php'; ?>
 
 <main class="main-content">
