@@ -228,7 +228,7 @@ ORDER BY p.created_at DESC";  // Add DESC to show newest posts first
 }
 
 .delete-btn {
-    background-color: #dc3545;
+    background: linear-gradient(135deg, #36577d, #2A4365);
     color: white;
     border: none;
     padding: 8px 16px;
@@ -237,7 +237,7 @@ ORDER BY p.created_at DESC";  // Add DESC to show newest posts first
 }
 
 .cancel-btn {
-    background-color: #6c757d;
+    background: linear-gradient(135deg, #36577d, #2A4365);
     color: white;
     border: none;
     padding: 8px 16px;
