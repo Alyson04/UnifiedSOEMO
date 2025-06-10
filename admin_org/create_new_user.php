@@ -30,10 +30,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $year = $_POST['year'] ?? '';
     $section = $_POST['section'] ?? '';
     $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirmPassword'] ?? '';
     
     // Validate required fields
-    if (empty($firstName) || empty($lastName) || empty($studentNumber) || empty($email)) {
+    if (empty($firstName) || empty($lastName) || empty($studentNumber) || empty($email) || empty($password) || empty($confirmPassword)) {
         $_SESSION['error'] = "Please fill in all required fields.";
+        header("Location: create_new_user.php");
+        exit;
+    }
+
+    // Validate password
+    if (strlen($password) < 8) {
+        $_SESSION['error'] = "Password must be at least 8 characters long.";
+        header("Location: create_new_user.php");
+        exit;
+    }
+
+    if (!preg_match("/[A-Z]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one uppercase letter.";
+        header("Location: create_new_user.php");
+        exit;
+    }
+
+    if (!preg_match("/[a-z]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one lowercase letter.";
+        header("Location: create_new_user.php");
+        exit;
+    }
+
+    if (!preg_match("/[0-9]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one number.";
+        header("Location: create_new_user.php");
+        exit;
+    }
+
+    if (!preg_match("/[!@#$%^&*()\-_=+{};:,<.>]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one special character.";
+        header("Location: create_new_user.php");
+        exit;
+    }
+
+    if ($password !== $confirmPassword) {
+        $_SESSION['error'] = "Passwords do not match.";
         header("Location: create_new_user.php");
         exit;
     }
@@ -54,10 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("A user with this student number or email already exists.");
         }
 
+        // Hash the password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $graduated = 'no';
+
         // Create new user
-        $insert_sql = "INSERT INTO newusers (firstName, middleName, lastName, studentNumber, course, year, section, email, role, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'student', 'active', NOW())";
+        $insert_sql = "INSERT INTO newusers (firstName, middleName, lastName, studentNumber, course, year, section, email, password, role, status, graduated, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'student', 'active', NOW())";
         $insert_stmt = $conn->prepare($insert_sql);
-        $insert_stmt->bind_param("ssssssss", $firstName, $middleName, $lastName, $studentNumber, $course, $year, $section, $email);
+        $insert_stmt->bind_param("ssssssssss", $firstName, $middleName, $lastName, $studentNumber, $course, $year, $section, $email, $hashedPassword, $graduated);
         
         if (!$insert_stmt->execute()) {
             throw new Exception("Failed to create user.");
@@ -67,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $insert_stmt->close();
 
         // Add user to organization_members
-        $member_sql = "INSERT INTO organization_members (user_id, organization_id, joined_at) VALUES (?, ?, NOW())";
+        $member_sql = "INSERT INTO organization_members (user_id, organization_id) VALUES (?, ?)";
         $member_stmt = $conn->prepare($member_sql);
         $member_stmt->bind_param("ii", $new_user_id, $org_id);
         
@@ -102,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $title = "Add New Member";
-$style = "create_new_user.css";
+$style = "create_admin.css";
 include '../includes/header.php';
 ?>
 
@@ -122,12 +165,7 @@ include '../includes/header.php';
     <?php include '../includes/navbar.php'; ?>
 
     <div class="content">
-        <h2 class="page-title">ADD NEW MEMBER</h2>
-
-        <?php if (!empty($_SESSION['error'])): ?>
-            <div class="alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
+        <h2 class="page-title">ADD NEW MEMBER</h2>        
 
         <form method="POST" class="create-user-form">
             <div class="form-group">
@@ -154,9 +192,14 @@ include '../includes/header.php';
                 <label for="course">Course *</label>
                 <select id="course" name="course" required>
                     <option value="">Select Course</option>
-                    <option value="BSIT">BSIT</option>
-                    <option value="BSIS">BSIS</option>
-                    <option value="BSCS">BSCS</option>
+                    <option value="DCvET">Diploma in Civil Engineering Technology</option>
+                    <option value="DCET">Diploma in Computer Engineering Technology</option>
+                    <option value="DEET">Diploma in Electrical Engineering Technology</option>
+                    <option value="DECET">Diploma in Electronics Engineering Technology</option>
+                    <option value="DIT">Diploma in Information Technology</option>
+                    <option value="DMET">Diploma in Mechanical Engineering Technology</option>
+                    <option value="DOMT">Diploma in Office Management Technology</option>
+                    <option value="DRET">Diploma in Railway Engineering Technology</option>
                 </select>
             </div>
 
@@ -177,7 +220,17 @@ include '../includes/header.php';
 
             <div class="form-group">
                 <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" required pattern=".*@iskolarngbayan\.pup\.edu\.ph$" title="Must be a valid PUP email address (@iskolarngbayan.pup.edu.ph)">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" required minlength="8">
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8">
             </div>
 
             <div class="form-actions">
@@ -249,9 +302,57 @@ include '../includes/header.php';
 .alert.error {
     background-color: #f44336;
 }
+.password-requirements {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 5px;
+}
+.password-requirements ul {
+    margin: 5px 0 0 20px;
+    padding: 0;
+}
+.password-requirements li {
+    margin: 2px 0;
+}
+input:invalid {
+    border-color: #ff6b6b;
+}
+input:valid {
+    border-color: #51cf66;
+}
 </style>
 
 <script src="../assets/scripts/notif_script.js"></script>
 <script src="../assets/scripts/inactive.js"></script>
 <script src="../assets/scripts/hamburger.js"></script>
+<script>
+document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /[0-9]/.test(password),
+        special: /[!@#$%^&*()\-_=+{};:,<.>]/.test(password)
+    };
+
+    const requirementsList = document.querySelector('.password-requirements ul');
+    requirementsList.innerHTML = `
+        <li style="color: ${requirements.length ? '#51cf66' : '#ff6b6b'}">8 characters</li>
+        <li style="color: ${requirements.uppercase ? '#51cf66' : '#ff6b6b'}">One uppercase letter</li>
+        <li style="color: ${requirements.lowercase ? '#51cf66' : '#ff6b6b'}">One lowercase letter</li>
+        <li style="color: ${requirements.number ? '#51cf66' : '#ff6b6b'}">One number</li>
+        <li style="color: ${requirements.special ? '#51cf66' : '#ff6b6b'}">One special character</li>
+    `;
+});
+
+document.getElementById('confirmPassword').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    if (this.value === password) {
+        this.style.borderColor = '#51cf66';
+    } else {
+        this.style.borderColor = '#ff6b6b';
+    }
+});
+</script>
 <?php include '../includes/footer.php'; ?> 

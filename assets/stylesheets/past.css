@@ -127,6 +127,8 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
+          background: none;
+    box-shadow: none;
 }
 
 .top-right {

@@ -1,169 +1,166 @@
 <?php
-session_start();
+require 'auth.php';
+checkUserRole('orgAdmin');
+
 require '../config/db_conn.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    $_SESSION['error'] = 'Invalid request method.';
-    header('Location: ../admin/create_new_user.php');
-    exit;
+// Get org admin's organization ID
+$user_id = $_SESSION['user_id'] ?? null;
+$org_id = $_SESSION['org_id'] ?? null;
+
+if (!$org_id && $user_id) {
+    $sql_org = "SELECT id FROM neworganizations WHERE user_id = ?";
+    $stmt = $conn->prepare($sql_org);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $org_id = $result->fetch_assoc()['id'];
+        $_SESSION['org_id'] = $org_id;
+    }
+    $stmt->close();
 }
 
-function sanitize($conn, $input) {
-    return htmlspecialchars(trim($conn->real_escape_string($input)));
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $firstName = $_POST['firstName'] ?? '';
+    $middleName = $_POST['middleName'] ?? '';
+    $lastName = $_POST['lastName'] ?? '';
+    $studentNumber = $_POST['studentNumber'] ?? '';
+    $course = $_POST['course'] ?? '';
+    $year = $_POST['year'] ?? '';
+    $section = $_POST['section'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirmPassword'] ?? '';
+    
+    // Validate required fields
+    if (empty($firstName) || empty($lastName) || empty($studentNumber) || empty($email) || empty($password) || empty($confirmPassword)) {
+        $_SESSION['error'] = "Please fill in all required fields.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
 
-function normalizeValue($value) {
-    return trim($value) === '' ? 'N/A' : $value;
-}
+    // Validate password
+    if (strlen($password) < 8) {
+        $_SESSION['error'] = "Password must be at least 8 characters long.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
 
-$role = $_POST['role'] ?? '';
-$firstName = normalizeValue(sanitize($conn, $_POST['firstName'] ?? ''));
-$middleName = normalizeValue(sanitize($conn, $_POST['middleName'] ?? ''));
-$lastName = normalizeValue(sanitize($conn, $_POST['lastName'] ?? ''));
-$email = normalizeValue(sanitize($conn, $_POST['email'] ?? ''));
-$password = $_POST['password'] ?? '';
-$confirmPassword = $_POST['confirmPassword'] ?? '';
+    if (!preg_match("/[A-Z]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one uppercase letter.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
 
-// Always attempt to grab student-related data
-$studentNumber = normalizeValue(sanitize($conn, $_POST['studentNumber'] ?? ''));
-$course = normalizeValue(sanitize($conn, $_POST['course'] ?? ''));
-$year = normalizeValue(sanitize($conn, $_POST['year'] ?? ''));
-$section = normalizeValue(sanitize($conn, $_POST['section'] ?? ''));
+    if (!preg_match("/[a-z]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one lowercase letter.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
 
-$missingFields = [];
-if (!$firstName) $missingFields[] = 'First Name';
-if (!$middleName) $missingFields[] = 'Middle Name';
-if (!$lastName) $missingFields[] = 'Last Name';
-if (!$email) $missingFields[] = 'Email';
-if (!$password) $missingFields[] = 'Password';
-if (!$confirmPassword) $missingFields[] = 'Confirm Password';
-if (!$role) $missingFields[] = 'Role';
+    if (!preg_match("/[0-9]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one number.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
 
-// Additional role-based requirements
-if ($role === 'student') {
-    if (!$studentNumber || $studentNumber === 'N/A') $missingFields[] = 'Student Number';
-    if (!$course || $course === 'N/A') $missingFields[] = 'Course';
-    if (!$year || $year === 'N/A') $missingFields[] = 'Year';
-    if (!$section || $section === 'N/A') $missingFields[] = 'Section';
-} elseif ($role === 'orgAdmin') {
-    if (!$studentNumber) $missingFields[] = 'Student Number';
-    if (!$course) $missingFields[] = 'Course';
-    if (!$year) $missingFields[] = 'Year';
-    if (!$section) $missingFields[] = 'Section';
+    if (!preg_match("/[!@#$%^&*()\-_=+{};:,<.>]/", $password)) {
+        $_SESSION['error'] = "Password must contain at least one special character.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
+
+    if ($password !== $confirmPassword) {
+        $_SESSION['error'] = "Passwords do not match.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
+
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = "Invalid email format.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
+
+    // Validate PUP email domain
+    if (!preg_match("/@iskolarngbayan\.pup\.edu\.ph$/", $email)) {
+        $_SESSION['error'] = "Email must be a valid PUP email address (@iskolarngbayan.pup.edu.ph).";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
+
+    // Start transaction
+    $conn->begin_transaction();
+
+    try {
+        // Check if user already exists
+        $check_sql = "SELECT id FROM newusers WHERE studentNumber = ? OR email = ?";
+        $check_stmt = $conn->prepare($check_sql);
+        $check_stmt->bind_param("ss", $studentNumber, $email);
+        $check_stmt->execute();
+        $exists = $check_stmt->get_result()->num_rows > 0;
+        $check_stmt->close();
+
+        if ($exists) {
+            throw new Exception("A user with this student number or email already exists.");
+        }
+
+        // Hash the password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Set role explicitly to 'student'
+        $role = 'student';
+        $status = 'active';
+
+        // Create new user
+        $insert_sql = "INSERT INTO newusers (firstName, middleName, lastName, studentNumber, course, year, section, email, password, role, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $insert_stmt = $conn->prepare($insert_sql);
+        $insert_stmt->bind_param("sssssssssss", $firstName, $middleName, $lastName, $studentNumber, $course, $year, $section, $email, $hashedPassword, $role, $status);
+        
+        if (!$insert_stmt->execute()) {
+            throw new Exception("Failed to create user.");
+        }
+        
+        $new_user_id = $conn->insert_id;
+        $insert_stmt->close();
+
+        // Add user to organization_members
+        $member_sql = "INSERT INTO organization_members (user_id, organization_id, joined_at) VALUES (?, ?, NOW())";
+        $member_stmt = $conn->prepare($member_sql);
+        $member_stmt->bind_param("ii", $new_user_id, $org_id);
+        
+        if (!$member_stmt->execute()) {
+            throw new Exception("Failed to add user to organization.");
+        }
+        
+        $member_stmt->close();
+
+        // Add entry to join_org table with accepted status
+        $join_sql = "INSERT INTO join_org (student_id, org_id, status, application_date) VALUES (?, ?, 'accepted', NOW())";
+        $join_stmt = $conn->prepare($join_sql);
+        $join_stmt->bind_param("ii", $new_user_id, $org_id);
+        
+        if (!$join_stmt->execute()) {
+            throw new Exception("Failed to create join record.");
+        }
+        
+        $join_stmt->close();
+
+        $conn->commit();
+        $_SESSION['success'] = "New member created successfully.";
+        header("Location: ../admin_org/new-manage_users.php");
+        exit;
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        $_SESSION['error'] = $e->getMessage();
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
 } else {
-    $studentNumber = $course = $section = 'N/A';
-    $year = null;
-}
-
-if (!empty($missingFields)) {
-    $_SESSION['error'] = 'Missing fields: ' . implode(', ', $missingFields);
-    header('Location: ../admin/create_new_user.php');
+    header("Location: ../admin_org/create_new_user.php");
     exit;
 }
-
-// Email validation
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['error'] = 'Invalid email format.';
-    header('Location: ../admin/create_new_user.php');
-    exit;
-}
-if ($role === 'admin' && !preg_match("/@pup\.edu\.ph$/", $email)) {
-    $_SESSION['error'] = 'Admin email must end with @pup.edu.ph';
-    header('Location: ../admin/create_new_user.php');
-    exit;
-}
-if (in_array($role, ['student', 'orgAdmin']) && !preg_match("/@iskolarngbayan\.pup\.edu\.ph$/", $email)) {
-    $_SESSION['error'] = 'School email must end with @iskolarngbayan.pup.edu.ph';
-    header('Location: ../admin/create_new_user.php');
-    exit;
-}
-
-// Password validation
-if ($password !== $confirmPassword) {
-    $_SESSION['error'] = 'Passwords do not match.';
-    header('Location: ../admin/create_new_user.php');
-    exit;
-}
-$lengthValid = strlen($password) >= 8 && strlen($password) <= 20;
-$hasNumbers = preg_match_all('/\d/', $password) >= 2;
-$hasSpecials = preg_match_all('/[^A-Za-z0-9]/', $password) >= 2;
-if (!$lengthValid || !$hasNumbers || !$hasSpecials) {
-     $_SESSION['error'] = 'Password must be 8–20 characters long and include at least 2 numbers and 2 special characters.';
-    header('Location: ../admin/create_new_user.php');
-    exit;
-}
-
-$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-// Validate student number logic
-if ($studentNumber !== 'N/A') {
-    if (!preg_match('/^\d{4}-\d{5}-MN-0$/', $studentNumber)) {
-        $_SESSION['error'] = 'Invalid student number format. Use YYYY-NNNNN-MN-0';
-        header('Location: ../admin/create_new_user.php');
-        exit;
-    }
-
-    // Check uniqueness
-    $checkStmt = $conn->prepare("SELECT id FROM newusers WHERE studentNumber = ?");
-    $checkStmt->bind_param("s", $studentNumber);
-    $checkStmt->execute();
-    $checkResult = $checkStmt->get_result();
-    if ($checkResult->num_rows > 0) {
-        $_SESSION['error'] = 'Student Number already exists.';
-        header('Location: ../admin/create_new_user.php');
-        exit;
-    }
-    $checkStmt->close();
-}
-
-$graduated = 'no';
-if ($role === 'admin') {
-    $graduated = 'N/A';
-} elseif ($studentNumber !== 'N/A') {
-    $entryYear = (int)substr($studentNumber, 0, 4);
-    $currentYear = (int)date('Y');
-
-    if ($entryYear > $currentYear) {
-        $_SESSION['error'] = 'Invalid student number: entry year cannot be in the future.';
-        header('Location: ../admin/create_new_user.php');
-        exit;
-    }
-
-    if (($currentYear - $entryYear) >= 4) {
-        $_SESSION['error'] = 'This user cannot register anymore because they have already graduated.';
-        header('Location: ../admin/create_new_user.php');
-        exit;
-    }
-}
-
-// Insert into DB
-$sql = "INSERT INTO newusers (firstName, middleName, lastName, email, password, role, studentNumber, course, year, section, graduated)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param(
-    "sssssssssss",
-    $firstName,
-    $middleName,
-    $lastName,
-    $email,
-    $hashedPassword,
-    $role,
-    $studentNumber,
-    $course,
-    $year,
-    $section,
-    $graduated
-);
-
-if ($stmt->execute()) {
-    $_SESSION['success'] = 'User successfully created.';
-    header('Location: ../admin/new-manage_users.php');
-} else {
-    $_SESSION['error'] = 'Database error: ' . $stmt->error;
-    header('Location: ../admin/create_new_user.php');
-}
-
-$stmt->close();
-$conn->close();
 ?>
