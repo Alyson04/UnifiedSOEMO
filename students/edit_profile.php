@@ -1,4 +1,4 @@
- <?php 
+<?php 
 require '../api/auth.php';
 
 $student_id = $_SESSION['user_id'] ?? null;
@@ -217,7 +217,7 @@ small {
 
 .mobile-profile {
     display: none;
-    position: fixed;
+    position: absolute;
     top: 15px;
     right: 30px;
     z-index: 1001;
