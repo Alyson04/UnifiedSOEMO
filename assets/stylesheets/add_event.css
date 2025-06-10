@@ -491,3 +491,166 @@
 .btn-cancel:hover {
   background-color: #b5b5b5;
 }
+
+/* Hamburger Menu */
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+}
+
+.hamburger-menu span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #1B2A47;
+  margin: 5px 0;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+  /* Show hamburger menu */
+  .hamburger-menu {
+    display: block;
+  }
+
+  /* Hamburger Menu Animation */
+  .hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+    background-color: #ffffff;
+  }
+
+  .hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+    background-color: #ffffff;
+  }
+
+  /* Sidebar Mobile */
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    height: 100vh;
+    z-index: 999;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.active {
+    transform: translateX(250px);
+  }
+
+  /* Main Content */
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+    padding-top: 60px;
+  }
+
+  /* Content Area */
+  .content {
+    margin-left: 0 !important;
+    padding: 15px !important;
+    min-height: auto !important;
+    max-height: none !important;
+    width: 100% !important;
+  }
+
+  /* Form Adjustments */
+  .event-form {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 10px !important;
+  }
+
+  .event-form input,
+  .event-form textarea,
+  .event-form select {
+    width: 100% !important;
+    font-size: 14px !important;
+  }
+
+  .event-form button,
+  .event-form .btn-cancel {
+    width: 100% !important;
+    margin: 5px 0 !important;
+  }
+
+  /* Profile Section */
+  .profile {
+    padding: 2px;
+    gap: 8px;
+  }
+
+  .profile img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .profile-info {
+    display: none;
+  }
+
+  /* Form Error Message */
+  .floating-alert {
+    right: 50%;
+    transform: translateX(50%);
+    width: 90%;
+    max-width: none;
+    font-size: 14px;
+    top: 70px;
+  }
+
+  /* Modal Adjustments */
+  .modal-box {
+    width: 90%;
+    max-width: none;
+    margin: 2px;
+    padding: 15px;
+  }
+
+  .modal-box button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  /* Z-index Layering */
+  .notification-modal {
+    z-index: 100;
+  }
+  
+  .profile {
+    z-index: 1100;
+  }
+  
+  .dropdown-tray {
+    z-index: 1200;
+  }
+}
