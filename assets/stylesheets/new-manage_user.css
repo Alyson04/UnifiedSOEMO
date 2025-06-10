@@ -653,7 +653,7 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   .modal-box {
     width: 90%;
     max-width: none;
-    margin: 20px;
+    margin: 2px;
     padding: 15px;
   }
 
