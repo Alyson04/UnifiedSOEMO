@@ -9,69 +9,94 @@ if (!$student_id) {
     exit();
 }
 
-$oldPassword = $_POST['oldPassword'] ?? '';
-$newPassword = $_POST['newPassword'] ?? '';
-$confirmNewPassword = $_POST['confirmNewPassword'] ?? '';
+// Get password fields
+$old_password = $_POST['old_password'] ?? '';
+$new_password = $_POST['password'] ?? '';
+$confirm_password = $_POST['confirm_password'] ?? '';
 
-if (empty($oldPassword) || empty($newPassword) || empty($confirmNewPassword)) {
-    $_SESSION['error'] = "All password fields are required!";
-    header("Location: ../students/edit_profile.php");
+$errors = [];
+
+// File upload handling
+$profile_picture_name = '';
+if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
+    $file_tmp = $_FILES['profile_pic']['tmp_name'];
+    $file_name = basename($_FILES['profile_pic']['name']);
+    $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
+    $new_file_name = 'pfp_' . uniqid() . '.' . $file_ext;
+    $destination = '../assets/uploads_pfp/' . $new_file_name;
+
+    if (move_uploaded_file($file_tmp, $destination)) {
+        $profile_picture_name = $new_file_name;
+    } else {
+        $errors[] = "Failed to upload profile picture.";
+        $_SESSION['error'] = "Failed to upload profile picture!";
+    }
+}
+
+// Password validation
+$password_updated = false;
+if (!empty($old_password) || !empty($new_password) || !empty($confirm_password)) {
+    // All fields must be filled
+    if (empty($old_password) || empty($new_password) || empty($confirm_password)) {
+        $errors[] = "All password fields are required.";
+        $_SESSION['error'] = "All password fields are required!";
+    } else {
+        // Fetch user's current password
+        $stmt = $conn->prepare("SELECT password FROM users WHERE ID = ?");
+        $stmt->bind_param("i", $student_id);
+        $stmt->execute();
+        $stmt->bind_result($current_hashed_password);
+        $stmt->fetch();
+        $stmt->close();
+
+        if (!password_verify($old_password, $current_hashed_password)) {
+            $errors[] = "Old password is incorrect.";
+            $_SESSION['error'] = "Old password is incorrect!";
+        } elseif ($new_password !== $confirm_password) {
+            $errors[] = "New password and confirm password do not match.";
+            $_SESSION['error'] = "New password and confirm password do not match!";
+        } else {
+            $password_updated = true;
+            $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+        }
+    }
+}
+
+// Check if there are any errors
+if (!empty($errors)) {
+    echo json_encode(['success' => false, 'errors' => $errors]);
     exit();
 }
 
-// Fetch current password hash
-$stmt = $conn->prepare("SELECT password FROM newusers WHERE ID = ?");
-$stmt->bind_param("i", $student_id);
-$stmt->execute();
-$result = $stmt->get_result();
+// Construct SQL
+if ($password_updated && !empty($profile_picture_name)) {
+    $sql = "UPDATE newusers SET password = ?, profile_picture = ? WHERE ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssi", $hashedPassword, $profile_picture_name, $student_id);
 
-if (!$result || $result->num_rows === 0) {
-    $_SESSION['error'] = "User not found.";
-    header("Location: ../students/edit_profile.php");
-    exit();
-}
+} elseif ($password_updated) {
+    $sql = "UPDATE newusers SET password = ? WHERE ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $hashedPassword, $student_id);
 
-$row = $result->fetch_assoc();
-$currentHash = $row['password'];
+} elseif (!empty($profile_picture_name)) {
+    $sql = "UPDATE newusers SET profile_picture = ? WHERE ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $profile_picture_name, $student_id);
 
-// Check if old password is correct
-if (!password_verify($oldPassword, $currentHash)) {
-    $_SESSION['error'] = "Old password is incorrect!";
-    header("Location: ../students/edit_profile.php");
-    exit();
-}
-
-// Check if new password matches confirmation
-if ($newPassword !== $confirmNewPassword) {
-    $_SESSION['error'] = "New passwords do not match!";
-    header("Location: ../students/edit_profile.php");
-    exit();
-}
-
-// Check password complexity
-$lengthValid = strlen($newPassword) >= 8 && strlen($newPassword) <= 20;
-$hasNumbers = preg_match_all('/\d/', $newPassword) >= 2;
-$hasSpecials = preg_match_all('/[^A-Za-z0-9]/', $newPassword) >= 2;
-
-if (!$lengthValid || !$hasNumbers || !$hasSpecials) {
-    $_SESSION['error'] = "Password must be 8–20 characters, include at least 2 numbers and 2 special characters.";
-    header("Location: ../students/edit_profile.php");
-    exit();
-}
-
-// Update password
-$hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-$updateStmt = $conn->prepare("UPDATE newusers SET password = ? WHERE ID = ?");
-$updateStmt->bind_param("si", $hashedPassword, $student_id);
-
-if ($updateStmt->execute()) {
-    $_SESSION['success'] = "Password updated successfully.";
 } else {
-    $_SESSION['error'] = "Failed to update password.";
+    $_SESSION['error'] = "Nothing to update!";
+    header("Location: ../students/edit_profile.php");
+    exit();
 }
 
-$updateStmt->close();
-$conn->close();
+if ($stmt->execute()) {
+    $_SESSION['success'] = "Profile updated successfully.";
+    header("Location: ../students/edit_profile.php");
+    exit();
+} else {
+    echo json_encode(['success' => false, 'message' => 'Failed to update profile.']);
+}
 
-header("Location: ../students/edit_profile.php");
-exit();
+$stmt->close();
+$conn->close();
