@@ -1,65 +1,93 @@
 <?php
 require '../api/auth.php';
-checkUserRole('orgAdmin'); // Only allow org_admins
-
+checkUserRole('orgAdmin');
 require '../config/db_conn.php';
 
-header('Content-Type: application/json');
-
-// Get session values
+// Get org admin's organization ID from session or fetch it
+$user_id = $_SESSION['user_id'] ?? null;
 $org_id = $_SESSION['org_id'] ?? null;
 
+if (!$org_id && $user_id) {
+    $sql_org = "SELECT id FROM neworganizations WHERE user_id = ?";
+    $stmt = $conn->prepare($sql_org);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $org_id = $result->fetch_assoc()['id'];
+        $_SESSION['org_id'] = $org_id;
+    }
+    $stmt->close();
+}
+
 if (!$org_id) {
-    echo json_encode(['users' => [], 'total' => 0, 'perPage' => 5]);
+    echo json_encode([
+        'users' => [],
+        'total' => 0,
+        'perPage' => 5
+    ]);
     exit;
 }
 
-// Filters & Pagination
-$status_filter = $_GET['status'] ?? '';
+// Auto-update graduation
+$currentYear = (int)date('Y');
+$cutoffYear = $currentYear - 4;
+
+$auto_update_sql = "
+    UPDATE newusers u
+    INNER JOIN organization_members om ON u.id = om.user_id
+    SET u.graduated = 'yes'
+    WHERE om.organization_id = ?
+    AND u.role = 'student'
+    AND LENGTH(u.studentNumber) >= 4
+    AND CAST(LEFT(u.studentNumber, 4) AS UNSIGNED) <= ?
+    AND u.graduated != 'yes'
+";
+$stmt_auto = $conn->prepare($auto_update_sql);
+$stmt_auto->bind_param("ii", $org_id, $cutoffYear);
+$stmt_auto->execute();
+$stmt_auto->close();
+
+// Fetch users
 $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+$status_filter = $_GET['status'] ?? '';
 $limit = 5;
 $offset = ($page - 1) * $limit;
 
-// Count total records (for pagination)
-$count_sql = "
-    SELECT COUNT(*) AS total 
-    FROM org_applications a 
-    JOIN users u ON a.student_id = u.id 
-    WHERE u.role = 'student' AND u.status != 'deleted' AND a.org_id = ?
-";
 $params = [$org_id];
 $types = 'i';
+$conditions = ["om.organization_id = ?"];
 
 if (!empty($status_filter)) {
-    $count_sql .= " AND a.application_status = ?";
+    $conditions[] = "u.status = ?";
     $params[] = $status_filter;
     $types .= 's';
 }
 
-$count_stmt = $conn->prepare($count_sql);
-$count_stmt->bind_param($types, ...$params);
-$count_stmt->execute();
-$count_result = $count_stmt->get_result();
-$total_users = $count_result->fetch_assoc()['total'] ?? 0;
-$count_stmt->close();
-
-// Fetch users
+// SQL to fetch users who are members of the organization
 $sql = "
-    SELECT u.id, u.fullName, u.email, u.status AS user_status,
-           a.application_status, a.applied_at, a.org_id
-    FROM org_applications a
-    JOIN users u ON a.student_id = u.id
-    WHERE u.role = 'student' AND u.status != 'deleted' AND a.org_id = ?
+    SELECT DISTINCT
+        u.id, u.lastName, u.firstName, u.middleName, u.studentNumber, 
+        u.course, u.year, u.section, u.email, u.created_at, 
+        u.status, u.graduated,
+        CASE 
+            WHEN om.user_id IS NOT NULL THEN 'approved'
+            ELSE COALESCE(jo.status, 'pending')
+        END AS applicationStatus
+    FROM newusers u
+    INNER JOIN organization_members om ON u.id = om.user_id
+    LEFT JOIN join_org jo ON u.id = jo.student_id AND jo.org_id = om.organization_id
+    WHERE " . implode(' AND ', $conditions) . "
+    ORDER BY u.lastName, u.firstName
+    LIMIT ? OFFSET ?
 ";
-$params = [$org_id];
-$types = 'i';
 
-if (!empty($status_filter)) {
-    $sql .= " AND a.application_status = ?";
-    $params[] = $status_filter;
-    $types .= 's';
-}
-$sql .= " LIMIT ? OFFSET ?";
+$count_sql = "
+    SELECT COUNT(DISTINCT u.id) as total 
+    FROM newusers u
+    INNER JOIN organization_members om ON u.id = om.user_id
+    WHERE " . implode(' AND ', $conditions);
+
 $params[] = $limit;
 $params[] = $offset;
 $types .= 'ii';
@@ -68,12 +96,27 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param($types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
-
-$users = [];
-while ($row = $result->fetch_assoc()) {
-    $users[] = $row;
-}
+$users = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Validate year values
+foreach ($users as &$user) {
+    $validYears = ['1', '2', '3'];
+    $user['year'] = in_array((string)$user['year'], $validYears) ? (string)$user['year'] : '';
+}
+
+// Get total count
+$stmt_count = $conn->prepare($count_sql);
+$stmt_count->bind_param(substr($types, 0, strlen($types) - 2), ...array_slice($params, 0, -2));
+$stmt_count->execute();
+$count_result = $stmt_count->get_result()->fetch_assoc();
+$total_users = $count_result['total'];
+$stmt_count->close();
+
 $conn->close();
 
-echo json_encode(['users' => $users, 'total' => $total_users, 'perPage' => $limit]);
+echo json_encode([
+    'users' => $users,
+    'total' => $total_users,
+    'perPage' => $limit
+]);
