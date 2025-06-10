@@ -1,6 +1,6 @@
 <?php 
 require '../api/auth.php';
-checkUserRole('org_admin'); // Only allow admins
+checkUserRole('admin'); // Only allow admins
 
 require '../config/db_conn.php';
 
@@ -87,13 +87,11 @@ include '../includes/header.php';
     <?php
     // Query with LEFT JOIN to get user info and their organization's image path
     $query = "
-  SELECT posts.*, users.fullName, organizations.image_path AS org_image_path
-  FROM posts
-  LEFT JOIN users ON posts.user_id = users.id
-  LEFT JOIN organizations ON users.org_id = organizations.id
-  WHERE users.status != 'deleted'
-  ORDER BY posts.created_at DESC
-";
+  SELECT p.*,  CONCAT_WS(' ', u.firstName, u.middleName, u.lastName) AS fullName, o.name, o.image_path as org_image_path
+FROM posts p
+LEFT JOIN newusers u ON p.user_id = u.ID
+LEFT JOIN neworganizations o ON p.org_id = o.ID
+ORDER BY p.created_at DESC"; 
 
     $result = mysqli_query($conn, $query);
 
@@ -113,10 +111,13 @@ include '../includes/header.php';
                 }
             }
 
-            echo "<div class='post-card'>
+            echo "<div class='post-card' data-post-id='{$row['id']}'>
                     <div class='post-header'>
                       <img src='{$profile_img}' alt='Profile picture of {$username}' />
                       <span class='username'>{$username}</span>
+                      <button class='delete-post-btn' onclick='confirmDelete({$row['id']})'>
+                        <img src='../assets/pictures/delete.png' alt='Delete' style='width: 20px; height: 20px;'>
+                      </button>
                     </div>
                     <div class='post-content'>{$content}</div>";
 
@@ -134,6 +135,18 @@ include '../includes/header.php';
     }
     ?>
   </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h3>Delete Post</h3>
+        <p>Are you sure you want to delete this post?</p>
+        <div class="modal-actions">
+            <button onclick="deletePost()" class="delete-btn">Delete</button>
+            <button onclick="closeDeleteModal()" class="cancel-btn">Cancel</button>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -167,6 +180,83 @@ include '../includes/header.php';
         opacity: 1;
         transform: translate(-50%, 0);
     }
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    position: relative;
+}
+
+.delete-post-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.delete-post-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #36577d, #2A4365);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background: linear-gradient(135deg, #36577d, #2A4365);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
 }
 </style>
 
@@ -262,6 +352,71 @@ textarea.addEventListener('input', function () {
     textarea.value = value;
   }
 });
+
+let postToDelete = null;
+
+function confirmDelete(postId) {
+    postToDelete = postId;
+    document.getElementById('deleteModal').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    postToDelete = null;
+}
+
+function deletePost() {
+    if (!postToDelete) return;
+
+    fetch('../api/delete_post.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `post_id=${postToDelete}&is_admin=true`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the post from the DOM
+            const postElement = document.querySelector(`[data-post-id="${postToDelete}"]`);
+            if (postElement) {
+                postElement.remove();
+            }
+            closeDeleteModal();
+            
+            // Show success message
+            const successAlert = document.createElement('div');
+            successAlert.className = 'session-alert success';
+            successAlert.textContent = 'Post deleted successfully';
+            document.body.appendChild(successAlert);
+            
+            // Remove the success message after 4 seconds
+            setTimeout(() => {
+                successAlert.style.transition = 'opacity 0.5s ease';
+                successAlert.style.opacity = '0';
+                setTimeout(() => successAlert.remove(), 500);
+            }, 4000);
+        } else {
+            alert(data.message || 'Failed to delete post');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the post');
+    })
+    .finally(() => {
+        closeDeleteModal();
+    });
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const deleteModal = document.getElementById('deleteModal');
+    if (event.target === deleteModal) {
+        closeDeleteModal();
+    }
+}
 </script>
 <script src="../assets/scripts/admin_org_mobile.js"></script>
 <script src="../assets/scripts/notif_script.js"></script>

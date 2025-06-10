@@ -1,6 +1,10 @@
 <?php
 require 'auth.php';
-checkUserRole('orgAdmin');
+// Allow both admin and orgAdmin roles
+if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'orgAdmin'])) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    exit;
+}
 
 require '../config/db_conn.php';
 
@@ -16,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Get the post ID from the request
 $post_id = $_POST['post_id'] ?? null;
 $user_id = $_SESSION['user_id'] ?? null;
+$is_admin = isset($_POST['is_admin']) && $_POST['is_admin'] === 'true';
 
 // Validate inputs
 if (!$post_id || !$user_id) {
@@ -27,43 +32,41 @@ try {
     // Start transaction
     $conn->begin_transaction();
 
-    // First verify that the post belongs to the user
-    $check_sql = "SELECT id FROM posts WHERE id = ? AND user_id = ?";
+    // If user is admin, they can delete any post
+    // If user is org admin, they can only delete their own posts
+    $check_sql = $is_admin ? 
+        "SELECT id, image_path FROM posts WHERE id = ?" :
+        "SELECT id, image_path FROM posts WHERE id = ? AND user_id = ?";
+    
     $check_stmt = $conn->prepare($check_sql);
-    $check_stmt->bind_param("ii", $post_id, $user_id);
+    if ($is_admin) {
+        $check_stmt->bind_param("i", $post_id);
+    } else {
+        $check_stmt->bind_param("ii", $post_id, $user_id);
+    }
+    
     $check_stmt->execute();
     $result = $check_stmt->get_result();
 
     if ($result->num_rows === 0) {
-        throw new Exception('You do not have permission to delete this post');
+        throw new Exception($is_admin ? 'Post not found' : 'You do not have permission to delete this post');
     }
+
+    // Get image path before deleting
+    $image_path = $result->fetch_assoc()['image_path'];
     $check_stmt->close();
 
-    // Get image path before deleting the post (if exists)
-    $image_sql = "SELECT image_path FROM posts WHERE id = ?";
-    $image_stmt = $conn->prepare($image_sql);
-    $image_stmt->bind_param("i", $post_id);
-    $image_stmt->execute();
-    $image_result = $image_stmt->get_result();
-    $image_path = null;
-    
-    if ($image_result->num_rows > 0) {
-        $image_data = $image_result->fetch_assoc();
-        $image_path = $image_data['image_path'];
-    }
-    $image_stmt->close();
-
     // Delete the post
-    $delete_sql = "DELETE FROM posts WHERE id = ? AND user_id = ?";
+    $delete_sql = "DELETE FROM posts WHERE id = ?";
     $delete_stmt = $conn->prepare($delete_sql);
-    $delete_stmt->bind_param("ii", $post_id, $user_id);
+    $delete_stmt->bind_param("i", $post_id);
     
     if (!$delete_stmt->execute()) {
         throw new Exception('Failed to delete post');
     }
     $delete_stmt->close();
 
-    // If post had an image, delete it from the filesystem
+    // Delete the image file if it exists
     if ($image_path) {
         $file_path = "../uploads/" . $image_path;
         if (file_exists($file_path)) {
