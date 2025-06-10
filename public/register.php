@@ -160,6 +160,11 @@ if (alertBox) {
 document.getElementById('studentPassword').addEventListener('input', validatePassword);
 document.getElementById('studentConfirmPassword').addEventListener('input', checkPasswordMatch);
 document.getElementById('studentNumber').addEventListener('input', validateStudentNumber);
+document.getElementById('studentSection').addEventListener('input', function(e) {
+    if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+        this.value = 1;
+    }
+});
 
 function validatePassword() {
     const pwd = document.getElementById('studentPassword').value;

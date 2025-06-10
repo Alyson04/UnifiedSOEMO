@@ -207,7 +207,17 @@ include '../includes/header.php';
 function enableEdit(button) {
     const row = button.closest('tr');
     row.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
-    row.querySelectorAll('.edit').forEach(el => el.classList.remove('hidden'));
+    row.querySelectorAll('.edit').forEach(el => {
+        el.classList.remove('hidden');
+        // Add input validation for section
+        if (el.parentElement === row.cells[6]) { // Section is in the 7th column (index 6)
+            el.addEventListener('input', function() {
+                if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+                    this.value = 1;
+                }
+            });
+        }
+    });
     button.style.display = 'none';
     row.querySelector('.save-btn').classList.remove('hidden');
     row.querySelector('.cancel-btn').classList.remove('hidden');
@@ -227,6 +237,12 @@ function cancelEdit(button) {
 function saveEdit(button, userId) {
     const row = button.closest('tr');
     
+    // Add section validation
+    const sectionInput = row.querySelector('input[value="' + row.querySelector('td:nth-child(7) span.view').textContent + '"]');
+    if (sectionInput && !isNaN(sectionInput.value) && parseInt(sectionInput.value) < 1) {
+        sectionInput.value = 1;
+    }
+
     const fieldMappings = {
         lastName: row.cells[0],
         firstName: row.cells[1],
@@ -434,6 +450,23 @@ if (alertBox) {
         alertBox.style.opacity = '0';
         setTimeout(() => alertBox.remove(), 500);
     }, 4000);
+}
+
+function attachEditListeners() {
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+            const tr = this.closest('tr');
+            tr.querySelectorAll('.edit').forEach(input => {
+                if (input.classList.contains('section-input')) {
+                    input.addEventListener('input', function() {
+                        if (this.value && !isNaN(this.value) && parseInt(this.value) < 1) {
+                            this.value = 1;
+                        }
+                    });
+                }
+            });
+        });
+    });
 }
 </script>
 
