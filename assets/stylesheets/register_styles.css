@@ -238,6 +238,11 @@ small {
 
 /* Responsive Design */
 @media only screen and (max-width: 600px) {
+    body::before {
+        background-size: 98% 98%;
+        opacity: 0.5;
+    }
+    
     body {
         padding: 15px;
     }
