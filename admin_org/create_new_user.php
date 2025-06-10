@@ -98,9 +98,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $graduated = 'no';
 
         // Create new user
-        $insert_sql = "INSERT INTO newusers (firstName, middleName, lastName, studentNumber, course, year, section, email, password, role, status, graduated, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'student', 'active', NOW())";
+        $insert_sql = "INSERT INTO newusers (firstName, middleName, lastName, studentNumber, course, year, section, email, password, role, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $insert_stmt = $conn->prepare($insert_sql);
-        $insert_stmt->bind_param("ssssssssss", $firstName, $middleName, $lastName, $studentNumber, $course, $year, $section, $email, $hashedPassword, $graduated);
+        $role = 'student';
+        $status = 'active';
+        $insert_stmt->bind_param("sssssssssss", 
+            $firstName, 
+            $middleName, 
+            $lastName, 
+            $studentNumber, 
+            $course, 
+            $year, 
+            $section, 
+            $email, 
+            $hashedPassword,
+            $role,
+            $status
+        );
         
         if (!$insert_stmt->execute()) {
             throw new Exception("Failed to create user.");
@@ -121,9 +135,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $member_stmt->close();
 
         // Add entry to join_org table with accepted status
-        $join_sql = "INSERT INTO join_org (student_id, org_id, status, application_date) VALUES (?, ?, 'accepted', NOW())";
+        $join_sql = "INSERT INTO join_org (student_id, org_id, last_name, first_name, middle_name, student_number, course, year, section, email, status, application_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $join_stmt = $conn->prepare($join_sql);
-        $join_stmt->bind_param("ii", $new_user_id, $org_id);
+        $application_status = 'approved';
+        $join_stmt->bind_param("iisssssssss", 
+            $new_user_id, 
+            $org_id, 
+            $lastName, 
+            $firstName, 
+            $middleName, 
+            $studentNumber, 
+            $course, 
+            $year, 
+            $section, 
+            $email,
+            $application_status
+        );
         
         if (!$join_stmt->execute()) {
             throw new Exception("Failed to create join record.");

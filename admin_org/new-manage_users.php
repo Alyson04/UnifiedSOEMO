@@ -69,13 +69,13 @@ include '../includes/header.php';
     <div class="top-bars">
         <form method="GET" class="status-filter-form" onsubmit="return false;">
             <label for="status_filter">Filter by Status</label>
-            <select name="status" id="status_filter">
-                <option value="">All</option>
+        <select name="status" id="status_filter">
+            <option value="">All</option>
                 <option value="active">Active</option>
                 <option value="renewal">Renewal</option>
                 <option value="disabled">Disabled</option>
-            </select>
-        </form>
+        </select>
+    </form>
 
         <div class="top-actions">
             <a href="create_new_user.php" class="action-btn">+ Add New Member</a>
@@ -108,7 +108,7 @@ include '../includes/header.php';
             </tbody>
         </table>
     </div>
-    <div id="paginationControls" class="pagination-controls"></div>
+        <div id="paginationControls" class="pagination-controls"></div>
 </div>
 
 <!-- Delete Modal -->
@@ -283,29 +283,29 @@ function closeDeleteModal() {
 }
 
 // Fetch users and display them
-const tableBody = document.getElementById('userTableBody');
-const paginationControls = document.getElementById('paginationControls');
-const statusFilter = document.getElementById('status_filter');
+    const tableBody = document.getElementById('userTableBody');
+    const paginationControls = document.getElementById('paginationControls');
+    const statusFilter = document.getElementById('status_filter');
 let currentPage = 1;
 
-function fetchUsers(page = 1) {
+    function fetchUsers(page = 1) {
     currentPage = page;
-    const status = statusFilter.value;
+        const status = statusFilter.value;
     const url = `get_users.php?page=${page}&status=${encodeURIComponent(status)}`;
     fetch(url)
         .then(response => response.json())
-        .then(data => {
-            renderUsers(data.users);
-            renderPagination(data.total, data.perPage, page);
-        })
+            .then(data => {
+                renderUsers(data.users);
+                renderPagination(data.total, data.perPage, page);
+            })
         .catch(err => {
             tableBody.innerHTML = '<tr><td colspan="13">Error loading members.</td></tr>';
-            paginationControls.innerHTML = '';
+                paginationControls.innerHTML = '';
             console.error(err);
-        });
-}
+            });
+    }
 
-function renderUsers(users) {
+    function renderUsers(users) {
     tableBody.innerHTML = '';
     if (!users.length) {
         tableBody.innerHTML = '<tr><td colspan="13">No members found.</td></tr>';
@@ -363,9 +363,19 @@ function renderUsers(users) {
             </td>
             <td>
                 <span class="view">${escapeHtml(user.applicationStatus ? user.applicationStatus.charAt(0).toUpperCase() + user.applicationStatus.slice(1) : 'Approved')}</span>
+                <select class="edit hidden edit-input" name="applicationStatus">
+                    <option value="pending" ${user.applicationStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="approved" ${(!user.applicationStatus || user.applicationStatus === 'approved') ? 'selected' : ''}>Approved</option>
+                    <option value="rejected" ${user.applicationStatus === 'rejected' ? 'selected' : ''}>Rejected</option>
+                </select>
             </td>
             <td>
                 <span class="view">${escapeHtml(user.status)}</span>
+                <select class="edit hidden edit-input" name="status">
+                    <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active</option>
+                    <option value="renewal" ${user.status === 'renewal' ? 'selected' : ''}>Renewal</option>
+                    <option value="disabled" ${user.status === 'disabled' ? 'selected' : ''}>Disabled</option>
+                </select>
             </td>
             <td>
                 <span class="view">${escapeHtml(user.graduated)}</span>
@@ -381,20 +391,20 @@ function renderUsers(users) {
     });
 }
 
-function renderPagination(total, perPage, current) {
-    const totalPages = Math.ceil(total / perPage);
-    paginationControls.innerHTML = '';
+    function renderPagination(total, perPage, current) {
+        const totalPages = Math.ceil(total / perPage);
+        paginationControls.innerHTML = '';
 
-    if (totalPages <= 1) return;
+        if (totalPages <= 1) return;
 
-    for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = 'pagination-btn' + (i === current ? ' active' : '');
-        btn.onclick = () => fetchUsers(i);
-        paginationControls.appendChild(btn);
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'pagination-btn' + (i === current ? ' active' : '');
+            btn.onclick = () => fetchUsers(i);
+            paginationControls.appendChild(btn);
+        }
     }
-}
 
 function formatDate(dateStr) {
     if (!dateStr) return 'N/A';
