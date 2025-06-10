@@ -14,8 +14,8 @@ if ($user_id) {
     // Assumes users.organization_id links to organizations.id
     $sql_org = "
         SELECT o.image_path 
-        FROM organizations o
-        JOIN users u ON u.org_id = o.id
+        FROM neworganizations o
+        JOIN newusers u ON u.id = o.id
         WHERE u.ID = ?
         LIMIT 1
     ";
@@ -40,14 +40,19 @@ if ($user_id) {
 $admin_name = '';
 $admin_email = '';
 if ($user_id) {
-    $sql_admin = "SELECT fullName, email FROM users WHERE ID = ?";
+    $sql_admin = "SELECT firstName, middleName, lastName, email FROM newusers WHERE ID = ?";
     $stmt2 = $conn->prepare($sql_admin);
     $stmt2->bind_param("i", $user_id);
     $stmt2->execute();
     $result_admin = $stmt2->get_result();
     if ($result_admin->num_rows > 0) {
         $row_admin = $result_admin->fetch_assoc();
-        $admin_name = ucwords(strtolower($row_admin['fullName']));
+
+        // Concatenate name parts into full name
+        $first = ucfirst(strtolower($row_admin['firstName']));
+        $middle = ucfirst(strtolower($row_admin['middleName']));
+        $last = ucfirst(strtolower($row_admin['lastName']));
+      
         $admin_email = strtolower($row_admin['email']);
     }
     $stmt2->close();
@@ -107,15 +112,36 @@ include '../includes/header.php';
       <div class="card-section">
         <h3>Account Settings</h3>
 
-        <!-- Full Name -->
-        <div class="card-row" data-field="fullName">
-          <div class="card-label">Full Name:</div>
-          <div class="card-value" id="display-fullName"><?= htmlspecialchars($admin_name) ?></div>
-          <textarea class="card-input d-none" id="input-fullName" name="fullName" rows="2"><?= htmlspecialchars($admin_name) ?></textarea>
-          <div class="card-action">
-            <span class="edit-text" onclick="startEdit('fullName')" role="button" tabindex="0">[Change Full Name] ✎</span>
-          </div>
-        </div>
+<!-- First Name -->
+<div class="card-row" data-field="firstName">
+  <div class="card-label">First Name:</div>
+  <div class="card-value" id="display-firstName"><?= htmlspecialchars($first) ?></div>
+  <input type="text" class="card-input d-none" id="input-firstName" name="firstName" value="<?= htmlspecialchars($first) ?>" />
+  <div class="card-action">
+    <span class="edit-text" onclick="startEdit('firstName')" role="button" tabindex="0">[Edit First Name] ✎</span>
+  </div>
+</div>
+
+<!-- Middle Name -->
+<div class="card-row" data-field="middleName">
+  <div class="card-label">Middle Name:</div>
+  <div class="card-value" id="display-middleName"><?= htmlspecialchars($middle) ?></div>
+  <input type="text" class="card-input d-none" id="input-middleName" name="middleName" value="<?= htmlspecialchars($middle) ?>" />
+  <div class="card-action">
+    <span class="edit-text" onclick="startEdit('middleName')" role="button" tabindex="0">[Edit Middle Name] ✎</span>
+  </div>
+</div>
+
+<!-- Last Name -->
+<div class="card-row" data-field="lastName">
+  <div class="card-label">Last Name:</div>
+  <div class="card-value" id="display-lastName"><?= htmlspecialchars($last) ?></div>
+  <input type="text" class="card-input d-none" id="input-lastName" name="lastName" value="<?= htmlspecialchars($last) ?>" />
+  <div class="card-action">
+    <span class="edit-text" onclick="startEdit('lastName')" role="button" tabindex="0">[Edit Last Name] ✎</span>
+  </div>
+</div>
+
 
         <!-- Email -->
         <div class="card-row" data-field="email">
@@ -135,6 +161,11 @@ include '../includes/header.php';
           <div class="card-action">
             <span class="edit-text" onclick="startEdit('password')" role="button" tabindex="0">[Change Password] ✎</span>
           </div>
+        </div>
+        
+        <div class="card-row d-none" data-field="confirmPassword" id="confirm-password-row" style="display:none;">
+          <div class="card-label">Confirm Password:</div>
+          <input type="password" class="card-input" id="input-confirm-password" name="confirmPassword" placeholder="Confirm new password" />
         </div>
 
       </div>      
@@ -158,13 +189,23 @@ include '../includes/header.php';
     };
   }
 
-  function startEdit(field) {
-    const { display, input, editText } = elems(field);
-    display.classList.add('d-none');
-    input.classList.remove('d-none');
-    editText.classList.add('d-none');
-    input.focus();
+function startEdit(field) {
+  const { display, input, editText } = elems(field);
+  display.classList.add('d-none');
+  input.classList.remove('d-none');
+  editText.classList.add('d-none');
+  input.focus();
+
+  // Show confirm password field if editing password
+  if (field === 'password') {
+    const confirmRow = document.getElementById('confirm-password-row');
+    if (confirmRow) {
+      confirmRow.classList.remove('d-none');
+      confirmRow.style.display = "flex";
+    }
   }
+}
+
 
   const alertBox = document.querySelector('.session-alert');
     if (alertBox) {

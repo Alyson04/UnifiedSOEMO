@@ -69,8 +69,11 @@ include '../includes/header.php';
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Description</th>
                     <th>Event Date</th>
                     <th>Date Created</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="eventTableBody">
@@ -87,28 +90,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('eventTableBody');
     const paginationControls = document.getElementById('paginationControls');
 
-    function fetchEvents(page = 1) {
-        fetch(`get_events.php?page=${page}`)
-            .then(res => res.json())
-            .then(data => {
-                renderEvents(data.events);
-                renderPagination(data.total, data.perPage, page);
-            })
-            .catch(() => {
-                tableBody.innerHTML = '<tr><td colspan="3">Error loading events.</td></tr>';
-                paginationControls.innerHTML = '';
-            });
-    }
+function fetchEvents(page = 1) {
+    fetch(`get_events.php?page=${page}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("User ID from server:", data.user_id); // <-- log user_id here
 
-    function renderEvents(events) {
-    const minRows = 5; // You can change this to control table height
+            renderEvents(data.events);
+            renderPagination(data.total, data.perPage, page);
+        })
+        .catch(err => {
+            console.error("Error fetching events:", err);
+        });
+}
+
+
+
+function renderEvents(events) {
+    const minRows = 5;
     tableBody.innerHTML = '';
 
     if (events.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="3">No events found.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="6">No events found.</td></tr>';
         for (let i = 1; i < minRows; i++) {
             const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = '<td colspan="3" style="height: 50px;"></td>';
+            emptyRow.innerHTML = '<td colspan="6" style="height: 50px;"></td>';
             tableBody.appendChild(emptyRow);
         }
         return;
@@ -117,22 +123,30 @@ document.addEventListener('DOMContentLoaded', () => {
     events.forEach(event => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${escapeHtml(event.title)}</td>
-            <td>${formatDate(event.event_date)}</td>
+            <td><span class="editable" data-field="title">${escapeHtml(event.title)}</span></td>
+            <td><span class="editable" data-field="description">${escapeHtml(event.description || '')}</span></td>
+            <td><span class="editable" data-field="event_date">${formatDate(event.event_date)}</span></td>
             <td>${formatDate(event.created_at)}</td>
+            <td>${escapeHtml(event.status || 'Pending')}</td>
+            <td>
+                <button class="btn-edit">Edit</button>
+                <button class="btn-save" style="display:none;">Save</button>
+                <button class="btn-cancel" style="display:none;">Cancel</button>
+            </td>
         `;
         tableBody.appendChild(tr);
     });
 
-    // Fill in empty rows if events are fewer than the minimum
     for (let i = events.length; i < minRows; i++) {
         const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = `
-            <td colspan="3" style="height: 50px; visibility: hidden;">&nbsp;</td>
-        `;
+        emptyRow.innerHTML = `<td colspan="6" style="height: 50px; visibility: hidden;">&nbsp;</td>`;
         tableBody.appendChild(emptyRow);
     }
+
+    attachEditListeners();
 }
+
+
 
 
     function renderPagination(total, perPage, current) {
@@ -160,6 +174,69 @@ document.addEventListener('DOMContentLoaded', () => {
             return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m];
         });
     }
+
+    function attachEditListeners() {
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function () {
+            const tr = this.closest('tr');
+            tr.querySelectorAll('.editable').forEach(span => {
+                const value = span.textContent;
+                const field = span.dataset.field;
+
+                let input = document.createElement(field === 'event_date' ? 'input' : 'textarea');
+                input.name = field;
+                input.value = value;
+
+                if (field === 'event_date') {
+                    input.type = 'date';
+                    input.value = new Date(value).toISOString().split('T')[0];
+                }
+
+                span.replaceWith(input);
+            });
+
+            tr.querySelector('.btn-edit').style.display = 'none';
+            tr.querySelector('.btn-save').style.display = 'inline-block';
+            tr.querySelector('.btn-cancel').style.display = 'inline-block';
+        });
+    });
+
+    document.querySelectorAll('.btn-cancel').forEach(button => {
+        button.addEventListener('click', function () {
+            fetchEvents(); // Just reload the events
+        });
+    });
+
+    document.querySelectorAll('.btn-save').forEach(button => {
+        button.addEventListener('click', function () {
+            const tr = this.closest('tr');
+            const title = tr.querySelector('input[name="title"], textarea[name="title"]').value;
+            const description = tr.querySelector('input[name="description"], textarea[name="description"]').value;
+            const event_date = tr.querySelector('input[name="event_date"]').value;
+
+            // You need a way to identify the event ID (e.g. add it as a hidden field or data-* attribute)
+            const eventId = tr.dataset.eventId;
+
+            fetch('update_event.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: eventId, title, description, event_date })
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    fetchEvents(); // Reload the updated table
+                } else {
+                    alert("Update failed");
+                }
+            })
+            .catch(err => console.error("Update error:", err));
+        });
+    });
+}
+
 
     fetchEvents();
 

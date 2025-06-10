@@ -1,7 +1,7 @@
 <?php
 session_start();
 require '../api/auth.php';
-checkUserRole('org_admin'); // Only allow org admins
+checkUserRole('orgAdmin'); // Only allow org admins
 
 require '../config/db_conn.php';
 
@@ -17,14 +17,16 @@ $errors = [];
 $success = false;
 
 // Get POST data safely
-$fullName = trim($_POST['fullName'] ?? '');
+$firstName = trim($_POST['firstName'] ?? '');
+$middleName = trim($_POST['middleName'] ?? '');
+$lastName = trim($_POST['lastName'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? ''; // Don't trim password to keep spaces if any
+$confirmPassword = $_POST['confirmPassword'] ?? ''; // NEW LINE
 
 // Validate inputs (basic example, expand as needed)
-if (empty($fullName)) {
-    // $errors[] = "Full Name cannot be empty.";
-    $_SESSION['error'] = "Full Name cannot be empty!";
+if (empty($firstName) || empty($lastName)) {
+    $_SESSION['error'] = "First Name and Last Name cannot be empty!";
 }
 
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -36,8 +38,9 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 $updatePassword = false;
 if (!empty($password)) {
     if (strlen($password) < 6) {
-        // $errors[] = "Password must be at least 6 characters.";
         $_SESSION['error'] = "Password must be at least 6 characters!";
+    } elseif ($password !== $confirmPassword) { // NEW CONDITION
+        $_SESSION['error'] = "Passwords do not match!";
     } else {
         $updatePassword = true;
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -81,9 +84,18 @@ if (empty($errors)) {
     $types = '';
     $sqlParts = [];
 
-    $sqlParts[] = 'fullName = ?';
-    $params[] = $fullName;
-    $types .= 's';
+
+$sqlParts[] = 'firstName = ?';
+$params[] = $firstName;
+$types .= 's';
+
+$sqlParts[] = 'middleName = ?';
+$params[] = $middleName;
+$types .= 's';
+
+$sqlParts[] = 'lastName = ?';
+$params[] = $lastName;
+$types .= 's';
 
     $sqlParts[] = 'email = ?';
     $params[] = $email;
@@ -95,7 +107,7 @@ if (empty($errors)) {
         $types .= 's';
     }
 
-    $sql = "UPDATE users SET " . implode(', ', $sqlParts) . " WHERE ID = ?";
+    $sql = "UPDATE newusers SET " . implode(', ', $sqlParts) . " WHERE ID = ?";
     $params[] = $user_id;
     $types .= 'i';
 

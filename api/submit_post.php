@@ -3,7 +3,7 @@ require 'auth.php';
 require '../config/db_conn.php';
 
 $admin_id = $_SESSION['user_id'] ?? null;
-$org_id = $_SESSION['org_id'] ?? null;
+$org_id = $_SESSION['user_id'] ?? null;
 
 $content = trim($_POST['content'] ?? '');
 

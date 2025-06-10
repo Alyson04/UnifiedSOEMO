@@ -1,7 +1,7 @@
 <?php
 require '../config/db_conn.php';
 
-$sql = "SELECT ID, image_path, name, description FROM organizations"; // Change to your actual table and column names
+$sql = "SELECT ID, image_path, name, description FROM neworganizations"; // Change to your actual table and column names
 $result = $conn->query($sql);
 
 $orgs = [];
