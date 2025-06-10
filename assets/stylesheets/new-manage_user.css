@@ -417,7 +417,7 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   box-shadow: 0 0 15px rgba(0,0,0,0.3);
   text-align: center;
   margin: auto;
-  margin-top: 190px;
+  margin-top: 10px;
 }
 
 .modal-box input[type="text"] {
