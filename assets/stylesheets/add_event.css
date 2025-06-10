@@ -396,6 +396,11 @@
   .event-form button {
     font-size: 0.9rem;
   }
+
+  .top-bar{
+    background: none;
+    box-shadow: none;
+  }
 }
 
 .notification-modal {

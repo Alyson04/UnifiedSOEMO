@@ -119,6 +119,8 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 margin-bottom: 25px;
+background: none;
+    box-shadow: none;
 }
 
 
@@ -577,6 +579,8 @@ tbody td {
   flex-direction: column;
   align-items: stretch;
   gap: 15px;
+  background: none;
+    box-shadow: none;
 }
 
 .top-actions {

@@ -118,6 +118,8 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 margin-bottom: 25px;
+background: none;
+box-shadow: none;
 }
 
 
@@ -621,6 +623,8 @@ background: linear-gradient(135deg, #1f3554, #15273c);
   .top-bar {
     align-items: stretch;
     gap: 15px;
+    background: none;
+    box-shadow: none;
   }
 
   .top-actions {
