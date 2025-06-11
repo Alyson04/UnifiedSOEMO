@@ -73,7 +73,7 @@ if ($stmt->execute()) {
     $notif_stmt->execute();
     $notif_stmt->close();
 
-    // Notify admin with student's name
+    // Notify org admin
     if ($admin_id) {
         $admin_message = "A new application has been submitted by $student_name to your organization '$org_name'.";
         $admin_notif_stmt = $conn->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
@@ -81,6 +81,24 @@ if ($stmt->execute()) {
         $admin_notif_stmt->execute();
         $admin_notif_stmt->close();
     }
+
+    // Notify system admins
+    $system_admin_query = "SELECT ID FROM newusers WHERE role = 'admin'";
+    $system_admin_stmt = $conn->prepare($system_admin_query);
+    $system_admin_stmt->execute();
+    $system_admin_result = $system_admin_stmt->get_result();
+
+    // Notify all system admins
+    $system_admin_message = "New application submitted: $student_name has applied to join '$org_name'.";
+    $system_admin_notif_stmt = $conn->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
+    
+    while ($system_admin_row = $system_admin_result->fetch_assoc()) {
+        $system_admin_notif_stmt->bind_param("is", $system_admin_row['ID'], $system_admin_message);
+        $system_admin_notif_stmt->execute();
+    }
+    
+    $system_admin_notif_stmt->close();
+    $system_admin_stmt->close();
 
     $_SESSION['success'] = "Your application has been submitted successfully.";
 } else {
