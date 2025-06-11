@@ -145,11 +145,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         orgs.forEach(org => {
-        console.log("Searching for admin with id:", org.user_id);
-        const admin = orgAdmins.find(admin => admin.id === org.user_id);
-        console.log("Matching admin for org.user_id: ", orgAdmins.find(admin => admin.id == org.user_id));
-        const adminName = admin ? escapeHtml(admin.fullName) : 'Not Assigned';
-
+        // Use admin_name from backend for display, but show 'Not Assigned' if empty or whitespace
+        const adminName = org.admin_name && org.admin_name.trim() ? escapeHtml(org.admin_name) : 'Not Assigned';
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
