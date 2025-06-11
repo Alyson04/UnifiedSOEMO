@@ -68,7 +68,7 @@ include '../includes/header.php';
             <h3>Create New User</h3>
         </div>
         <div class="card-body">
-    <form id="createAdminForm" method="POST" action="../api/handle_user_create.php">
+    <form id="createAdminForm" method="POST" action="../api/handle_admin_user_create.php">
   <label for="role">Select Role:</label>
   <select id="role" name="role" onchange="updateForm()" required>
     <option value="">-- Select Role --</option>
@@ -514,44 +514,57 @@ function isValidEmailByRole(email, role) {
   }
 
   function submitForm() {
-  const role = document.getElementById('role').value;
+    const role = document.getElementById('role').value;
+    console.log('Submitting form for role:', role);
 
-  if (role === "admin") {
-    document.getElementById("mainFirstName").value = document.getElementById("adminFirstName").value;
-    document.getElementById("mainMiddleName").value = document.getElementById("adminMiddleName").value;
-    document.getElementById("mainLastName").value = document.getElementById("adminLastName").value;
-    document.getElementById("mainEmail").value = document.getElementById("adminEmail").value;
-    document.getElementById("mainPassword").value = document.getElementById("adminPassword").value;
-    document.getElementById("mainConfirmPassword").value = document.getElementById("adminConfirmPassword").value;
-  } else if (role === "orgAdmin") {
-    document.getElementById("mainFirstName").value = document.getElementById("orgFirstName").value;
-    document.getElementById("mainMiddleName").value = document.getElementById("orgMiddleName").value;
-    document.getElementById("mainLastName").value = document.getElementById("orgLastName").value;
-    document.getElementById("mainStudentNumber").value = document.getElementById("orgStudentNumber").value;
-    document.getElementById("mainEmail").value = document.getElementById("orgEmail").value;
-    document.getElementById("mainPassword").value = document.getElementById("orgPassword").value;
-    document.getElementById("mainConfirmPassword").value = document.getElementById("orgConfirmPassword").value;
+    if (role === "admin") {
+      document.getElementById("mainFirstName").value = document.getElementById("adminFirstName").value;
+      document.getElementById("mainMiddleName").value = document.getElementById("adminMiddleName").value;
+      document.getElementById("mainLastName").value = document.getElementById("adminLastName").value;
+      document.getElementById("mainEmail").value = document.getElementById("adminEmail").value;
+      document.getElementById("mainPassword").value = document.getElementById("adminPassword").value;
+      document.getElementById("mainConfirmPassword").value = document.getElementById("adminConfirmPassword").value;
+    } else if (role === "orgAdmin") {
+      document.getElementById("mainFirstName").value = document.getElementById("orgFirstName").value;
+      document.getElementById("mainMiddleName").value = document.getElementById("orgMiddleName").value;
+      document.getElementById("mainLastName").value = document.getElementById("orgLastName").value;
+      document.getElementById("mainStudentNumber").value = document.getElementById("orgStudentNumber").value;
+      document.getElementById("mainEmail").value = document.getElementById("orgEmail").value;
+      document.getElementById("mainPassword").value = document.getElementById("orgPassword").value;
+      document.getElementById("mainConfirmPassword").value = document.getElementById("orgConfirmPassword").value;
+      document.getElementsByName("course")[0].value = document.getElementById("orgCourse").value;
+      document.getElementsByName("year")[0].value = document.getElementById("orgYear").value;
+      document.getElementsByName("section")[0].value = document.getElementById("orgSection").value;
+    } else if (role === "student") {
+      document.getElementById("mainFirstName").value = document.getElementById("studentFirstName").value;
+      document.getElementById("mainMiddleName").value = document.getElementById("studentMiddleName").value;
+      document.getElementById("mainLastName").value = document.getElementById("studentLastName").value;
+      document.getElementById("mainEmail").value = document.getElementById("studentEmail").value;
+      document.getElementById("mainPassword").value = document.getElementById("studentPassword").value;
+      document.getElementById("mainConfirmPassword").value = document.getElementById("studentConfirmPassword").value;
+      document.getElementById("mainStudentNumber").value = document.getElementById("studentNumber").value;
+      document.getElementsByName("course")[0].value = document.getElementById("studentCourse").value;
+      document.getElementsByName("year")[0].value = document.getElementById("studentYear").value;
+      document.getElementsByName("section")[0].value = document.getElementById("studentSection").value;
+    }
 
-    document.getElementsByName("course")[0].value = document.getElementById("orgCourse").value;
-    document.getElementsByName("year")[0].value = document.getElementById("orgYear").value;
-    document.getElementsByName("section")[0].value = document.getElementById("orgSection").value;
-  } else if (role === "student") {
-    document.getElementById("mainFirstName").value = document.getElementById("studentFirstName").value;
-    document.getElementById("mainMiddleName").value = document.getElementById("studentMiddleName").value;
-    document.getElementById("mainLastName").value = document.getElementById("studentLastName").value;
-    document.getElementById("mainEmail").value = document.getElementById("studentEmail").value;
-    document.getElementById("mainPassword").value = document.getElementById("studentPassword").value;
-    document.getElementById("mainConfirmPassword").value = document.getElementById("studentConfirmPassword").value;
-    document.getElementById("mainStudentNumber").value = document.getElementById("studentNumber").value;
-    document.getElementsByName("course")[0].value = document.getElementById("studentCourse").value;
-    document.getElementsByName("year")[0].value = document.getElementById("studentYear").value;
-    document.getElementsByName("section")[0].value = document.getElementById("studentSection").value;
+    // Log hidden field values
+    console.log('Hidden field values:', {
+      firstName: document.getElementById("mainFirstName").value,
+      middleName: document.getElementById("mainMiddleName").value,
+      lastName: document.getElementById("mainLastName").value,
+      studentNumber: document.getElementById("mainStudentNumber").value,
+      email: document.getElementById("mainEmail").value,
+      password: document.getElementById("mainPassword").value,
+      confirmPassword: document.getElementById("mainConfirmPassword").value,
+      course: document.getElementsByName("course")[0].value,
+      year: document.getElementsByName("year")[0].value,
+      section: document.getElementsByName("section")[0].value
+    });
 
+    // Now submit the form
+    document.getElementById('createAdminForm').submit();
   }
-
-  // Now submit the form
-  document.getElementById('createAdminForm').submit();
-}
 
 
   function showAlert(message) {
