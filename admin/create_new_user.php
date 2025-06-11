@@ -279,7 +279,7 @@ include '../includes/header.php';
 <!-- Confirmation Modal -->
 <div class="modal-overlay" id="confirmModal">
     <div class="modal">
-        <p>Are you sure you want to create this admin?</p>
+        <p>Are you sure you want to create this user?</p>
         <button class="confirm" onclick="submitForm()">Yes</button>
         <button class="cancel" onclick="hideConfirmModal()">No</button>
     </div>

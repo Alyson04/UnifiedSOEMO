@@ -24,6 +24,10 @@ if (!$org_id && $user_id) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = $_POST['firstName'] ?? '';
     $middleName = $_POST['middleName'] ?? '';
+    // Convert any case-insensitive match of 'n/a' to uppercase 'N/A'
+    if (strtolower($middleName) === 'n/a') {
+        $middleName = 'N/A';
+    }
     $lastName = $_POST['lastName'] ?? '';
     $studentNumber = $_POST['studentNumber'] ?? '';
     $course = $_POST['course'] ?? '';

@@ -20,7 +20,7 @@ if (isset($_SESSION['user_id'])) {
         $firstName = $row['firstName'] ?? '';
         $middleName = $row['middleName'] ?? '';
         $lastName = $row['lastName'] ?? '';
-        $display_name = ucwords(strtolower("$firstName $middleName $lastName"));
+        $display_name = ucwords(strtolower(trim("$firstName " . ($middleName && $middleName !== 'N/A' ? "$middleName " : '') . $lastName)));
 
         $role = $row['role'];
         $role_label = $role === 'admin' ? 'Admin' : ($role === 'student' ? 'Student' : 'Org Admin');
