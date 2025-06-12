@@ -3,6 +3,7 @@ require '../api/auth.php';
 checkUserRole('orgAdmin'); // Only org admins can access this page
 
 require '../config/db_conn.php';
+require '../api/notifications.php'; // Include notifications file
 
 $user_id = $_SESSION['user_id'] ?? null;
 $org_id = null;
@@ -66,6 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
             $stmt->bind_param("sssis", $title, $description, $event_date, $org_id, $thumbnail_filename);
 
             if ($stmt->execute()) {
+                $event_id = $conn->insert_id;
+                // Send notification about the new event
+                notifyNewEvent($event_id, $org_id, $title);
+                
                 $_SESSION['success'] = "Event added successfully!";
                 header("Location: new-manage_events.php");
                 exit;

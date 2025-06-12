@@ -1,42 +1,51 @@
 <?php
-require 'auth.php';
-checkUserRole('orgAdmin');
+require_once '../config/db_conn.php';
+require_once 'auth.php';
+require_once 'notifications.php';
 
-require '../config/db_conn.php';
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Get org admin's organization ID
 $user_id = $_SESSION['user_id'] ?? null;
-$org_id = $_SESSION['org_id'] ?? null;
+$role = $_SESSION['role'] ?? null;
+$org_id = null;
 
-if (!$org_id && $user_id) {
-    $sql_org = "SELECT id FROM neworganizations WHERE user_id = ?";
-    $stmt = $conn->prepare($sql_org);
+// Get org_id based on user role
+if ($role === 'orgAdmin') {
+    // For org admins, get their organization's ID
+    $stmt = $conn->prepare("SELECT id FROM neworganizations WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $org_id = $result->fetch_assoc()['id'];
-        $_SESSION['org_id'] = $org_id;
+    if ($row = $result->fetch_assoc()) {
+        $org_id = $row['id'];
+    }
+    $stmt->close();
+} else if ($role === 'admin') {
+    // For system admins, org_id will be null
+    $org_id = null;
+} else if ($role === 'student') {
+    // For students, get their organization's ID
+    $stmt = $conn->prepare("SELECT org_id FROM newusers WHERE ID = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+        $org_id = $row['org_id'];
     }
     $stmt->close();
 }
 
-if (!$org_id) {
-    echo json_encode(['success' => false, 'message' => 'Organization not found']);
-    exit;
-}
-
-// Get post content
 $content = $_POST['content'] ?? '';
-
-if (empty($content)) {
-    echo json_encode(['success' => false, 'message' => 'Content cannot be empty']);
-    exit;
-}
-
 $image_path = null;
 
-// Handle image upload if present
+if (empty($content)) {
+    echo json_encode(['success' => false, 'message' => 'Post content is required']);
+    exit;
+}
+
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
     $file_type = $_FILES['image']['type'];
@@ -84,19 +93,25 @@ try {
         throw new Exception("Failed to create post");
     }
 
+    $post_id = $conn->insert_id;
+    
+    // Send notification about the new post if org_id is not null
+    if ($org_id !== null) {
+        notifyNewPost($post_id, $org_id, $content);
+    } else if ($role === 'admin') {
+        // For admin posts, notify all users
+        $message = "New announcement from System Administrator: " . substr($content, 0, 50) . "...";
+        notifyAllUsers($message);
+    }
+
     $conn->commit();
     echo json_encode(['success' => true, 'message' => 'Post created successfully']);
 
 } catch (Exception $e) {
     $conn->rollback();
-    
-    // Delete uploaded image if exists
-    if ($image_path && file_exists($upload_dir . $image_path)) {
-        unlink($upload_dir . $image_path);
-    }
-    
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
 
+$stmt->close();
 $conn->close();
 ?>

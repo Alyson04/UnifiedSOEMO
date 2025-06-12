@@ -54,17 +54,17 @@ $status_filter = $_GET['status'] ?? '';
 $limit = 5;
 $offset = ($page - 1) * $limit;
 
-$params = [$org_id];
-$types = 'i';
-$conditions = ["om.organization_id = ?"];
+$params = [$org_id, $org_id];  // Both org_id are needed for the conditions
+$types = 'ii';  // Added second 'i' to match both org_id parameters
+$conditions = ["(om.organization_id = ? OR jo.org_id = ? AND om.user_id IS NULL)"];  // Include both organization members and users who applied but haven't been accepted yet
 
 if (!empty($status_filter)) {
     $conditions[] = "u.status = ?";
     $params[] = $status_filter;
-    $types .= 's';
+    $types .= 's';  // Add 's' for string type in the params
 }
 
-// SQL to fetch users who are members of the organization
+// SQL to fetch users who are members of the organization or have applied but not in the members table
 $sql = "
     SELECT DISTINCT
         u.id, u.lastName, u.firstName, u.middleName, u.studentNumber, 
@@ -82,6 +82,7 @@ $count_sql = "
     SELECT COUNT(DISTINCT u.id) as total 
     FROM newusers u
     LEFT JOIN organization_members om ON u.id = om.user_id
+    LEFT JOIN join_org jo ON u.id = jo.student_id
 ";
 
 if (!empty($conditions)) {
@@ -93,7 +94,7 @@ if (!empty($conditions)) {
 $sql .= " ORDER BY u.created_at DESC LIMIT ? OFFSET ?";
 $params[] = $limit;
 $params[] = $offset;
-$types .= 'ii';
+$types .= 'ii';  // Add two more 'i' for the limit and offset
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param($types, ...$params);
@@ -127,3 +128,4 @@ echo json_encode([
     'total' => $total_users,
     'perPage' => $limit
 ]);
+?>

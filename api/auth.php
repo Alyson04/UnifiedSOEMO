@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../public/login.php?error=Please log in first");
@@ -7,16 +9,18 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Optional: Restrict access based on user role
-function checkUserRole($required_role) {
-    if ($_SESSION['role'] !== $required_role) {
-        if ($_SESSION['role'] === 'admin') {
-            header("Location: ../admin/dashboard.php");
-        } else if ($_SESSION['role'] === 'student') {
-            header("Location: ../students/dashboard.php");
-        } else {
-            header("Location: ../admin_org/dashboard.php");
+if (!function_exists('checkUserRole')) {
+    function checkUserRole($required_role) {
+        if ($_SESSION['role'] !== $required_role) {
+            if ($_SESSION['role'] === 'admin') {
+                header("Location: ../admin/dashboard.php");
+            } else if ($_SESSION['role'] === 'student') {
+                header("Location: ../students/dashboard.php");
+            } else {
+                header("Location: ../admin_org/dashboard.php");
+            }
+            exit();
         }
-        exit();
     }
 }
 ?>
