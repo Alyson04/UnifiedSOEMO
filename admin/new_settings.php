@@ -53,6 +53,8 @@ if ($admin_id) {
         $pfp_path = "../assets/uploads_pfp/" . $pfp_filename;
         if (!empty($pfp_filename) && file_exists($pfp_path)) {
             $admin_profile_picture = $pfp_path;
+        } else {
+            $admin_profile_picture = '../assets/uploads_pfp/profile.png';
         }
     }
     $stmt->close();

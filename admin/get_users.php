@@ -53,20 +53,27 @@ $params = [];
 $types = '';
 $conditions = [];
 
-// SQL to fetch users with application status (from join_org) and organization name (from neworganizations), but only the organizations they belong to
+// SQL to fetch users with application status (from join_org) and organization name (from neworganizations)
 $sql = "
     SELECT DISTINCT
         u.id, u.lastName, u.firstName, u.middleName, u.studentNumber, 
         u.course, u.year, u.section, u.email, u.role, u.created_at, 
         u.status, u.graduated, 
-        jo.status AS applicationStatus,  -- Get application status from join_org table (status)
-        no.name AS orgName             -- Get organization name from neworganizations table
+        jo.status AS applicationStatus,
+        no.name AS orgName
     FROM newusers u
-    LEFT JOIN join_org jo ON u.id = jo.student_id  -- Join with join_org table to get application status
-    LEFT JOIN organization_members om ON u.id = om.user_id  -- Join with organization_members to filter by user’s memberships
-    LEFT JOIN neworganizations no ON om.organization_id = no.id  -- Join with neworganizations table to get organization name the user belongs to
+    LEFT JOIN join_org jo ON u.id = jo.student_id
+    LEFT JOIN organization_members om ON u.id = om.user_id
+    LEFT JOIN neworganizations no ON om.organization_id = no.id
 ";
-$count_sql = "SELECT COUNT(*) as total FROM newusers";
+
+$count_sql = "
+    SELECT COUNT(DISTINCT u.id) as total 
+    FROM newusers u
+    LEFT JOIN join_org jo ON u.id = jo.student_id
+    LEFT JOIN organization_members om ON u.id = om.user_id
+    LEFT JOIN neworganizations no ON om.organization_id = no.id
+";
 
 if (!empty($role_filter)) {
     $conditions[] = "u.role = ?";
@@ -80,7 +87,7 @@ if (!empty($conditions)) {
     $count_sql .= $whereClause;
 }
 
-$sql .= " LIMIT ? OFFSET ?";
+$sql .= " ORDER BY u.created_at DESC LIMIT ? OFFSET ?";
 $params[] = $limit;
 $params[] = $offset;
 $types .= 'ii';
@@ -92,11 +99,13 @@ $result = $stmt->get_result();
 $users = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
+// Validate year values
 foreach ($users as &$user) {
     $validYears = ['1', '2', '3'];
     $user['year'] = in_array((string)$user['year'], $validYears) ? (string)$user['year'] : '';
 }
 
+// Get total count
 $stmt_count = $conn->prepare($count_sql);
 if (!empty($conditions)) {
     $stmt_count->bind_param(substr($types, 0, strlen($types) - 2), ...array_slice($params, 0, -2));
@@ -106,6 +115,8 @@ $count_result = $stmt_count->get_result()->fetch_assoc();
 $total_users = $count_result['total'];
 $stmt_count->close();
 
+// Return JSON response
+header('Content-Type: application/json');
 echo json_encode([
     'users' => $users,
     'total' => $total_users,

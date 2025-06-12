@@ -78,7 +78,6 @@ if ($countResult) {
 }
 $stmtCount->close();
 
-// Get paginated organizations from neworganizations table
 // Get paginated organizations from neworganizations table, along with the user name from newusers table
 $sql = "
     SELECT 
@@ -108,9 +107,8 @@ $sql = "
     LEFT JOIN newusers nu ON no.user_id = nu.id
 ";
 
-
 if (!empty($status)) {
-    $sql .= " WHERE status = ?";
+    $sql .= " WHERE no.status = ?";
 }
 
 $sql .= " ORDER BY created_at DESC LIMIT ?, ?";
@@ -118,9 +116,9 @@ $sql .= " ORDER BY created_at DESC LIMIT ?, ?";
 // Prepare and execute the query for organizations
 $stmt = $conn->prepare($sql);
 if (!empty($status)) {
-    $stmt->bind_param("ssi", $status, $offset, $perPage);  // Bind status along with pagination parameters
+    $stmt->bind_param("sii", $status, $offset, $perPage);  // Fixed: Changed "ssi" to "sii" for correct parameter types
 } else {
-    $stmt->bind_param("ii", $offset, $perPage);  // Bind pagination parameters only
+    $stmt->bind_param("ii", $offset, $perPage);
 }
 $stmt->execute();
 $result = $stmt->get_result();

@@ -57,45 +57,60 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!in_array($fileType, $allowedTypes)) {
-        // $errors[] = "Only JPG, PNG, and GIF files are allowed for the logo.";
-        $_SESSION['error'] = "Only JPG, PNG, and GIF files are allowed for the logo!";
+        $_SESSION['error'] = "Only JPG, PNG, and GIF files are allowed for the logo.";
+        header('Location: ../admin_org/new_settings.php');
+        exit;
+    }
+
+    $uploadDir = '../assets/uploads_organizations/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    // Generate unique filename with org_id
+    $newFileName = 'org_' . $user_id . '_' . time() . '_' . $fileName;
+    $destPath = $uploadDir . $newFileName;
+
+    // Delete old logo if exists
+    $sql_old = "SELECT image_path FROM neworganizations WHERE user_id = ?";
+    $stmt_old = $conn->prepare($sql_old);
+    $stmt_old->bind_param("i", $user_id);
+    $stmt_old->execute();
+    $result_old = $stmt_old->get_result();
+    if ($row_old = $result_old->fetch_assoc()) {
+        $old_logo = $row_old['image_path'];
+        if ($old_logo && file_exists($uploadDir . $old_logo)) {
+            unlink($uploadDir . $old_logo);
+        }
+    }
+    $stmt_old->close();
+
+    if (move_uploaded_file($fileTmpPath, $destPath)) {
+        $logoPath = $newFileName;
     } else {
-        $uploadDir = '../assets/uploads_organizations/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
-        // To avoid overwriting, prefix with user id and timestamp
-        $newFileName = 'org_' . $user_id . '_' . time() . '_' . $fileName;
-        $destPath = $uploadDir . $newFileName;
-
-        if (move_uploaded_file($fileTmpPath, $destPath)) {
-            $logoPath = $newFileName; // store filename, not full path
-        } else {
-            // $errors[] = "There was an error uploading the logo.";
-            $_SESSION['error'] = "There was an error uploading the logo!";
-        }
+        $_SESSION['error'] = "There was an error uploading the logo.";
+        header('Location: ../admin_org/new_settings.php');
+        exit;
     }
 }
 
 if (empty($errors)) {
-    // Update users table (fullName, email, password if any)
+    // Update users table
     $params = [];
     $types = '';
     $sqlParts = [];
 
+    $sqlParts[] = 'firstName = ?';
+    $params[] = $firstName;
+    $types .= 's';
 
-$sqlParts[] = 'firstName = ?';
-$params[] = $firstName;
-$types .= 's';
+    $sqlParts[] = 'middleName = ?';
+    $params[] = $middleName;
+    $types .= 's';
 
-$sqlParts[] = 'middleName = ?';
-$params[] = $middleName;
-$types .= 's';
-
-$sqlParts[] = 'lastName = ?';
-$params[] = $lastName;
-$types .= 's';
+    $sqlParts[] = 'lastName = ?';
+    $params[] = $lastName;
+    $types .= 's';
 
     $sqlParts[] = 'email = ?';
     $params[] = $email;
@@ -114,44 +129,21 @@ $types .= 's';
     $stmt = $conn->prepare($sql);
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
+    $stmt->close();
 
     // If logo uploaded, update organizations table
     if ($logoPath !== null) {
-        // First find org_id for this user
-        $sqlOrg = "SELECT org_id FROM users WHERE ID = ?";
-        $stmtOrg = $conn->prepare($sqlOrg);
-        $stmtOrg->bind_param('i', $user_id);
-        $stmtOrg->execute();
-        $resultOrg = $stmtOrg->get_result();
-        if ($resultOrg->num_rows > 0) {
-            $orgRow = $resultOrg->fetch_assoc();
-            $org_id = $orgRow['org_id'];
-
-            // Update image_path in organizations table
-            $sqlUpdateLogo = "UPDATE organizations SET image_path = ? WHERE id = ?";
-            $stmtUpdateLogo = $conn->prepare($sqlUpdateLogo);
-            $stmtUpdateLogo->bind_param('si', $logoPath, $org_id);
-            $stmtUpdateLogo->execute();
-            $stmtUpdateLogo->close();
-        }
-        $stmtOrg->close();
+        $sqlUpdateLogo = "UPDATE neworganizations SET image_path = ? WHERE user_id = ?";
+        $stmtUpdateLogo = $conn->prepare($sqlUpdateLogo);
+        $stmtUpdateLogo->bind_param('si', $logoPath, $user_id);
+        $stmtUpdateLogo->execute();
+        $stmtUpdateLogo->close();
     }
 
-    $stmt->close();
-    $success = true;
-}
-
-$conn->close();
-
-// Redirect back with success or error messages
-if ($success) {
-    // $_SESSION['success_message'] = "Profile updated successfully.";
-    $_SESSION['success'] = "Profile updated successfully!";
-
+    $_SESSION['success'] = "Profile updated successfully.";
 } else {
-    $_SESSION['error_message'] = implode(' ', $errors);
     $_SESSION['error'] = implode(' ', $errors);
 }
 
-header('Location: ../admin_org/new_settings.php'); // or your settings page path
+header('Location: ../admin_org/new_settings.php');
 exit;

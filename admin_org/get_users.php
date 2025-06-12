@@ -68,26 +68,29 @@ if (!empty($status_filter)) {
 $sql = "
     SELECT DISTINCT
         u.id, u.lastName, u.firstName, u.middleName, u.studentNumber, 
-        u.course, u.year, u.section, u.email, u.created_at, 
-        u.status, u.graduated,
-        CASE 
-            WHEN om.user_id IS NOT NULL THEN 'approved'
-            ELSE COALESCE(jo.status, 'pending')
-        END AS applicationStatus
+        u.course, u.year, u.section, u.email, u.role, u.created_at, 
+        u.status, u.graduated, 
+        jo.status AS applicationStatus,
+        no.name AS orgName
     FROM newusers u
-    INNER JOIN organization_members om ON u.id = om.user_id
-    LEFT JOIN join_org jo ON u.id = jo.student_id AND jo.org_id = om.organization_id
-    WHERE " . implode(' AND ', $conditions) . "
-    ORDER BY u.lastName, u.firstName
-    LIMIT ? OFFSET ?
+    LEFT JOIN join_org jo ON u.id = jo.student_id
+    LEFT JOIN organization_members om ON u.id = om.user_id
+    LEFT JOIN neworganizations no ON om.organization_id = no.id
 ";
 
 $count_sql = "
     SELECT COUNT(DISTINCT u.id) as total 
     FROM newusers u
-    INNER JOIN organization_members om ON u.id = om.user_id
-    WHERE " . implode(' AND ', $conditions);
+    LEFT JOIN organization_members om ON u.id = om.user_id
+";
 
+if (!empty($conditions)) {
+    $whereClause = " WHERE " . implode(' AND ', $conditions);
+    $sql .= $whereClause;
+    $count_sql .= $whereClause;
+}
+
+$sql .= " ORDER BY u.created_at DESC LIMIT ? OFFSET ?";
 $params[] = $limit;
 $params[] = $offset;
 $types .= 'ii';
@@ -107,7 +110,9 @@ foreach ($users as &$user) {
 
 // Get total count
 $stmt_count = $conn->prepare($count_sql);
-$stmt_count->bind_param(substr($types, 0, strlen($types) - 2), ...array_slice($params, 0, -2));
+if (!empty($conditions)) {
+    $stmt_count->bind_param(substr($types, 0, strlen($types) - 2), ...array_slice($params, 0, -2));
+}
 $stmt_count->execute();
 $count_result = $stmt_count->get_result()->fetch_assoc();
 $total_users = $count_result['total'];
@@ -115,6 +120,8 @@ $stmt_count->close();
 
 $conn->close();
 
+// Return JSON response
+header('Content-Type: application/json');
 echo json_encode([
     'users' => $users,
     'total' => $total_users,

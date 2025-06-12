@@ -43,19 +43,24 @@ if (!empty($password) || !empty($confirmPassword)) {
 $logoFileName = null;
 if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = "../assets/uploads_pfp/";
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
     $fileTmp = $_FILES['logo']['tmp_name'];
     $fileName = basename($_FILES['logo']['name']);
     $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $allowedExt = ['jpg', 'jpeg', 'png', 'gif'];
 
     if (!in_array($fileExt, $allowedExt)) {
-        $_SESSION['error'] = "Invalid file type for logo.";
+        $_SESSION['error'] = "Invalid file type. Only JPG, PNG, and GIF files are allowed.";
         header("Location: ../admin/new_settings.php");
         exit;
     }
 
-    $newFileName = uniqid("logo_", true) . "." . $fileExt;
-    $destination = $uploadDir . $newFileName;
+    // Generate unique filename
+    $logoFileName = 'admin_' . $admin_id . '_' . time() . '.' . $fileExt;
+    $destination = $uploadDir . $logoFileName;
 
     if (!move_uploaded_file($fileTmp, $destination)) {
         $_SESSION['error'] = "Failed to upload image.";
@@ -63,7 +68,19 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         exit;
     }
 
-    $logoFileName = $newFileName;
+    // Delete old profile picture if exists
+    $sql_old = "SELECT profile_picture FROM newusers WHERE ID = ?";
+    $stmt_old = $conn->prepare($sql_old);
+    $stmt_old->bind_param("i", $admin_id);
+    $stmt_old->execute();
+    $result_old = $stmt_old->get_result();
+    if ($row_old = $result_old->fetch_assoc()) {
+        $old_picture = $row_old['profile_picture'];
+        if ($old_picture && file_exists($uploadDir . $old_picture)) {
+            unlink($uploadDir . $old_picture);
+        }
+    }
+    $stmt_old->close();
 }
 
 // Prepare update query

@@ -11,11 +11,11 @@ $org_logo = '../assets/default-logo.png'; // Default logo if none found
 
 if ($user_id) {
     // Get the organization logo for the user's organization
-    // Assumes users.organization_id links to organizations.id
+    // Assumes neworganizations.user_id links to newusers.ID
     $sql_org = "
         SELECT o.image_path 
         FROM neworganizations o
-        JOIN newusers u ON u.id = o.id
+        JOIN newusers u ON o.user_id = u.ID
         WHERE u.ID = ?
         LIMIT 1
     ";
