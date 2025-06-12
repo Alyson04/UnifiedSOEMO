@@ -97,7 +97,7 @@ include '../includes/header.php';
 <form action="../api/admin-setting.php" method="POST" enctype="multipart/form-data">
     <div class="inner-card">
       <div class="card-section upload-section">
-        <h3>Organization Logo</h3>
+        <h3>Profile Picture</h3>
         <div class="upload-frame">
             <label for="logo-upload" class="upload-label">
                 <!-- Show organization logo from DB or default -->

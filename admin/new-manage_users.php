@@ -443,6 +443,15 @@ function attachEditListeners() {
         });
     });
 }
+
+const alertBox = document.querySelector('.session-alert');
+if (alertBox) {
+    setTimeout(() => {
+        alertBox.style.transition = 'opacity 0.5s ease';
+        alertBox.style.opacity = '0';
+        setTimeout(() => alertBox.remove(), 500);
+    }, 4000);
+}
 </script>
 
 <style>

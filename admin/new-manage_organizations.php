@@ -42,6 +42,13 @@ include '../includes/header.php';
 <?php include '../includes/navbar.php'; ?>
 
 <div class="content">
+<?php if (!empty($_SESSION['error'])): ?>
+    <div class="session-alert error"><?= htmlspecialchars($_SESSION['error']) ?></div>
+    <?php unset($_SESSION['error']); ?>
+<?php elseif (!empty($_SESSION['success'])): ?>
+    <div class="session-alert success"><?= htmlspecialchars($_SESSION['success']) ?></div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
     <h2 class="page-title">MANAGE ORGANIZATIONS</h2>
 
     <div class="filter-status" style="margin-bottom: 1rem;">
@@ -266,6 +273,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchOrganizations(1);
     statusFilter.addEventListener('change', () => fetchOrganizations(1));
 });
+
+const alertBox = document.querySelector('.session-alert');
+if (alertBox) {
+    setTimeout(() => {
+        alertBox.style.transition = 'opacity 0.5s ease';
+        alertBox.style.opacity = '0';
+        setTimeout(() => alertBox.remove(), 500);
+    }, 4000);
+}
 </script>
 
 

@@ -16,7 +16,13 @@ include '../includes/header.php';
     <?php
     // Query posts excluding deleted users/orgs
     $query = "
-  SELECT posts.*, users.fullName, organizations.image_path AS org_image_path
+  SELECT posts.*, 
+    CASE 
+      WHEN users.middleName IS NULL OR users.middleName = '' OR LOWER(users.middleName) = 'n/a' 
+      THEN CONCAT(users.firstName, ' ', users.lastName)
+      ELSE CONCAT(users.firstName, ' ', users.middleName, ' ', users.lastName)
+    END AS fullName,
+    organizations.image_path AS org_image_path
   FROM posts
   LEFT JOIN users ON posts.user_id = users.id
   LEFT JOIN organizations ON users.org_id = organizations.id

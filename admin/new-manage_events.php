@@ -327,6 +327,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return isNaN(d) ? '' : `${d.getFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}-${('0'+d.getDate()).slice(-2)}`;
   }
 });
+
+const alertBox = document.querySelector('.session-alert');
+if (alertBox) {
+    setTimeout(() => {
+        alertBox.style.transition = 'opacity 0.5s ease';
+        alertBox.style.opacity = '0';
+        setTimeout(() => alertBox.remove(), 500);
+    }, 4000);
+}
 </script>
 
 

@@ -87,7 +87,13 @@ include '../includes/header.php';
     <?php
     // Query with LEFT JOIN to get user info and their organization's image path
     $query = "
-  SELECT p.*,  CONCAT_WS(' ', u.firstName, u.middleName, u.lastName) AS fullName, o.name, o.image_path as org_image_path
+  SELECT p.*,  
+    CASE 
+      WHEN u.middleName IS NULL OR u.middleName = '' OR LOWER(u.middleName) = 'n/a' 
+      THEN CONCAT(u.firstName, ' ', u.lastName)
+      ELSE CONCAT(u.firstName, ' ', u.middleName, ' ', u.lastName)
+    END AS fullName,
+    o.name, o.image_path as org_image_path
 FROM posts p
 LEFT JOIN newusers u ON p.user_id = u.ID
 LEFT JOIN neworganizations o ON p.org_id = o.ID
