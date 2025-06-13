@@ -379,8 +379,8 @@ document.addEventListener('click', function(event) {
           <label>Section:</label>
           <input type="text" name="section" value="<?= htmlspecialchars($section) ?>" readonly>
 
-          <label for="portfolio">Upload Portfolio / Required Files (PDF, DOCX, JPG, PNG):</label>
-          <input type="file" name="portfolio_file" id="portfolio" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+          <!-- <label for="portfolio">Upload Portfolio / Required Files (PDF, DOCX, JPG, PNG):</label>
+          <input type="file" name="portfolio_file" id="portfolio" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"> -->
 
           <div class="form-buttons">
               <button type="submit">Submit Application</button>
