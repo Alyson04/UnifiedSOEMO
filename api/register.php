@@ -29,6 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    if (in_array($role, ['student', 'orgAdmin']) && !preg_match("/@iskolarngbayan\.pup\.edu\.ph$/", $email)) {
+        $_SESSION['error'] = 'School email must end with @iskolarngbayan.pup.edu.ph';
+        header('Location: ../admin/create_new_user.php');
+        exit;
+    }
+
     // Check if student number or email already exists
     $check_sql = "SELECT id FROM newusers WHERE studentNumber = ? OR email = ?";
     $stmt = $conn->prepare($check_sql);
