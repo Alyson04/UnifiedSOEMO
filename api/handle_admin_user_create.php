@@ -86,10 +86,11 @@ if ($password !== $confirmPassword) {
     exit;
 }
 $lengthValid = strlen($password) >= 8 && strlen($password) <= 20;
-$hasNumbers = preg_match_all('/\d/', $password) >= 2;
-$hasSpecials = preg_match_all('/[^A-Za-z0-9]/', $password) >= 2;
-if (!$lengthValid || !$hasNumbers || !$hasSpecials) {
-     $_SESSION['error'] = 'Password must be 8–20 characters long and include at least 2 numbers and 2 special characters.';
+$hasUppercase = preg_match('/[A-Z]/', $password);
+$hasNumber = preg_match('/\d/', $password);
+$hasSpecial = preg_match('/[!@#$%^&*()_+\[\]{};\'",.<>?`~\\|]/', $password);
+if (!$lengthValid || !$hasUppercase || !$hasNumber || !$hasSpecial) {
+    $_SESSION['error'] = 'Password must be 8-20 characters long and include at least one uppercase letter, one special character, and one number.';
     header('Location: ../admin/create_new_user.php');
     exit;
 }

@@ -1,5 +1,15 @@
 <?php
+require '../config/db_conn.php';
 session_start();
+
+// Get the stored form data from session if it exists
+$formData = $_SESSION['form_data'] ?? [];
+$error = $_SESSION['error'] ?? '';
+
+// Clear the session data after retrieving it
+unset($_SESSION['form_data']);
+unset($_SESSION['error']);
+
 $title = "Register";
 $style = "register_styles.css";
 include '../includes/header.php';
@@ -19,38 +29,38 @@ include '../includes/header.php';
             <h1 class="title">SIGN UP</h1>
             <p class="subtitle">Already have an account? <a href="login.php">Log in</a></p>
 
-            <form action="../api/register.php" method="POST">
+            <form action="../api/register.php" method="POST" onsubmit="return validateForm()">
                 <div class="name-fields-container">
                     <div class="form-group name-field">
                         <label for="studentLastName">Last Name:</label>
-                        <input type="text" id="studentLastName" name="studentLastName" required>
+                        <input type="text" id="studentLastName" name="studentLastName" value="<?= htmlspecialchars($formData['studentLastName'] ?? '') ?>" required>
                     </div>
                     <div class="form-group name-field">
                         <label for="studentFirstName">First Name:</label>
-                        <input type="text" id="studentFirstName" name="studentFirstName" required>
+                        <input type="text" id="studentFirstName" name="studentFirstName" value="<?= htmlspecialchars($formData['studentFirstName'] ?? '') ?>" required>
                     </div>
                     <div class="form-group name-field">
                         <label for="studentMiddleName">Middle Name:</label>
-                        <input type="text" id="studentMiddleName" name="studentMiddleName">
+                        <input type="text" id="studentMiddleName" name="studentMiddleName" value="<?= htmlspecialchars($formData['studentMiddleName'] ?? '') ?>" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="studentNumber">Student Number: (Format: yyyy-nnnnn-MN-0)</label>
-                    <input type="text" id="studentNumber" name="studentNumber" pattern="\d{4}-\d{5}-MN-0" title="Format: yyyy-nnnnn-MN-0 (e.g., 2023-12345-MN-0)" required>
+                    <input type="text" id="studentNumber" name="studentNumber" pattern="\d{4}-\d{5}-MN-0" title="Format: yyyy-nnnnn-MN-0 (e.g., 2023-12345-MN-0)" value="<?= htmlspecialchars($formData['studentNumber'] ?? '') ?>" required>
                     <small id="studentNumberWarning" style="color: red; display: none;">Please follow the format: yyyy-nnnnn-MN-0</small>
                 </div>
                 <div class="form-group">
                     <label for="studentCourse">Course:</label>
                     <select id="studentCourse" name="studentCourse" required>
                         <option value="">-- Select Course --</option>
-                        <option value="DCvET">Diploma in Civil Engineering Technology</option>
-                        <option value="DCET">Diploma in Computer Engineering Technology</option>
-                        <option value="DEET">Diploma in Electrical Engineering Technology</option>
-                        <option value="DECET">Diploma in Electronics Engineering Technology</option>
-                        <option value="DIT">Diploma in Information Technology</option>
-                        <option value="DMET">Diploma in Mechanical Engineering Technology</option>
-                        <option value="DOMT">Diploma in Office Management Technology</option>
-                        <option value="DRET">Diploma in Railway Engineering Technology</option>
+                        <option value="DCvET" <?= ($formData['studentCourse'] ?? '') === 'DCvET' ? 'selected' : '' ?>>Diploma in Civil Engineering Technology</option>
+                        <option value="DCET" <?= ($formData['studentCourse'] ?? '') === 'DCET' ? 'selected' : '' ?>>Diploma in Computer Engineering Technology</option>
+                        <option value="DEET" <?= ($formData['studentCourse'] ?? '') === 'DEET' ? 'selected' : '' ?>>Diploma in Electrical Engineering Technology</option>
+                        <option value="DECET" <?= ($formData['studentCourse'] ?? '') === 'DECET' ? 'selected' : '' ?>>Diploma in Electronics Engineering Technology</option>
+                        <option value="DIT" <?= ($formData['studentCourse'] ?? '') === 'DIT' ? 'selected' : '' ?>>Diploma in Information Technology</option>
+                        <option value="DMET" <?= ($formData['studentCourse'] ?? '') === 'DMET' ? 'selected' : '' ?>>Diploma in Mechanical Engineering Technology</option>
+                        <option value="DOMT" <?= ($formData['studentCourse'] ?? '') === 'DOMT' ? 'selected' : '' ?>>Diploma in Office Management Technology</option>
+                        <option value="DRET" <?= ($formData['studentCourse'] ?? '') === 'DRET' ? 'selected' : '' ?>>Diploma in Railway Engineering Technology</option>
                     </select>
                 </div>
                 <div class="year-section-container">
@@ -58,19 +68,19 @@ include '../includes/header.php';
                         <label for="studentYear">Year:</label>
                         <select id="studentYear" name="studentYear" required>
                             <option value="">-- Select Year --</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            <option value="1" <?= ($formData['studentYear'] ?? '') === '1' ? 'selected' : '' ?>>1</option>
+                            <option value="2" <?= ($formData['studentYear'] ?? '') === '2' ? 'selected' : '' ?>>2</option>
+                            <option value="3" <?= ($formData['studentYear'] ?? '') === '3' ? 'selected' : '' ?>>3</option>
                         </select>
                     </div>
                     <div class="form-group section-field">
                         <label for="studentSection">Section: 1,2,3,4,5...?</label>
-                        <input type="text" id="studentSection" name="studentSection" required>
+                        <input type="text" id="studentSection" name="studentSection" value="<?= htmlspecialchars($formData['studentSection'] ?? '') ?>" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="studentEmail">Email:</label>
-                    <input type="email" id="studentEmail" name="studentEmail" required>
+                    <input type="email" id="studentEmail" name="studentEmail" value="<?= htmlspecialchars($formData['studentEmail'] ?? '') ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="studentPassword">Password:</label>
@@ -78,7 +88,7 @@ include '../includes/header.php';
                         <input type="password" id="studentPassword" name="studentPassword" required>
                         <img src="../assets/pictures/eye-off.png" class="toggle-icon" onclick="togglePassword('studentPassword', this)" alt="toggle password">
                     </div>
-                    <small id="studentPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 2 numbers and 2 special characters.</small>
+                    <small id="studentPasswordWarning" style="color: red; display: none;">Password must be 8-20 characters long and include at least one uppercase letter, one special character, and one number.</small>
                 </div>
                 <div class="form-group">
                     <label for="studentConfirmPassword">Confirm Password:</label>
@@ -86,7 +96,7 @@ include '../includes/header.php';
                         <input type="password" id="studentConfirmPassword" name="studentConfirmPassword" required>
                         <img src="../assets/pictures/eye-off.png" class="toggle-icon" onclick="togglePassword('studentConfirmPassword', this)" alt="toggle password">
                     </div>
-                    <small id="studentPasswordMismatch" style="color: red; display: none;">Passwords do not match</small>
+                    <small id="studentPasswordMismatch" style="color: red; display: none;">Passwords do not match.</small>
                 </div>
 
                 <button type="submit" class="btn">Sign Up</button>
@@ -169,7 +179,7 @@ document.getElementById('studentSection').addEventListener('input', function(e) 
 function validatePassword() {
     const pwd = document.getElementById('studentPassword').value;
     const warning = document.getElementById('studentPasswordWarning');
-    const regex = /^(?=(?:.*\d.*){2,})(?=(?:.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?`~].*){2,}).{8,20}$/;
+    const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\[\]{};\'",.<>?`~\\|])(?=.*\d).{8,20}$/;
     warning.style.display = regex.test(pwd) ? 'none' : 'block';
 }
 

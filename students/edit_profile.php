@@ -445,7 +445,7 @@ document.getElementById("confirmNewPassword").addEventListener("input", checkPas
 function validatePassword() {
     const pwd = document.getElementById('newPassword').value;
     const warning = document.getElementById('passwordWarning');
-    const regex = /^(?=(?:.*\d){2,})(?=(?:.*[^A-Za-z0-9]){2,}).{8,20}$/;
+    const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\[\]{};\'",.<>?`~\\|])(?=.*\d).{8,20}$/;
     warning.style.display = regex.test(pwd) ? 'none' : 'block';
 }
 

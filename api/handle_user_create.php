@@ -45,12 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Validate password
-    if (strlen($password) < 8) {
-        $_SESSION['error'] = "Password must be at least 8 characters long.";
-        header("Location: ../admin_org/create_new_user.php");
-        exit;
-    }
-
     if (!preg_match("/[A-Z]/", $password)) {
         $_SESSION['error'] = "Password must contain at least one uppercase letter.";
         header("Location: ../admin_org/create_new_user.php");
@@ -71,6 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!preg_match("/[!@#$%^&*()\-_=+{};:,<.>]/", $password)) {
         $_SESSION['error'] = "Password must contain at least one special character.";
+        header("Location: ../admin_org/create_new_user.php");
+        exit;
+    }
+
+    if (strlen($password) < 8 || strlen($password) > 20) {
+        $_SESSION['error'] = "Password must be between 8 and 20 characters long.";
         header("Location: ../admin_org/create_new_user.php");
         exit;
     }
