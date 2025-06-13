@@ -36,18 +36,10 @@ $id = $_POST['id'] ?? '';
 $field = $_POST['field'] ?? '';
 $value = $_POST['value'] ?? '';
 
-// Validate that the user belongs to the org admin's organization
-$check_sql = "SELECT u.id FROM newusers u 
-              INNER JOIN organization_members om ON u.id = om.user_id 
-              WHERE u.id = ? AND om.organization_id = ?";
-$check_stmt = $conn->prepare($check_sql);
-$check_stmt->bind_param("ii", $id, $org_id);
-$check_stmt->execute();
-if ($check_stmt->get_result()->num_rows === 0) {
-    echo json_encode(['success' => false, 'message' => 'User not found in your organization']);
+if (!$id || !$field || $value === '') {
+    echo json_encode(['success' => false, 'message' => 'Missing parameters']);
     exit;
 }
-$check_stmt->close();
 
 // List of fields that can be updated
 $allowed_fields = [
@@ -90,7 +82,7 @@ if ($field === 'studentNumber') {
 
 // Validate status values
 if ($field === 'status') {
-    $valid_statuses = ['active', 'renewal', 'disabled'];
+    $valid_statuses = ['active', 'renewal', 'disabled', 'rejected'];
     if (!in_array($value, $valid_statuses)) {
         echo json_encode(['success' => false, 'message' => 'Invalid status value']);
         exit;
@@ -123,7 +115,7 @@ try {
         throw new Exception("Failed to update $field");
     }
 
-    // If updating application status to 'approved', ensure organization_members entry exists
+    // If application status is approved, add to organization_members if not already present
     if ($field === 'applicationStatus' && $value === 'approved') {
         $check_member_sql = "SELECT 1 FROM organization_members WHERE user_id = ? AND organization_id = ?";
         $check_member_stmt = $conn->prepare($check_member_sql);
@@ -131,13 +123,21 @@ try {
         $check_member_stmt->execute();
         
         if ($check_member_stmt->get_result()->num_rows === 0) {
-            $insert_member_sql = "INSERT INTO organization_members (user_id, organization_id, joined_at) VALUES (?, ?, NOW())";
+            $insert_member_sql = "INSERT INTO organization_members (user_id, organization_id) VALUES (?, ?)";
             $insert_member_stmt = $conn->prepare($insert_member_sql);
             $insert_member_stmt->bind_param("ii", $id, $org_id);
             if (!$insert_member_stmt->execute()) {
                 throw new Exception("Failed to add user to organization members");
             }
         }
+    }
+
+    // If status is rejected, remove from organization_members if present
+    if ($field === 'status' && $value === 'rejected') {
+        $delete_member_sql = "DELETE FROM organization_members WHERE user_id = ? AND organization_id = ?";
+        $delete_member_stmt = $conn->prepare($delete_member_sql);
+        $delete_member_stmt->bind_param("ii", $id, $org_id);
+        $delete_member_stmt->execute();
     }
 
     $conn->commit();
@@ -149,4 +149,4 @@ try {
 }
 
 $conn->close();
-?> 
+?>
