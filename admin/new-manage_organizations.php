@@ -72,8 +72,6 @@ include '../includes/header.php';
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Mission</th>
-                    <th>Vision</th>
                     <th>Status</th>
                     <th>Last<br>Updated</th>
                     <th>Renewal<br>Date</th>
@@ -159,8 +157,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             tr.innerHTML = `
                 <td><span class="view">${escapeHtml(org.name)}</span><input class="edit hidden" value="${escapeHtml(org.name)}"></td>
                 <td><span class="view">${escapeHtml(org.description)}</span><input class="edit hidden" value="${escapeHtml(org.description)}"></td>
-                <td><span class="view">${escapeHtml(org.mission)}</span><input class="edit hidden" value="${escapeHtml(org.mission)}"></td>
-                <td><span class="view">${escapeHtml(org.vision)}</span><input class="edit hidden" value="${escapeHtml(org.vision)}"></td>
                 <td>
                     <span class="view">${escapeHtml(org.status)}</span>
                     <select class="edit hidden">
@@ -233,10 +229,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fieldMappings = {
             name: row.cells[0],
             description: row.cells[1],
-            mission: row.cells[2],
-            vision: row.cells[3],
-            status: row.cells[4],
-            user_id: row.cells[8] // Admin assignment
+            status: row.cells[2],
+            user_id: row.cells[6] // Admin assignment is in the 7th column (index 6)
         };
 
         const updatePromises = Object.entries(fieldMappings).map(([field, cell]) => {

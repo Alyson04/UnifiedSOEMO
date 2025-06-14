@@ -109,7 +109,7 @@ include '../includes/header.php';
         <span class="toggle-icon" onclick="togglePassword('adminConfirmPassword', this)">👁️</span>
       </div>
       <small id="adminPasswordMismatch" style="color: red; display: none;">Passwords do not match</small>
-      <small id="adminPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 2 numbers and 2 special characters.</small>
+      <small id="adminPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 1 number and 1 special character.</small>
     </div>
   </div>
 
@@ -184,7 +184,7 @@ include '../includes/header.php';
         <span class="toggle-icon" onclick="togglePassword('orgConfirmPassword', this)">👁️</span>
       </div>
       <small id="orgPasswordMismatch" style="color: red; display: none;">Passwords do not match</small>
-      <small id="orgPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 2 numbers and 2 special characters.</small>
+      <small id="orgPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 1 number and 1 special character.</small>
     </div>
   </div>
 
@@ -251,7 +251,7 @@ include '../includes/header.php';
         <span class="toggle-icon" onclick="togglePassword('studentConfirmPassword', this)">👁️</span>
       </div>
       <small id="studentPasswordMismatch" style="color: red; display: none;">Passwords do not match</small>
-      <small id="studentPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 2 numbers and 2 special characters.</small>
+      <small id="studentPasswordWarning" style="color: red; display: none;">Password must be 8–20 characters, include 1 number and 1 special character.</small>
     </div>
   </div>
 <input type="hidden" name="firstName" id="mainFirstName">
@@ -420,7 +420,7 @@ function setupPasswordValidation(passwordId, warningId) {
     const lengthValid = value.length >= 8 && value.length <= 20;
     const numbers = (value.match(/\d/g) || []).length;
     const specials = (value.match(/[^A-Za-z0-9]/g) || []).length;
-    const valid = lengthValid && numbers >= 2 && specials >= 2;
+    const valid = lengthValid && numbers >= 1 && specials >= 1;
 
     warning.style.display = valid ? 'none' : 'inline';
   });
