@@ -80,7 +80,7 @@ include '../includes/header.php';
                 </div>
                 <div class="form-group">
                     <label for="studentEmail">Email:</label>
-                    <input type="email" id="studentEmail" name="studentEmail" value="<?= htmlspecialchars($formData['studentEmail'] ?? '') ?>" required>
+                    <input type="email" id="studentEmail" name="studentEmail" value="<?= htmlspecialchars($formData['studentEmail'] ?? '') ?>" placeholder="Enter your PUP web mail:"required>
                 </div>
                 <div class="form-group">
                     <label for="studentPassword">Password:</label>
