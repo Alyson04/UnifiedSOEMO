@@ -245,9 +245,9 @@ body {
     margin: 0 auto;
 }
 
-.upcoming-events:hover, .past-events:hover {
+/* .upcoming-events:hover, .past-events:hover {
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
-}
+} */
 
 .upcoming-events h2, .past-events h2 {
     font-size: 1.8rem;
@@ -273,11 +273,11 @@ body {
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.upcoming-events a:hover, .past-events a:hover {
+/* .upcoming-events a:hover, .past-events a:hover {
     background-color: #e2f0ff;
     box-shadow: 0 8px 22px rgba(0, 123, 255, 0.25);
     color: #0b2e6f;
-}
+} */
 
 /* Event images */
 .upcoming-events img, .past-events img {
