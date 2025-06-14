@@ -13,11 +13,11 @@ $upage = isset($_GET['upage']) && is_numeric($_GET['upage']) ? (int)$_GET['upage
 $up_offset = ($upage - 1) * $limit;
 
 // Count upcoming events
-$sql = "SELECT COUNT(*) as total FROM events e 
-INNER JOIN organizations o ON e.org_id = o.ID 
-WHERE e.event_date >= ? 
-AND YEAR(e.event_date) = ? 
-AND EXISTS (SELECT 1 FROM users u WHERE u.org_id = o.id AND u.status != 'deleted')";
+$sql = "SELECT COUNT(*) as total 
+        FROM events e 
+        INNER JOIN neworganizations o ON e.org_id = o.id 
+        WHERE e.event_date >= ? 
+        AND YEAR(e.event_date) = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("si", $today, $year);
 $stmt->execute();
@@ -27,11 +27,13 @@ $stmt->close();
 $up_total_pages = ceil($up_total / $limit);
 
 // Fetch upcoming events
-$sql = "SELECT * FROM events e 
-WHERE e.event_date >= ? 
-AND YEAR(e.event_date) = ? 
-ORDER BY e.event_date ASC 
-LIMIT ? OFFSET ?";
+$sql = "SELECT e.*, o.name as org_name 
+        FROM events e 
+        INNER JOIN neworganizations o ON e.org_id = o.id 
+        WHERE e.event_date >= ? 
+        AND YEAR(e.event_date) = ? 
+        ORDER BY e.event_date ASC 
+        LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("siii", $today, $year, $limit, $up_offset);
 $stmt->execute();
@@ -43,11 +45,11 @@ $ppage = isset($_GET['ppage']) && is_numeric($_GET['ppage']) ? (int)$_GET['ppage
 $past_offset = ($ppage - 1) * $limit;
 
 // Count past events
-$sql = "SELECT COUNT(*) as total FROM events e 
-INNER JOIN organizations o ON e.org_id = o.ID 
-WHERE e.event_date < ? 
-AND YEAR(e.event_date) = ? 
-AND EXISTS (SELECT 1 FROM users u WHERE u.org_id = o.id AND u.status != 'deleted')";
+$sql = "SELECT COUNT(*) as total 
+        FROM events e 
+        INNER JOIN neworganizations o ON e.org_id = o.id 
+        WHERE e.event_date < ? 
+        AND YEAR(e.event_date) = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("si", $today, $year);
 $stmt->execute();
@@ -57,11 +59,13 @@ $stmt->close();
 $past_total_pages = ceil($past_total / $limit);
 
 // Fetch past events
-$sql = "SELECT * FROM events e 
-WHERE e.event_date < ? 
-AND YEAR(e.event_date) = ? 
-ORDER BY e.event_date DESC 
-LIMIT ? OFFSET ?";
+$sql = "SELECT e.*, o.name as org_name 
+        FROM events e 
+        INNER JOIN neworganizations o ON e.org_id = o.id 
+        WHERE e.event_date < ? 
+        AND YEAR(e.event_date) = ? 
+        ORDER BY e.event_date DESC 
+        LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("siii", $today, $year, $limit, $past_offset);
 $stmt->execute();
