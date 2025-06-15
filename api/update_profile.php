@@ -10,9 +10,9 @@ if (!$student_id) {
 }
 
 // Get password fields
-$old_password = $_POST['old_password'] ?? '';
-$new_password = $_POST['password'] ?? '';
-$confirm_password = $_POST['confirm_password'] ?? '';
+$old_password = $_POST['oldPassword'] ?? '';
+$new_password = $_POST['newPassword'] ?? '';
+$confirm_password = $_POST['confirmNewPassword'] ?? '';
 
 $errors = [];
 
@@ -42,7 +42,7 @@ if (!empty($old_password) || !empty($new_password) || !empty($confirm_password))
         $_SESSION['error'] = "All password fields are required!";
     } else {
         // Fetch user's current password
-        $stmt = $conn->prepare("SELECT password FROM users WHERE ID = ?");
+        $stmt = $conn->prepare("SELECT password FROM newusers WHERE ID = ?");
         $stmt->bind_param("i", $student_id);
         $stmt->execute();
         $stmt->bind_result($current_hashed_password);

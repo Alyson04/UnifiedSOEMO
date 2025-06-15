@@ -106,7 +106,7 @@ include '../includes/navbar.php';
                 <span class="toggle-icon" onclick="togglePassword('newPassword', this)" style="display: none;">👁️</span>
             </div>
             <small id="passwordWarning" style="color: red; display: none;">
-                Password must be 8–20 characters, include 2 numbers and 2 special characters.
+                Password must be 8-20 characters long and include at least one uppercase letter, one special character, and one number.
             </small>
 
             <label for="confirmNewPassword">Confirm New Password:</label>
