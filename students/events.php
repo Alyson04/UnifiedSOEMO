@@ -17,7 +17,8 @@ $sql = "SELECT COUNT(*) as total
         FROM events e 
         INNER JOIN neworganizations o ON e.org_id = o.id 
         WHERE e.event_date >= ? 
-        AND YEAR(e.event_date) = ?";
+        AND YEAR(e.event_date) = ?
+        AND e.status != 'under review'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("si", $today, $year);
 $stmt->execute();
@@ -32,6 +33,7 @@ $sql = "SELECT e.*, o.name as org_name
         INNER JOIN neworganizations o ON e.org_id = o.id 
         WHERE e.event_date >= ? 
         AND YEAR(e.event_date) = ? 
+        AND e.status != 'under review'
         ORDER BY e.event_date ASC 
         LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
@@ -49,7 +51,8 @@ $sql = "SELECT COUNT(*) as total
         FROM events e 
         INNER JOIN neworganizations o ON e.org_id = o.id 
         WHERE e.event_date < ? 
-        AND YEAR(e.event_date) = ?";
+        AND YEAR(e.event_date) = ?
+        AND e.status != 'under review'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("si", $today, $year);
 $stmt->execute();
@@ -64,6 +67,7 @@ $sql = "SELECT e.*, o.name as org_name
         INNER JOIN neworganizations o ON e.org_id = o.id 
         WHERE e.event_date < ? 
         AND YEAR(e.event_date) = ? 
+        AND e.status != 'under review'
         ORDER BY e.event_date DESC 
         LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
