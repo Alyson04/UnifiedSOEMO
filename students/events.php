@@ -102,7 +102,7 @@ include '../includes/navbar.php';
 
 <div class="text-section">
     <p>
-        The UNIFIED SOEMO at the Main Campus brings together student organizations to promote collaboration, engagement, and growth. Explore 
+        The UNIFIED SOEMO at the Institute of Technology brings together student organizations to promote collaboration, engagement, and growth. Explore 
         opportunities to join organizations, participate in campus-wide events, and make meaningful connections within the vibrant university community!
     </p>
 </div>
