@@ -85,7 +85,7 @@ include '../includes/header.php';
                 <div class="form-group">
                     <label for="studentPassword">Password:</label>
                     <div class="input-icon">
-                        <input type="password" id="studentPassword" name="studentPassword" required>
+                        <input type="password" id="studentPassword" name="studentPassword"  placeholder="Create Password:" required>
                         <img src="../assets/pictures/eye-off.png" class="toggle-icon" onclick="togglePassword('studentPassword', this)" alt="toggle password">
                     </div>
                     <small id="studentPasswordWarning" style="color: red; display: none;">Password must be 8-20 characters long and include at least one uppercase letter, one special character, and one number.</small>
